@@ -15,24 +15,25 @@
   --dim:#8e8e8e;
 }
 
+html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:60px;
+  padding:64px 48px;
 }
 
 .title{
   font-weight:600;
-  font-size:16px;
-  margin-bottom:24px;
+  font-size:18px;
+  margin-bottom:26px;
 }
 
 .node{
   display:block;
-  font-size:15px;
-  line-height:28px;
+  font-size:16px;
+  line-height:30px;
   color:var(--fg);
   text-decoration:none;
 }
@@ -46,22 +47,16 @@ body{
   color: var(--fg);
 }
 
-.status{
-  margin-top:30px;
+.dim{
+  margin-top:34px;
   font-size:13px;
   color:var(--dim);
 }
 
 .cursor{
   display:inline-block;
-  width:10px;
   margin-left:6px;
-  color:var(--fg);
   animation:blink 1s infinite;
-}
-
-.cursor::before{
-  content: "_";
 }
 
 @keyframes blink{
@@ -84,13 +79,6 @@ input{
   font-size:14px;
   width:240px;
 }
-
-.output{
-  margin-top:18px;
-  font-size:14px;
-  color:var(--dim);
-  min-height:18px;
-}
 </style>
 </head>
 
@@ -103,49 +91,65 @@ input{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<div class="status">
-  ACCESS STATUS: ACTIVE <span class="cursor"></span>
+<div class="dim">
+  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
 </div>
 
 <div class="cmdline">
   > <input id="cmd" autofocus>
 </div>
 
-<div id="output" class="output"></div>
+<div id="output" style="margin-top:18px; font-size:14px; color:var(--dim);"></div>
 
 <script>
 const input = document.getElementById("cmd");
 const output = document.getElementById("output");
 
 function respond(text){
-  output.textContent = "> " + text;
+  output.innerHTML = "> " + text;
 }
 
-function route(cmd){
-  if(cmd === "world")   return { msg:"ACCESSING WORLD NODE",   url:"world.html" };
-  if(cmd === "system")  return { msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html" };
-  if(cmd === "subjects")return { msg:"ACCESSING SUBJECTS NODE",url:"subjects.html" };
-  if(cmd === "archive") return { msg:"ACCESSING ARCHIVE NODE", url:"archive.html" };
-  return null;
-}
+input.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    const value = input.value.trim().toLowerCase();
 
-input.addEventListener("keydown", (e) => {
-  if(e.key !== "Enter") return;
+    if(value === "world"){
+      respond("ACCESSING WORLD NODE");
+      setTimeout(()=>location.href="world.html", 400);
+    }
+    else if(value === "system"){
+      respond("ACCESSING SYSTEM NODE");
+      setTimeout(()=>location.href="mechanics.html", 400);
+    }
+    else if(value === "subjects"){
+      respond("ACCESSING SUBJECTS NODE");
+      setTimeout(()=>location.href="subjects.html", 400);
+    }
+    else if(value === "archive"){
+      respond("ACCESSING ARCHIVE NODE");
+      setTimeout(()=>location.href="archive.html", 400);
+    }
 
-  const value = input.value.trim().toLowerCase();
-  input.value = "";
+    /* ==== RESTRICTED COMMANDS ==== */
+    else if(value === "help"){
+      respond("COMMAND ACCESS DENIED");
+    }
+    else if(value === "clear"){
+      respond("OPERATION NOT PERMITTED");
+    }
+    else if(value === "exit"){
+      respond("NO EXIT PARAMETERS FOUND");
+    }
+    else if(value === "override"){
+      respond("OVERRIDE REJECTED");
+    }
 
-  if(!value){
-    respond("AWAITING INPUT");
-    return;
-  }
+    /* ==== UNKNOWN ==== */
+    else{
+      respond("COMMAND NOT RECOGNIZED");
+    }
 
-  const res = route(value);
-  if(res){
-    respond(res.msg);
-    setTimeout(() => { window.location.href = res.url; }, 400);
-  }else{
-    respond("COMMAND NOT RECOGNIZED");
+    input.value = "";
   }
 });
 </script>
