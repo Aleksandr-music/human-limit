@@ -1,72 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Human Limit</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Human Limit</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --bg:#0b0b0b;
-  --fg:#cfcfcf;
-  --dim:#8e8e8e;
-}
+  <link rel="stylesheet" href="style.css">
 
-html,body{height:100%;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:"JetBrains Mono", monospace;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
+  <style>
+    /* только layout этой страницы */
 
-h1{
-  font-weight:600;
-  font-size:22px;
-  letter-spacing:1px;
-  margin-bottom:18px;
-}
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
 
-p{
-  font-weight:300;
-  font-size:16px;
-  color:var(--fg);
-  margin:6px 0;
-}
+    .entry{
+      max-width:420px;
+    }
 
-button{
-  margin-top:26px;
-  background:none;
-  border:1px solid var(--dim);
-  color:var(--fg);
-  padding:10px 22px;
-  font-family:"JetBrains Mono", monospace;
-  font-size:14px;
-  cursor:pointer;
-}
+    .entry-title{
+      font-weight:600;
+      font-size:22px;
+      letter-spacing:1px;
+      margin-bottom:18px;
+      color:var(--fg);
+    }
 
-button:hover{
-  border-color:var(--fg);
-}
-</style>
+    .entry-text{
+      font-weight:300;
+      font-size:16px;
+      margin:6px 0;
+      color:var(--fg);
+    }
+
+    .entry button{
+      margin-top:26px;
+      background:none;
+      border:1px solid var(--dim);
+      color:var(--fg);
+      padding:10px 22px;
+      font-family:"JetBrains Mono", monospace;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    .entry button:hover{
+      border-color:var(--fg);
+    }
+  </style>
 </head>
 
 <body>
-<div>
-  <h1>HUMAN LIMIT</h1>
 
-  <p>The world is already decided.</p>
+<div class="entry">
+  <div class="entry-title">HUMAN LIMIT</div>
+
+  <div class="entry-text">The world is already decided.</div>
 
   <button onclick="location.href='interface.html'">
     Access World
   </button>
 </div>
+
 </body>
 </html>
