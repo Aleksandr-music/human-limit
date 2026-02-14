@@ -77,3 +77,14 @@ a{
   letter-spacing:0.3px;
   color:var(--fg);
 }
+/* allow paste/selection in inputs (important on mobile) */
+input, textarea{
+  -webkit-user-select:text;
+  user-select:text;
+}
+
+/* optional: allow copying output text */
+.output{
+  -webkit-user-select:text;
+  user-select:text;
+}
