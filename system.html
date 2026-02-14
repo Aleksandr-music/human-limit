@@ -47,6 +47,21 @@ body{
   color: var(--fg);
 }
 
+/* service link (looks like system leftover, not a main node) */
+.node--service{
+  margin-top:10px;
+  font-size:14px;
+  color:var(--dim);
+}
+.node--service::before{
+  content: "> ";
+  color: var(--dim);
+}
+.node--service:hover{
+  text-decoration:underline;
+  color:var(--fg);
+}
+
 .dim{
   margin-top:34px;
   font-size:13px;
@@ -98,6 +113,9 @@ input{
 <a class="node" href="mechanics.html">SYSTEM</a>
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
+
+<!-- subtle, “almost hidden” service entry -->
+<a class="node node--service" href="state.html">STATE MONITOR</a>
 
 <div class="dim">
   ACCESS STATUS: ACTIVE<span class="cursor">_</span>
