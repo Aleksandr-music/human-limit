@@ -95,3 +95,43 @@ input, textarea{
   -webkit-user-select:text;
   user-select:text;
 }
+/* ===== GLOBAL PAGE BANNER (background) ===== */
+/* Set per-page: --banner: url("images/world.jpg"); */
+
+:root{
+  --banner: none;          /* default: no banner */
+  --banner-opacity: 0.14;  /* adjust globally */
+  --banner-blur: 0px;      /* optional */
+  --banner-dim: 0.55;      /* dark overlay strength */
+}
+
+body{
+  position:relative; /* needed for overlay stacking */
+}
+
+/* banner image layer */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+
+  background-image: var(--banner);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  opacity: var(--banner-opacity);
+  filter: blur(var(--banner-blur));
+  transform: scale(1.02); /* prevent edge gaps when blurred */
+}
+
+/* dark overlay layer (keeps "terminal" readable) */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+
+  background: rgba(0,0,0,var(--banner-dim));
+}
