@@ -39,12 +39,18 @@ body{
 .dim{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
-a{
+/* link styled as system node */
+.node{
+  display:inline-block;
   color:var(--fg);
   text-decoration:none;
 }
-a:hover{
+.node:hover{
   text-decoration:underline;
+}
+.node::before{
+  content: "> ";
+  color: var(--fg);
 }
 
 /* стабильный системный курсор */
@@ -80,7 +86,7 @@ a:hover{
 
 <div class="spacer-2"></div>
 
-<a href="system.html">RETURN TO SYSTEM</a>
+<a class="node" href="system.html">RETURN TO SYSTEM</a>
 
 </body>
 </html>
