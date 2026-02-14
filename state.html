@@ -24,6 +24,9 @@ body{
   font-family:"JetBrains Mono", monospace;
   padding:64px 48px;
   line-height:26px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .title{
@@ -33,7 +36,6 @@ body{
   margin-bottom:18px;
 }
 
-/* управляемые интервалы */
 .spacer-1{ height:18px; }
 .spacer-2{ height:28px; }
 .spacer-3{ height:16px; }
@@ -41,21 +43,17 @@ body{
 .dim{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
-/* link styled as system node */
 .node{
   display:inline-block;
   color:var(--fg);
   text-decoration:none;
 }
-.node:hover{
-  text-decoration:underline;
-}
+.node:hover{ text-decoration:underline; }
 .node::before{
   content: "> ";
   color: var(--fg);
 }
 
-/* optional trace line */
 .trace{
   color:var(--dim2);
   font-size:13px;
@@ -63,7 +61,6 @@ body{
   min-height:18px;
 }
 
-/* стабильный системный курсор */
 .cursor{
   display:inline-block;
   width:10px;
@@ -95,14 +92,13 @@ body{
 <div class="warn">Observation does not imply permission.</div>
 
 <div class="spacer-3"></div>
-<div id="trace" class="trace"></div>
+<div id="trace" class="trace" aria-hidden="true"></div>
 
 <div class="spacer-2"></div>
 
 <a class="node" href="system.html">RETURN TO SYSTEM</a>
 
 <script>
-/* Rare, non-intrusive hint injection (~22% chance) */
 (function(){
   const el = document.getElementById("trace");
   if(!el) return;
