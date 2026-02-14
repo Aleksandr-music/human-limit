@@ -7,54 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 
 <style>
-:root{
-  --bg:#0b0b0b;
-  --fg:#cfcfcf;
-  --dim:#8e8e8e;
-  --dim2:#5f5f5f;
-}
-
-html,body{height:100%;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--dim);
-  font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
-  line-height:26px;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-
-  user-select:none;
-}
-
+/* page-specific */
 .title{
   color:var(--fg);
   font-weight:600;
   font-size:16px;
   margin-bottom:18px;
-}
-
-.spacer-1{ height:18px; }
-.spacer-2{ height:28px; }
-.spacer-3{ height:16px; }
-
-.dim{ color:var(--dim2); }
-.warn{ color:var(--fg); }
-
-.node{
-  display:inline-block;
-  color:var(--fg);
-  text-decoration:none;
-}
-.node:hover{ text-decoration:underline; }
-.node::before{
-  content: "> ";
-  color: var(--fg);
 }
 
 .trace{
@@ -63,19 +24,6 @@ body{
   letter-spacing:0.2px;
   min-height:18px;
   display:block;
-}
-
-.cursor{
-  display:inline-block;
-  width:10px;
-  margin-left:6px;
-  animation:blink 1s infinite;
-}
-
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
 }
 </style>
 </head>
@@ -86,9 +34,9 @@ body{
   SYSTEM STATE MONITOR<span class="cursor">_</span>
 </div>
 
-<div class="dim">ENVIRONMENT: STABLE</div>
-<div class="dim">DRIFT LEVEL: WITHIN TOLERANCE</div>
-<div class="dim">ANOMALIES: NOT DISCLOSED</div>
+<div class="dim2">ENVIRONMENT: STABLE</div>
+<div class="dim2">DRIFT LEVEL: WITHIN TOLERANCE</div>
+<div class="dim2">ANOMALIES: NOT DISCLOSED</div>
 
 <div class="spacer-1"></div>
 
@@ -106,10 +54,6 @@ body{
 (function(){
   const el = document.getElementById("trace");
   if(!el) return;
-
-  // keep hidden unless actually used
-  el.setAttribute("aria-hidden","true");
-
   if(Math.random() >= 0.22) return;
 
   const hints = [
@@ -121,7 +65,6 @@ body{
   ];
 
   el.textContent = "> " + hints[Math.floor(Math.random() * hints.length)];
-  el.setAttribute("aria-hidden","false");
 })();
 </script>
 
