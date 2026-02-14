@@ -1,315 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>System Interface</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System Interface</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 
-<style>
-:root{
-  --bg:#0b0b0b;
-  --fg:#cfcfcf;
-  --dim:#8e8e8e;
-}
+  <style>
+    /* page-specific layout only (system.html) */
 
-html,body{height:100%;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
-}
+    /* top title */
+    .title{
+      font-size:18px;
+      margin-bottom:26px;
+    }
 
-.title{
-  font-weight:600;
-  font-size:18px;
-  margin-bottom:26px;
-}
+    /* menu nodes should be block on this page */
+    .menu .node{
+      display:block;
+      line-height:30px;
+      font-size:16px;
+    }
 
-.node{
-  display:block;
-  font-size:16px;
-  line-height:30px;
-  color:var(--fg);
-  text-decoration:none;
-}
+    /* service link: subtle */
+    .menu .node--service{
+      margin-top:10px;
+      font-size:14px;
+      color:var(--dim);
+    }
+    .menu .node--service::before{ color:var(--dim); }
+    .menu .node--service:hover{ color:var(--fg); }
 
-.node:hover{
-  text-decoration:underline;
-}
+    /* status line */
+    .status{
+      margin-top:34px;
+      font-size:13px;
+    }
 
-.node::before{
-  content: "> ";
-  color: var(--fg);
-}
+    /* command line */
+    .cmdline{
+      margin-top:28px;
+      font-size:14px;
+    }
 
-/* service link (looks like system leftover, not a main node) */
-.node--service{
-  margin-top:10px;
-  font-size:14px;
-  color:var(--dim);
-}
-.node--service::before{
-  content: "> ";
-  color: var(--dim);
-}
-.node--service:hover{
-  text-decoration:underline;
-  color:var(--fg);
-}
+    .cmdline input{
+      background:none;
+      border:none;
+      outline:none;
+      color:var(--fg);
+      font-family:"JetBrains Mono", monospace;
+      font-size:14px;
+      width:min(420px, 80vw);
+    }
 
-.dim{
-  margin-top:34px;
-  font-size:13px;
-  color:var(--dim);
-}
+    /* output */
+    .output{
+      margin-top:18px;
+      font-size:14px;
+      color:var(--dim);
+      min-height:18px;
+      white-space:pre-line;
+    }
 
-.cursor{
-  display:inline-block;
-  margin-left:6px;
-  animation:blink 1s infinite;
-}
-
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
-
-.cmdline{
-  margin-top:28px;
-  font-size:14px;
-}
-
-input{
-  background:none;
-  border:none;
-  outline:none;
-  color:var(--fg);
-  font-family:"JetBrains Mono", monospace;
-  font-size:14px;
-  width:320px;
-}
-
-.output{
-  margin-top:18px;
-  font-size:14px;
-  color:var(--dim);
-  min-height:18px;
-  white-space:pre-line;
-}
-</style>
+    /* keep cursor aligned */
+    .cursor{
+      margin-left:6px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
+  <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
 
-<a class="node" href="world.html">WORLD</a>
-<a class="node" href="mechanics.html">SYSTEM</a>
-<a class="node" href="subjects.html">SUBJECTS</a>
-<a class="node" href="archive.html">ARCHIVE</a>
+  <nav class="menu" aria-label="System nodes">
+    <a class="node" href="world.html">WORLD</a>
+    <a class="node" href="mechanics.html">SYSTEM</a>
+    <a class="node" href="subjects.html">SUBJECTS</a>
+    <a class="node" href="archive.html">ARCHIVE</a>
 
-<!-- subtle, “almost hidden” service entry -->
-<a class="node node--service" href="state.html">STATE MONITOR</a>
+    <!-- subtle service entry -->
+    <a class="node node--service" href="state.html">STATE MONITOR</a>
+  </nav>
 
-<div class="dim">
-  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
-</div>
+  <div class="status dim">
+    ACCESS STATUS: ACTIVE<span class="cursor">_</span>
+  </div>
 
-<div class="cmdline">
-  > <input id="cmd" autofocus placeholder="">
-</div>
+  <div class="cmdline">
+    > <input
+        id="cmd"
+        autofocus
+        inputmode="text"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Command input"
+      >
+  </div>
 
-<div id="output" class="output"></div>
+  <div id="output" class="output"></div>
 
-<script>
-const input = document.getElementById("cmd");
-const output = document.getElementById("output");
+  <script>
+    const input = document.getElementById("cmd");
+    const output = document.getElementById("output");
 
-function focusCmd(){
-  // стабильно возвращает курсор (особенно на мобиле)
-  setTimeout(() => { try{ input.focus(); }catch(e){} }, 0);
-}
-
-function respond(text){
-  output.textContent = "> " + text;
-  focusCmd();
-}
-
-function respondMulti(lines){
-  output.textContent = "> " + lines.join("\n> ");
-  focusCmd();
-}
-
-function nav(node){
-  const map = {
-    world:   {msg:"ACCESSING WORLD NODE",    url:"world.html"},
-    system:  {msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
-    subjects:{msg:"ACCESSING SUBJECTS NODE", url:"subjects.html"},
-    archive: {msg:"ACCESSING ARCHIVE NODE",  url:"archive.html"},
-
-    // service node (can be typed too)
-    state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"}
-  };
-  return map[node] || null;
-}
-
-function restricted(cmd){
-  if(cmd === "help"){
-    respondMulti([
-      "LIMITED PROTOCOL AVAILABLE",
-      "NAV: world | system | subjects | archive",
-      "QUERY: subjects:list | subject <key>",
-      "UTILITY: clear"
-    ]);
-    return "__handled__";
-  }
-
-  if(cmd === "override"){
-    respondMulti([
-      "OVERRIDE REJECTED",
-      "AUDIT LOG ENTRY CREATED",
-      "DEVIATION FLAGGED"
-    ]);
-    return "__handled__";
-  }
-
-  if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
-  return null;
-}
-
-const SUBJECTS = {
-  alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED"},
-  kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED"},
-  french: {id:"S-004", status:"ACTIVE",   access:"LIMITED"},
-  mentor: {id:"S-002", status:"REDACTED", access:"DENIED"}
-};
-
-/* HIDDEN OBSERVATION MAP */
-const OBSERVE = {
-  alex:   "OBSERVATION: ACTIVE / CHANNELS: MULTIPLE",
-  kiwi:   "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
-  french: "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
-  mentor: "OBSERVATION: DISALLOWED / REQUEST LOGGED"
-};
-
-function subjectLookup(key){
-  const k = (key || "").toLowerCase().trim();
-  const rec = SUBJECTS[k];
-  if(!rec) return null;
-
-  if(k === "mentor"){
-    return [
-      "RECORD FOUND",
-      "SUBJECT: MENTOR",
-      "ID: " + rec.id,
-      "STATUS: " + rec.status,
-      "ACCESS: " + rec.access,
-      "DETAILS: [REDACTED]"
-    ];
-  }
-
-  return [
-    "RECORD FOUND",
-    "SUBJECT: " + k.toUpperCase(),
-    "ID: " + rec.id,
-    "STATUS: " + rec.status,
-    "ACCESS: " + rec.access
-  ];
-}
-
-input.addEventListener("keydown", (e) => {
-  if(e.key !== "Enter") return;
-
-  const raw = input.value.trim();
-  const value = raw.toLowerCase();
-  input.value = "";
-
-  if(!value){
-    respond("AWAITING INPUT");
-    return;
-  }
-
-  if(value === "clear"){
-    output.textContent = "";
-    focusCmd();
-    return;
-  }
-
-  const r = restricted(value);
-  if(r){
-    if(r !== "__handled__") respond(r);
-    return;
-  }
-
-  /* HIDDEN STATUS COMMAND */
-  if(value === "drift"){
-    respondMulti([
-      "DRIFT STATUS",
-      "LEVEL: WITHIN TOLERANCE",
-      "OBSERVABILITY: LIMITED",
-      "DISCLOSURE: NOT REQUIRED"
-    ]);
-    return;
-  }
-
-  /* HIDDEN OBSERVATION COMMAND */
-  if(value === "observe"){
-    respondMulti([
-      "OBSERVATION PROTOCOL",
-      "FORMAT: observe <subject>",
-      "DISCLOSURE: MINIMAL"
-    ]);
-    return;
-  }
-
-  if(value.startsWith("observe ")){
-    const key = value.slice("observe ".length).trim();
-    const msg = OBSERVE[key] || "OBSERVATION: NO TARGET FOUND";
-    respond(msg);
-    return;
-  }
-
-  if(value === "subjects:list" || value === "subject:list"){
-    respondMulti([
-      "SUBJECT INDEX AVAILABLE",
-      "QUERY FORMAT: subject <key>",
-      "KNOWN KEYS: alex, mentor, kiwi, french"
-    ]);
-    return;
-  }
-
-  if(value.startsWith("subject ")){
-    const key = value.slice("subject ".length).trim();
-    if(!key){
-      respond("SUBJECT KEY REQUIRED");
-      return;
+    function focusCmd(){
+      setTimeout(() => { try{ input.focus(); }catch(e){} }, 0);
     }
-    const lines = subjectLookup(key);
-    if(lines){
-      respondMulti(lines);
-    }else{
-      respond("NO RECORD FOUND");
+
+    function respond(text){
+      output.textContent = "> " + text;
+      focusCmd();
     }
-    return;
-  }
 
-  // Navigation (включая state как вводимую команду)
-  const res = nav(value);
-  if(res){
-    respond(res.msg);
-    setTimeout(() => { window.location.href = res.url; }, 400);
-    return;
-  }
+    function respondMulti(lines){
+      output.textContent = "> " + lines.join("\n> ");
+      focusCmd();
+    }
 
-  respond("COMMAND NOT RECOGNIZED");
-});
-</script>
+    function nav(node){
+      const map = {
+        world:   {msg:"ACCESSING WORLD NODE",    url:"world.html"},
+        system:  {msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
+        subjects:{msg:"ACCESSING SUBJECTS NODE", url:"subjects.html"},
+        archive: {msg:"ACCESSING ARCHIVE NODE",  url:"archive.html"},
+        state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"}
+      };
+      return map[node] || null;
+    }
+
+    function restricted(cmd){
+      if(cmd === "help"){
+        respondMulti([
+          "LIMITED PROTOCOL AVAILABLE",
+          "NAV: world | system | subjects | archive",
+          "QUERY: subjects:list | subject <key>",
+          "UTILITY: clear"
+        ]);
+        return "__handled__";
+      }
+
+      if(cmd === "override"){
+        respondMulti([
+          "OVERRIDE REJECTED",
+          "AUDIT LOG ENTRY CREATED",
+          "DEVIATION FLAGGED"
+        ]);
+        return "__handled__";
+      }
+
+      if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
+      return null;
+    }
+
+    const SUBJECTS = {
+      alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED"},
+      kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED"},
+      french: {id:"S-004", status:"ACTIVE",   access:"LIMITED"},
+      mentor: {id:"S-002", status:"REDACTED", access:"DENIED"}
+    };
+
+    const OBSERVE = {
+      alex:   "OBSERVATION: ACTIVE / CHANNELS: MULTIPLE",
+      kiwi:   "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
+      french: "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
+      mentor: "OBSERVATION: DISALLOWED / REQUEST LOGGED"
+    };
+
+    function subjectLookup(key){
+      const k = (key || "").toLowerCase().trim();
+      const rec = SUBJECTS[k];
+      if(!rec) return null;
+
+      if(k === "mentor"){
+        return [
+          "RECORD FOUND",
+          "SUBJECT: MENTOR",
+          "ID: " + rec.id,
+          "STATUS: " + rec.status,
+          "ACCESS: " + rec.access,
+          "DETAILS: [REDACTED]"
+        ];
+      }
+
+      return [
+        "RECORD FOUND",
+        "SUBJECT: " + k.toUpperCase(),
+        "ID: " + rec.id,
+        "STATUS: " + rec.status,
+        "ACCESS: " + rec.access
+      ];
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if(e.key !== "Enter") return;
+
+      const raw = input.value.trim();
+      const value = raw.toLowerCase();
+      input.value = "";
+
+      if(!value){
+        respond("AWAITING INPUT");
+        return;
+      }
+
+      if(value === "clear"){
+        output.textContent = "";
+        focusCmd();
+        return;
+      }
+
+      const r = restricted(value);
+      if(r){
+        if(r !== "__handled__") respond(r);
+        return;
+      }
+
+      if(value === "drift"){
+        respondMulti([
+          "DRIFT STATUS",
+          "LEVEL: WITHIN TOLERANCE",
+          "OBSERVABILITY: LIMITED",
+          "DISCLOSURE: NOT REQUIRED"
+        ]);
+        return;
+      }
+
+      if(value === "observe"){
+        respondMulti([
+          "OBSERVATION PROTOCOL",
+          "FORMAT: observe <subject>",
+          "DISCLOSURE: MINIMAL"
+        ]);
+        return;
+      }
+
+      if(value.startsWith("observe ")){
+        const key = value.slice("observe ".length).trim();
+        const msg = OBSERVE[key] || "OBSERVATION: NO TARGET FOUND";
+        respond(msg);
+        return;
+      }
+
+      if(value === "subjects:list" || value === "subject:list"){
+        respondMulti([
+          "SUBJECT INDEX AVAILABLE",
+          "QUERY FORMAT: subject <key>",
+          "KNOWN KEYS: alex, mentor, kiwi, french"
+        ]);
+        return;
+      }
+
+      if(value.startsWith("subject ")){
+        const key = value.slice("subject ".length).trim();
+        if(!key){
+          respond("SUBJECT KEY REQUIRED");
+          return;
+        }
+        const lines = subjectLookup(key);
+        if(lines){
+          respondMulti(lines);
+        }else{
+          respond("NO RECORD FOUND");
+        }
+        return;
+      }
+
+      const res = nav(value);
+      if(res){
+        respond(res.msg);
+        setTimeout(() => { window.location.href = res.url; }, 400);
+        return;
+      }
+
+      respond("COMMAND NOT RECOGNIZED");
+    });
+
+    // keep focus on load (mobile-friendly)
+    window.addEventListener("load", focusCmd);
+  </script>
 
 </body>
 </html>
