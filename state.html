@@ -35,11 +35,12 @@ body{
 /* управляемые интервалы */
 .spacer-1{ height:18px; }
 .spacer-2{ height:28px; }
+.spacer-3{ height:16px; }
 
 .dim{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
-/* link styled as system node */
+/* link styled like a system node */
 .node{
   display:inline-block;
   color:var(--fg);
@@ -51,6 +52,13 @@ body{
 .node::before{
   content: "> ";
   color: var(--fg);
+}
+
+/* subtle trace line (hidden until injected) */
+.trace{
+  color:var(--dim2);
+  font-size:13px;
+  letter-spacing:0.2px;
 }
 
 /* стабильный системный курсор */
@@ -84,9 +92,37 @@ body{
 <div class="warn">Certain deviations are not visible to subjects.</div>
 <div class="warn">Observation does not imply permission.</div>
 
+<!-- optional hidden hint slot -->
+<div class="spacer-3"></div>
+<div id="trace" class="trace" aria-hidden="true"></div>
+
 <div class="spacer-2"></div>
 
 <a class="node" href="system.html">RETURN TO SYSTEM</a>
+
+<script>
+/*
+  Rare, non-intrusive hint injection.
+  No flicker, no animation, no extra UI — just a trace line sometimes.
+*/
+(function(){
+  const el = document.getElementById("trace");
+  if(!el) return;
+
+  // ~22% chance
+  if(Math.random() >= 0.22) return;
+
+  const hints = [
+    "TRACE: drift",
+    "TRACE: observe",
+    "TRACE: state",
+    "TRACE: disclosure withheld",
+    "TRACE: audit pending"
+  ];
+
+  el.textContent = "> " + hints[Math.floor(Math.random() * hints.length)];
+})();
+</script>
 
 </body>
 </html>
