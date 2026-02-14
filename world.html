@@ -1,43 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>World</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --bg:#0b0b0b;
-  --fg:#cfcfcf;
-  --dim:#8e8e8e;
-}
+  <link rel="stylesheet" href="styles.css">
 
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
-}
-
-p{
-  font-size:15px;
-  line-height:26px;
-  max-width:720px;
-}
-</style>
+  <style>
+    /* page-specific only */
+    .copy{
+      font-size:15px;
+      line-height:26px;
+      max-width:720px;
+      color:var(--dim);
+      margin:0;
+      white-space:pre-line;
+    }
+  </style>
 </head>
 
 <body>
 
-<p>
-Reality is not defined by perception.  
-Structures exist independent of recognition.  
+  <div class="title">WORLD<span class="cursor">_</span></div>
+
+  <div class="copy">
+Reality is not defined by perception.
+Structures exist independent of recognition.
 Limits apply regardless of awareness.
-</p>
+  </div>
+
+  <div class="spacer-2"></div>
+
+  <a class="node" href="system.html">RETURN TO SYSTEM</a>
 
 </body>
 </html>
