@@ -1,33 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Subjects</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subjects</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 
-  <link rel="stylesheet" href="styles.css">
+<style>
+.block{
+  margin:0;
+  font-size:14px;
+  line-height:26px;
+  color:var(--dim);
+  white-space:pre-line;
+}
 
-  <style>
-    /* page-specific only */
-    .block{
-      margin:0;
-      font-size:14px;
-      line-height:26px;
-      color:var(--dim);
-      white-space:pre-line;
-    }
-  </style>
+.cmd{
+  color:var(--fg);
+  cursor:pointer;
+  user-select:none;
+}
+.cmd:hover{
+  text-decoration:underline;
+}
+.cmd::before{
+  content:"> ";
+  color:var(--fg);
+}
+.hint{
+  margin-top:10px;
+  color:var(--dim2);
+  font-size:13px;
+  min-height:18px;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="title">SUBJECT DATABASE<span class="cursor">_</span></div>
+<div class="title">SUBJECT DATABASE<span class="cursor">_</span></div>
 
-  <div class="block">INDEX STATUS: PARTIAL
+<div class="block">INDEX STATUS: PARTIAL
 ACCESS LEVEL: LIMITED
 
 S-001  ALEX    ACTIVE    LIMITED
@@ -35,16 +52,48 @@ S-002  MENTOR  REDACTED  DENIED
 S-003  KIWI    ACTIVE    LIMITED
 S-004  FRENCH  ACTIVE    LIMITED</div>
 
-  <div class="spacer-1"></div>
+<div class="spacer-1"></div>
 
-  <div class="block">QUERY VIA TERMINAL
-subjects:list
-subject alex
-subject mentor</div>
+<div class="block">QUERY VIA TERMINAL</div>
+<div class="cmd" data-cmd="subjects:list">subjects:list</div>
+<div class="cmd" data-cmd="subject alex">subject alex</div>
+<div class="cmd" data-cmd="subject mentor">subject mentor</div>
 
-  <div class="spacer-2"></div>
+<div id="hint" class="hint"></div>
 
-  <a class="node" href="system.html">RETURN TO SYSTEM</a>
+<div class="spacer-2"></div>
+
+<a class="node" href="system.html">RETURN TO SYSTEM</a>
+
+<script>
+(function(){
+  const hint = document.getElementById("hint");
+  function say(t){ hint.textContent = t ? ("> " + t) : ""; }
+
+  async function copy(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      say("COPIED: " + text);
+    }catch(e){
+      // fallback: selection
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try{ document.execCommand("copy"); say("COPIED: " + text); }
+      catch(_){ say("COPY FAILED"); }
+      document.body.removeChild(ta);
+    }
+    setTimeout(() => say(""), 1200);
+  }
+
+  document.querySelectorAll(".cmd").forEach(el => {
+    el.addEventListener("click", () => copy(el.dataset.cmd || ""));
+  });
+})();
+</script>
 
 </body>
 </html>
