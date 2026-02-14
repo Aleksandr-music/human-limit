@@ -23,6 +23,7 @@ body{
 /* убирает синий tap-highlight на Android / mobile */
 *{
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;   /* ← важная защита от layout-сдвигов */
 }
 
 /* text tones */
@@ -42,7 +43,7 @@ body{
   text-decoration:underline;
 }
 
-/* предотвращает “скачок” текста при hover */
+/* стабильный префикс */
 .node::before{
   content: "> ";
   color:var(--fg);
@@ -67,8 +68,9 @@ body{
 .spacer-2{ height:28px; }
 .spacer-3{ height:16px; }
 
-/* полезно для всех “системных” страниц */
+/* общий стиль заголовков системы */
 .title{
   font-weight:600;
   letter-spacing:0.3px;
+  color:var(--fg);          /* ← исключает случайные переопределения */
 }
