@@ -128,7 +128,7 @@ function nav(node){
     subjects:{msg:"ACCESSING SUBJECTS NODE", url:"subjects.html"},
     archive: {msg:"ACCESSING ARCHIVE NODE",  url:"archive.html"},
 
-    /* HIDDEN NODE (not listed in help) */
+    /* HIDDEN NODE */
     state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"}
   };
   return map[node] || null;
@@ -201,6 +201,17 @@ input.addEventListener("keydown", (e) => {
   const r = restricted(value);
   if(r){
     if(r !== "__handled__") respond(r);
+    return;
+  }
+
+  /* HIDDEN STATUS COMMAND */
+  if(value === "drift"){
+    respondMulti([
+      "DRIFT STATUS",
+      "LEVEL: WITHIN TOLERANCE",
+      "OBSERVABILITY: LIMITED",
+      "DISCLOSURE: NOT REQUIRED"
+    ]);
     return;
   }
 
