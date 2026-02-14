@@ -15,24 +15,25 @@
   --dim:#8e8e8e;
 }
 
+html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:60px;
+  padding:64px 48px;
 }
 
 .title{
   font-weight:600;
-  font-size:16px;
-  margin-bottom:24px;
+  font-size:18px;
+  margin-bottom:26px;
 }
 
 .node{
   display:block;
-  font-size:15px;
-  line-height:28px;
+  font-size:16px;
+  line-height:30px;
   color:var(--fg);
   text-decoration:none;
 }
@@ -46,22 +47,16 @@ body{
   color: var(--fg);
 }
 
-.status{
-  margin-top:30px;
+.dim{
+  margin-top:34px;
   font-size:13px;
   color:var(--dim);
 }
 
 .cursor{
   display:inline-block;
-  width:10px;
   margin-left:6px;
-  color:var(--fg);
   animation:blink 1s infinite;
-}
-
-.cursor::before{
-  content: "_";
 }
 
 @keyframes blink{
@@ -90,7 +85,7 @@ input{
   font-size:14px;
   color:var(--dim);
   min-height:18px;
-  white-space:pre-line; /* allow multi-line output */
+  white-space:pre-line;
 }
 </style>
 </head>
@@ -104,12 +99,12 @@ input{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<div class="status">
-  ACCESS STATUS: ACTIVE <span class="cursor"></span>
+<div class="dim">
+  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
 </div>
 
 <div class="cmdline">
-  > <input id="cmd" autofocus>
+  > <input id="cmd" autofocus placeholder="">
 </div>
 
 <div id="output" class="output"></div>
@@ -126,28 +121,36 @@ function respondMulti(lines){
   output.textContent = "> " + lines.join("\n> ");
 }
 
-function route(cmd){
-  if(cmd === "world")    return { msg:"ACCESSING WORLD NODE",    url:"world.html" };
-  if(cmd === "system")   return { msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html" };
-  if(cmd === "subjects") return { msg:"ACCESSING SUBJECTS NODE", url:"subjects.html" };
-  if(cmd === "archive")  return { msg:"ACCESSING ARCHIVE NODE",  url:"archive.html" };
-  return null;
+function nav(node){
+  const map = {
+    world:   {msg:"ACCESSING WORLD NODE",   url:"world.html"},
+    system:  {msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html"},
+    subjects:{msg:"ACCESSING SUBJECTS NODE",url:"subjects.html"},
+    archive: {msg:"ACCESSING ARCHIVE NODE", url:"archive.html"}
+  };
+  return map[node] || null;
 }
 
 function restricted(cmd){
-  if(cmd === "help")     return "COMMAND ACCESS DENIED";
-  if(cmd === "exit")     return "NO EXIT PARAMETERS FOUND";
+  if(cmd === "help"){
+    respondMulti([
+      "LIMITED PROTOCOL AVAILABLE",
+      "NAV: world | system | subjects | archive",
+      "QUERY: subjects:list | subject <key>",
+      "UTILITY: clear"
+    ]);
+    return "__handled__";
+  }
+  if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
   if(cmd === "override") return "OVERRIDE REJECTED";
   return null;
 }
 
-/* Minimal subject index (keys only).
-   You can expand later without changing logic. */
 const SUBJECTS = {
-  alex:   { id:"S-001", status:"ACTIVE", access:"LIMITED" },
-  kiwi:   { id:"S-003", status:"ACTIVE", access:"LIMITED" },
-  french: { id:"S-004", status:"ACTIVE", access:"LIMITED" },
-  mentor: { id:"S-002", status:"REDACTED", access:"DENIED" }
+  alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED"},
+  kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED"},
+  french: {id:"S-004", status:"ACTIVE",   access:"LIMITED"},
+  mentor: {id:"S-002", status:"REDACTED", access:"DENIED"}
 };
 
 function subjectLookup(key){
@@ -155,7 +158,6 @@ function subjectLookup(key){
   const rec = SUBJECTS[k];
   if(!rec) return null;
 
-  // Special case: MENTOR always denied (ominous control)
   if(k === "mentor"){
     return [
       "RECORD FOUND",
@@ -188,30 +190,26 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // CLEAR (allowed)
   if(value === "clear"){
     output.textContent = "";
     return;
   }
 
-  // Restricted commands
   const r = restricted(value);
   if(r){
-    respond(r);
+    if(r !== "__handled__") respond(r);
     return;
   }
 
-  // Subjects list
   if(value === "subjects:list" || value === "subject:list"){
     respondMulti([
       "SUBJECT INDEX AVAILABLE",
-      "QUERY FORMAT: subject <name>",
+      "QUERY FORMAT: subject <key>",
       "KNOWN KEYS: alex, mentor, kiwi, french"
     ]);
     return;
   }
 
-  // Subject lookup
   if(value.startsWith("subject ")){
     const key = value.slice("subject ".length).trim();
     if(!key){
@@ -227,15 +225,13 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // Navigation
-  const res = route(value);
+  const res = nav(value);
   if(res){
     respond(res.msg);
     setTimeout(() => { window.location.href = res.url; }, 400);
     return;
   }
 
-  // Unknown
   respond("COMMAND NOT RECOGNIZED");
 });
 </script>
