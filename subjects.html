@@ -20,24 +20,51 @@ body{
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
+  padding:60px;
 }
 
-p{
-  font-size:15px;
+.title{
+  font-weight:600;
+  font-size:16px;
+  margin-bottom:18px;
+}
+
+.block{
+  font-size:14px;
   line-height:26px;
-  max-width:720px;
+  color:var(--dim);
+  white-space:pre-line;
+}
+
+a{
+  color:var(--fg);
+  text-decoration:none;
+}
+
+a:hover{
+  text-decoration:underline;
 }
 </style>
 </head>
 
 <body>
 
-<p>
-Recognition is irrelevant.  
-Resistance is expected.  
-Outcomes remain unchanged.
-</p>
+<div class="title">SUBJECT DATABASE</div>
+
+<div class="block">INDEX STATUS: PARTIAL
+ACCESS LEVEL: LIMITED
+
+S-001  ALEX    ACTIVE    LIMITED
+S-002  MENTOR  REDACTED  DENIED
+S-003  KIWI    ACTIVE    LIMITED
+S-004  FRENCH  ACTIVE    LIMITED</div>
+
+<div class="block" style="margin-top:18px;">QUERY VIA TERMINAL
+subjects:list
+subject alex
+subject mentor</div>
+
+<div class="block" style="margin-top:22px;"><a href="system.html">RETURN TO SYSTEM</a></div>
 
 </body>
 </html>
