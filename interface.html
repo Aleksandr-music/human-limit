@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Initializing</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0b0b0b;
+  --fg:#cfcfcf;
+  --dim:#8e8e8e;
+}
+
+html,body{height:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:"JetBrains Mono", monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+p{
+  font-weight:300;
+  font-size:16px;
+  color:var(--fg);
+}
+</style>
+
+<script>
+setTimeout(() => {
+  window.location.href = "system.html";
+}, 1600);
+</script>
+</head>
+
+<body>
+  <p>Accessing world parameters…</p>
+</body>
+</html>
