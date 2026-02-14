@@ -32,6 +32,10 @@ body{
   margin-bottom:18px;
 }
 
+/* semantic spacing instead of <br> */
+.spacer-1{ height:18px; }
+.spacer-2{ height:28px; }
+
 .dim{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
@@ -39,27 +43,43 @@ a{
   color:var(--fg);
   text-decoration:none;
 }
-
 a:hover{
   text-decoration:underline;
+}
+
+/* stable cursor */
+.cursor{
+  display:inline-block;
+  width:10px;
+  margin-left:6px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  0%{opacity:0;}
+  50%{opacity:1;}
+  100%{opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
-<div class="title">SYSTEM STATE MONITOR</div>
+<div class="title">
+  SYSTEM STATE MONITOR<span class="cursor">_</span>
+</div>
 
 <div class="dim">ENVIRONMENT: STABLE</div>
 <div class="dim">DRIFT LEVEL: WITHIN TOLERANCE</div>
 <div class="dim">ANOMALIES: NOT DISCLOSED</div>
 
-<br>
+<div class="spacer-1"></div>
 
 <div class="warn">Certain deviations are not visible to subjects.</div>
 <div class="warn">Observation does not imply permission.</div>
 
-<br>
+<div class="spacer-2"></div>
+
 <a href="system.html">RETURN TO SYSTEM</a>
 
 </body>
