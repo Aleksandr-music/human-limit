@@ -15,24 +15,25 @@
   --dim:#8e8e8e;
 }
 
+html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:60px;
+  padding:64px 48px;
 }
 
 .title{
   font-weight:600;
-  font-size:16px;
-  margin-bottom:24px;
+  font-size:18px;
+  margin-bottom:26px;
 }
 
 .node{
   display:block;
-  font-size:15px;
-  line-height:28px;
+  font-size:16px;
+  line-height:30px;
   color:var(--fg);
   text-decoration:none;
 }
@@ -46,22 +47,16 @@ body{
   color: var(--fg);
 }
 
-.status{
-  margin-top:30px;
+.dim{
+  margin-top:34px;
   font-size:13px;
   color:var(--dim);
 }
 
 .cursor{
   display:inline-block;
-  width:10px;
   margin-left:6px;
-  color:var(--fg);
   animation:blink 1s infinite;
-}
-
-.cursor::before{
-  content: "_";
 }
 
 @keyframes blink{
@@ -82,7 +77,7 @@ input{
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
   font-size:14px;
-  width:240px;
+  width:320px;
 }
 
 .output{
@@ -90,6 +85,7 @@ input{
   font-size:14px;
   color:var(--dim);
   min-height:18px;
+  white-space:pre-line;
 }
 </style>
 </head>
@@ -103,12 +99,12 @@ input{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<div class="status">
-  ACCESS STATUS: ACTIVE <span class="cursor"></span>
+<div class="dim">
+  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
 </div>
 
 <div class="cmdline">
-  > <input id="cmd" autofocus>
+  > <input id="cmd" autofocus placeholder="">
 </div>
 
 <div id="output" class="output"></div>
@@ -121,25 +117,53 @@ function respond(text){
   output.textContent = "> " + text;
 }
 
-function route(cmd){
-  if(cmd === "world")    return { msg:"ACCESSING WORLD NODE",    url:"world.html" };
-  if(cmd === "system")   return { msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html" };
-  if(cmd === "subjects") return { msg:"ACCESSING SUBJECTS NODE", url:"subjects.html" };
-  if(cmd === "archive")  return { msg:"ACCESSING ARCHIVE NODE",  url:"archive.html" };
-  return null;
+function respondMulti(lines){
+  output.textContent = "> " + lines.join("\n> ");
+}
+
+function nav(node){
+  const map = {
+    world:   {msg:"ACCESSING WORLD NODE",   url:"world.html"},
+    system:  {msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html"},
+    subjects:{msg:"ACCESSING SUBJECTS NODE",url:"subjects.html"},
+    archive: {msg:"ACCESSING ARCHIVE NODE", url:"archive.html"}
+  };
+  return map[node] || null;
 }
 
 function restricted(cmd){
-  if(cmd === "help")     return "COMMAND ACCESS DENIED";
-  if(cmd === "exit")     return "NO EXIT PARAMETERS FOUND";
+  if(cmd === "help") return "COMMAND ACCESS DENIED";
+  if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
   if(cmd === "override") return "OVERRIDE REJECTED";
   return null;
+}
+
+const SUBJECTS = {
+  alex:   {id:"S-001", status:"ACTIVE", access:"LIMITED"},
+  mentor: {id:"S-002", status:"ACTIVE", access:"RESTRICTED"},
+  kiwi:   {id:"S-003", status:"ACTIVE", access:"LIMITED"},
+  french: {id:"S-004", status:"ACTIVE", access:"LIMITED"}
+};
+
+function subjectLookup(key){
+  const k = key.toLowerCase();
+  const rec = SUBJECTS[k];
+  if(!rec) return null;
+
+  return [
+    "RECORD FOUND",
+    "SUBJECT: " + k.toUpperCase(),
+    "ID: " + rec.id,
+    "STATUS: " + rec.status,
+    "ACCESS: " + rec.access
+  ];
 }
 
 input.addEventListener("keydown", (e) => {
   if(e.key !== "Enter") return;
 
-  const value = input.value.trim().toLowerCase();
+  const raw = input.value.trim();
+  const value = raw.toLowerCase();
   input.value = "";
 
   if(!value){
@@ -147,7 +171,7 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // CLEAR (allowed): wipes output
+  // Allowed utility
   if(value === "clear"){
     output.textContent = "";
     return;
@@ -160,8 +184,34 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
+  // Subject list
+  if(value === "subjects:list" || value === "subject:list"){
+    respondMulti([
+      "SUBJECT INDEX AVAILABLE",
+      "QUERY FORMAT: subject <name>",
+      "KNOWN KEYS: alex, mentor, kiwi, french"
+    ]);
+    return;
+  }
+
+  // Subject lookup: "subject alex"
+  if(value.startsWith("subject ")){
+    const key = value.replace("subject ","").trim();
+    if(!key){
+      respond("SUBJECT KEY REQUIRED");
+      return;
+    }
+    const lines = subjectLookup(key);
+    if(lines){
+      respondMulti(lines);
+    }else{
+      respond("NO RECORD FOUND");
+    }
+    return;
+  }
+
   // Navigation commands
-  const res = route(value);
+  const res = nav(value);
   if(res){
     respond(res.msg);
     setTimeout(() => { window.location.href = res.url; }, 400);
