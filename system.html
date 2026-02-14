@@ -15,25 +15,24 @@
   --dim:#8e8e8e;
 }
 
-html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
+  padding:60px;
 }
 
 .title{
   font-weight:600;
-  font-size:18px;
-  margin-bottom:26px;
+  font-size:16px;
+  margin-bottom:24px;
 }
 
 .node{
   display:block;
-  font-size:16px;
-  line-height:30px;
+  font-size:15px;
+  line-height:28px;
   color:var(--fg);
   text-decoration:none;
 }
@@ -42,22 +41,48 @@ body{
   text-decoration:underline;
 }
 
-.dim{
-  margin-top:34px;
+.node::before{
+  content: "> ";
+  color: var(--fg);
+}
+
+.status{
+  margin-top:30px;
   font-size:13px;
   color:var(--dim);
 }
 
 .cursor{
   display:inline-block;
+  width:10px;
   margin-left:6px;
+  color:var(--fg);
   animation:blink 1s infinite;
+}
+
+.cursor::before{
+  content: "_";
 }
 
 @keyframes blink{
   0%{opacity:0;}
   50%{opacity:1;}
   100%{opacity:0;}
+}
+
+.cmdline{
+  margin-top:28px;
+  font-size:14px;
+}
+
+input{
+  background:none;
+  border:none;
+  outline:none;
+  color:var(--fg);
+  font-family:"JetBrains Mono", monospace;
+  font-size:14px;
+  width:240px;
 }
 </style>
 </head>
@@ -71,9 +96,31 @@ body{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<div class="dim">
-  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
+<div class="status">
+  ACCESS STATUS: ACTIVE <span class="cursor"></span>
 </div>
+
+<div class="cmdline">
+  > <input id="cmd" autofocus>
+</div>
+
+<script>
+const input = document.getElementById("cmd");
+
+input.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    const value = input.value.trim().toLowerCase();
+
+    if(value === "world") location.href = "world.html";
+    else if(value === "system") location.href = "mechanics.html";
+    else if(value === "subjects") location.href = "subjects.html";
+    else if(value === "archive") location.href = "archive.html";
+    else alert("COMMAND NOT RECOGNIZED");
+
+    input.value = "";
+  }
+});
+</script>
 
 </body>
 </html>
