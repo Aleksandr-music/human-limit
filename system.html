@@ -123,10 +123,13 @@ function respondMulti(lines){
 
 function nav(node){
   const map = {
-    world:   {msg:"ACCESSING WORLD NODE",   url:"world.html"},
-    system:  {msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html"},
-    subjects:{msg:"ACCESSING SUBJECTS NODE",url:"subjects.html"},
-    archive: {msg:"ACCESSING ARCHIVE NODE", url:"archive.html"}
+    world:   {msg:"ACCESSING WORLD NODE",    url:"world.html"},
+    system:  {msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
+    subjects:{msg:"ACCESSING SUBJECTS NODE", url:"subjects.html"},
+    archive: {msg:"ACCESSING ARCHIVE NODE",  url:"archive.html"},
+
+    /* HIDDEN NODE */
+    state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"}
   };
   return map[node] || null;
 }
