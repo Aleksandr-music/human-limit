@@ -5,7 +5,7 @@
   --dim2:#5f5f5f;
 }
 
-html,body{height:100%;}
+html,body{ height:100%; }
 
 body{
   margin:0;
@@ -20,6 +20,11 @@ body{
   text-rendering:optimizeLegibility;
 }
 
+/* убирает синий tap-highlight на Android / mobile */
+*{
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* text tones */
 .dim{ color:var(--dim); }
 .dim2{ color:var(--dim2); }
@@ -30,11 +35,17 @@ body{
   display:inline-block;
   color:var(--fg);
   text-decoration:none;
+  cursor:pointer;
 }
-.node:hover{ text-decoration:underline; }
+
+.node:hover{
+  text-decoration:underline;
+}
+
+/* предотвращает “скачок” текста при hover */
 .node::before{
   content: "> ";
-  color: var(--fg);
+  color:var(--fg);
 }
 
 /* blinking cursor */
@@ -44,6 +55,7 @@ body{
   margin-left:6px;
   animation:blink 1s infinite;
 }
+
 @keyframes blink{
   0%{opacity:0;}
   50%{opacity:1;}
@@ -54,3 +66,9 @@ body{
 .spacer-1{ height:18px; }
 .spacer-2{ height:28px; }
 .spacer-3{ height:16px; }
+
+/* полезно для всех “системных” страниц */
+.title{
+  font-weight:600;
+  letter-spacing:0.3px;
+}
