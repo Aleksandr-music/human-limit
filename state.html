@@ -16,6 +16,7 @@
   --dim2:#5f5f5f;
 }
 
+html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
@@ -40,7 +41,7 @@ body{
 .dim{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
-/* link styled like a system node */
+/* link styled as system node */
 .node{
   display:inline-block;
   color:var(--fg);
@@ -54,11 +55,12 @@ body{
   color: var(--fg);
 }
 
-/* subtle trace line (hidden until injected) */
+/* optional trace line */
 .trace{
   color:var(--dim2);
   font-size:13px;
   letter-spacing:0.2px;
+  min-height:18px;
 }
 
 /* стабильный системный курсор */
@@ -92,24 +94,18 @@ body{
 <div class="warn">Certain deviations are not visible to subjects.</div>
 <div class="warn">Observation does not imply permission.</div>
 
-<!-- optional hidden hint slot -->
 <div class="spacer-3"></div>
-<div id="trace" class="trace" aria-hidden="true"></div>
+<div id="trace" class="trace"></div>
 
 <div class="spacer-2"></div>
 
 <a class="node" href="system.html">RETURN TO SYSTEM</a>
 
 <script>
-/*
-  Rare, non-intrusive hint injection.
-  No flicker, no animation, no extra UI — just a trace line sometimes.
-*/
+/* Rare, non-intrusive hint injection (~22% chance) */
 (function(){
   const el = document.getElementById("trace");
   if(!el) return;
-
-  // ~22% chance
   if(Math.random() >= 0.22) return;
 
   const hints = [
