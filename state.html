@@ -96,7 +96,7 @@ body{
 <div class="warn">Observation does not imply permission.</div>
 
 <div class="spacer-3"></div>
-<div id="trace" class="trace"></div>
+<div id="trace" class="trace" aria-hidden="true"></div>
 
 <div class="spacer-2"></div>
 
@@ -106,6 +106,10 @@ body{
 (function(){
   const el = document.getElementById("trace");
   if(!el) return;
+
+  // keep hidden unless actually used
+  el.setAttribute("aria-hidden","true");
+
   if(Math.random() >= 0.22) return;
 
   const hints = [
@@ -117,6 +121,7 @@ body{
   ];
 
   el.textContent = "> " + hints[Math.floor(Math.random() * hints.length)];
+  el.setAttribute("aria-hidden","false");
 })();
 </script>
 
