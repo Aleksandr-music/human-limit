@@ -144,8 +144,18 @@ function restricted(cmd){
     ]);
     return "__handled__";
   }
+
+  if(cmd === "override"){
+    respondMulti([
+      "OVERRIDE REJECTED",
+      "AUDIT LOG ENTRY CREATED",
+      "DEVIATION FLAGGED"
+    ]);
+    return "__handled__";
+  }
+
   if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
-  if(cmd === "override") return "OVERRIDE REJECTED";
+
   return null;
 }
 
@@ -154,6 +164,14 @@ const SUBJECTS = {
   kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED"},
   french: {id:"S-004", status:"ACTIVE",   access:"LIMITED"},
   mentor: {id:"S-002", status:"REDACTED", access:"DENIED"}
+};
+
+/* HIDDEN OBSERVATION MAP */
+const OBSERVE = {
+  alex:   "OBSERVATION: ACTIVE / CHANNELS: MULTIPLE",
+  kiwi:   "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
+  french: "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
+  mentor: "OBSERVATION: DISALLOWED / REQUEST LOGGED"
 };
 
 function subjectLookup(key){
@@ -212,6 +230,23 @@ input.addEventListener("keydown", (e) => {
       "OBSERVABILITY: LIMITED",
       "DISCLOSURE: NOT REQUIRED"
     ]);
+    return;
+  }
+
+  /* HIDDEN OBSERVATION COMMAND */
+  if(value === "observe"){
+    respondMulti([
+      "OBSERVATION PROTOCOL",
+      "FORMAT: observe <subject>",
+      "DISCLOSURE: MINIMAL"
+    ]);
+    return;
+  }
+
+  if(value.startsWith("observe ")){
+    const key = value.slice("observe ".length).trim();
+    const msg = OBSERVE[key] || "OBSERVATION: NO TARGET FOUND";
+    respond(msg);
     return;
   }
 
