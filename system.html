@@ -47,21 +47,6 @@ body{
   color: var(--fg);
 }
 
-/* service link (looks like system leftover, not a main node) */
-.node--service{
-  margin-top:10px;
-  font-size:14px;
-  color:var(--dim);
-}
-.node--service::before{
-  content: "> ";
-  color: var(--dim);
-}
-.node--service:hover{
-  text-decoration:underline;
-  color:var(--fg);
-}
-
 .dim{
   margin-top:34px;
   font-size:13px;
@@ -114,9 +99,6 @@ input{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<!-- subtle, “almost hidden” service entry -->
-<a class="node node--service" href="state.html">STATE MONITOR</a>
-
 <div class="dim">
   ACCESS STATUS: ACTIVE<span class="cursor">_</span>
 </div>
@@ -131,12 +113,19 @@ input{
 const input = document.getElementById("cmd");
 const output = document.getElementById("output");
 
+function focusCmd(){
+  // helps mobile + after any command
+  setTimeout(() => input && input.focus(), 0);
+}
+
 function respond(text){
   output.textContent = "> " + text;
+  focusCmd();
 }
 
 function respondMulti(lines){
   output.textContent = "> " + lines.join("\n> ");
+  focusCmd();
 }
 
 function nav(node){
@@ -216,6 +205,14 @@ function subjectLookup(key){
   ];
 }
 
+// subtle hint generator (rare)
+function driftHint(){
+  // ~25% chance to show a trace line, otherwise keep original minimal output
+  return (Math.random() < 0.25)
+    ? ["DRIFT STATUS","LEVEL: WITHIN TOLERANCE","TRACE: state","DISCLOSURE: NOT REQUIRED"]
+    : ["DRIFT STATUS","LEVEL: WITHIN TOLERANCE","OBSERVABILITY: LIMITED","DISCLOSURE: NOT REQUIRED"];
+}
+
 input.addEventListener("keydown", (e) => {
   if(e.key !== "Enter") return;
 
@@ -230,6 +227,7 @@ input.addEventListener("keydown", (e) => {
 
   if(value === "clear"){
     output.textContent = "";
+    focusCmd();
     return;
   }
 
@@ -241,12 +239,7 @@ input.addEventListener("keydown", (e) => {
 
   /* HIDDEN STATUS COMMAND */
   if(value === "drift"){
-    respondMulti([
-      "DRIFT STATUS",
-      "LEVEL: WITHIN TOLERANCE",
-      "OBSERVABILITY: LIMITED",
-      "DISCLOSURE: NOT REQUIRED"
-    ]);
+    respondMulti(driftHint());
     return;
   }
 
