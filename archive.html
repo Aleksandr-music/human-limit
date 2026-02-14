@@ -1,40 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Archive</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archive</title>
 
-<style>
-body{
-  margin:0;
-  background:#0b0b0b;
-  color:#8e8e8e;
-  font-family:monospace;
-  padding:60px;
-  line-height:26px;
-}
-a{
-  color:#cfcfcf;
-  text-decoration:none;
-}
-a:hover{
-  text-decoration:underline;
-}
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .copy{
+      display:block;
+      font-size:15px;
+      line-height:26px;
+      max-width:720px;
+      color:var(--dim);
+      margin:0;
+    }
+  </style>
 </head>
 
 <body>
 
-<div>SYSTEM ARCHIVE</div>
-<br>
-<div>RECORD STATUS: PERSISTENT</div>
-<div>DELETION RIGHTS: NOT GRANTED</div>
-<br>
-<div>All subject states remain stored.</div>
-<div>Absence does not imply deletion.</div>
+  <div class="title">
+    SYSTEM ARCHIVE<span class="cursor">_</span>
+  </div>
 
-<br><br>
-<a href="system.html">RETURN TO SYSTEM</a>
+  <div class="dim2">RECORD STATUS: PERSISTENT</div>
+  <div class="dim2">DELETION RIGHTS: NOT GRANTED</div>
+
+  <div class="spacer-1"></div>
+
+  <div class="copy">
+    All subject states remain stored.<br>
+    Absence does not imply deletion.
+  </div>
+
+  <div class="spacer-2"></div>
+
+  <a class="node" href="system.html">RETURN TO SYSTEM</a>
 
 </body>
 </html>
