@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System</title>
 
-<style>
-body{
-  margin:0;
-  background:#0b0b0b;
-  color:#8e8e8e;
-  font-family:monospace;
-  padding:60px;
-  line-height:26px;
-}
-a{
-  color:#cfcfcf;
-  text-decoration:none;
-}
-a:hover{
-  text-decoration:underline;
-}
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* page-specific only */
+    .trace{
+      color:var(--dim2);
+      font-size:13px;
+      letter-spacing:0.2px;
+      display:block;
+    }
+  </style>
 </head>
 
 <body>
 
-<div>SYSTEM MECHANICS</div>
-<br>
-<div>STRUCTURE STATUS: STABLE</div>
-<div>MODIFICATION RIGHTS: NONE</div>
-<br>
-<div>All subjects operate within constraints.</div>
-<div>Awareness does not alter structure.</div>
-<div>Structure does not require consent.</div>
+  <div class="title">
+    SYSTEM MECHANICS<span class="cursor">_</span>
+  </div>
 
-<br><br>
-<a href="system.html">RETURN TO SYSTEM</a>
+  <div class="dim2">STRUCTURE STATUS: STABLE</div>
+  <div class="dim2">MODIFICATION RIGHTS: NONE</div>
+
+  <div class="spacer-1"></div>
+
+  <div class="warn">All subjects operate within constraints.</div>
+  <div class="warn">Awareness does not alter structure.</div>
+  <div class="warn">Structure does not require consent.</div>
+
+  <div class="spacer-2"></div>
+
+  <a class="node" href="system.html">RETURN TO SYSTEM</a>
 
 </body>
 </html>
