@@ -15,24 +15,25 @@
   --dim:#8e8e8e;
 }
 
+html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:60px;
+  padding:64px 48px;
 }
 
 .title{
   font-weight:600;
-  font-size:16px;
-  margin-bottom:24px;
+  font-size:18px;
+  margin-bottom:26px;
 }
 
 .node{
   display:block;
-  font-size:15px;
-  line-height:28px;
+  font-size:16px;
+  line-height:30px;
   color:var(--fg);
   text-decoration:none;
 }
@@ -41,27 +42,16 @@ body{
   text-decoration:underline;
 }
 
-.node::before{
-  content: "> ";
-  color: var(--fg);
-}
-
-.status{
-  margin-top:30px;
+.dim{
+  margin-top:34px;
   font-size:13px;
   color:var(--dim);
 }
 
 .cursor{
   display:inline-block;
-  width:10px;
   margin-left:6px;
-  color:var(--fg);
   animation:blink 1s infinite;
-}
-
-.cursor::before{
-  content: "_";
 }
 
 @keyframes blink{
@@ -81,8 +71,8 @@ body{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<div class="status">
-  ACCESS STATUS: ACTIVE <span class="cursor"></span>
+<div class="dim">
+  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
 </div>
 
 </body>
