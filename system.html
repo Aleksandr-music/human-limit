@@ -15,25 +15,24 @@
   --dim:#8e8e8e;
 }
 
-html,body{height:100%;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
   font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
+  padding:60px;
 }
 
 .title{
   font-weight:600;
-  font-size:18px;
-  margin-bottom:26px;
+  font-size:16px;
+  margin-bottom:24px;
 }
 
 .node{
   display:block;
-  font-size:16px;
-  line-height:30px;
+  font-size:15px;
+  line-height:28px;
   color:var(--fg);
   text-decoration:none;
 }
@@ -47,16 +46,22 @@ body{
   color: var(--fg);
 }
 
-.dim{
-  margin-top:34px;
+.status{
+  margin-top:30px;
   font-size:13px;
   color:var(--dim);
 }
 
 .cursor{
   display:inline-block;
+  width:10px;
   margin-left:6px;
+  color:var(--fg);
   animation:blink 1s infinite;
+}
+
+.cursor::before{
+  content: "_";
 }
 
 @keyframes blink{
@@ -85,7 +90,7 @@ input{
   font-size:14px;
   color:var(--dim);
   min-height:18px;
-  white-space:pre-line;
+  white-space:pre-line; /* allow multi-line output */
 }
 </style>
 </head>
@@ -99,12 +104,12 @@ input{
 <a class="node" href="subjects.html">SUBJECTS</a>
 <a class="node" href="archive.html">ARCHIVE</a>
 
-<div class="dim">
-  ACCESS STATUS: ACTIVE<span class="cursor">_</span>
+<div class="status">
+  ACCESS STATUS: ACTIVE <span class="cursor"></span>
 </div>
 
 <div class="cmdline">
-  > <input id="cmd" autofocus placeholder="">
+  > <input id="cmd" autofocus>
 </div>
 
 <div id="output" class="output"></div>
@@ -121,34 +126,46 @@ function respondMulti(lines){
   output.textContent = "> " + lines.join("\n> ");
 }
 
-function nav(node){
-  const map = {
-    world:   {msg:"ACCESSING WORLD NODE",   url:"world.html"},
-    system:  {msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html"},
-    subjects:{msg:"ACCESSING SUBJECTS NODE",url:"subjects.html"},
-    archive: {msg:"ACCESSING ARCHIVE NODE", url:"archive.html"}
-  };
-  return map[node] || null;
+function route(cmd){
+  if(cmd === "world")    return { msg:"ACCESSING WORLD NODE",    url:"world.html" };
+  if(cmd === "system")   return { msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html" };
+  if(cmd === "subjects") return { msg:"ACCESSING SUBJECTS NODE", url:"subjects.html" };
+  if(cmd === "archive")  return { msg:"ACCESSING ARCHIVE NODE",  url:"archive.html" };
+  return null;
 }
 
 function restricted(cmd){
-  if(cmd === "help") return "COMMAND ACCESS DENIED";
-  if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
+  if(cmd === "help")     return "COMMAND ACCESS DENIED";
+  if(cmd === "exit")     return "NO EXIT PARAMETERS FOUND";
   if(cmd === "override") return "OVERRIDE REJECTED";
   return null;
 }
 
+/* Minimal subject index (keys only).
+   You can expand later without changing logic. */
 const SUBJECTS = {
-  alex:   {id:"S-001", status:"ACTIVE", access:"LIMITED"},
-  mentor: {id:"S-002", status:"ACTIVE", access:"RESTRICTED"},
-  kiwi:   {id:"S-003", status:"ACTIVE", access:"LIMITED"},
-  french: {id:"S-004", status:"ACTIVE", access:"LIMITED"}
+  alex:   { id:"S-001", status:"ACTIVE", access:"LIMITED" },
+  kiwi:   { id:"S-003", status:"ACTIVE", access:"LIMITED" },
+  french: { id:"S-004", status:"ACTIVE", access:"LIMITED" },
+  mentor: { id:"S-002", status:"REDACTED", access:"DENIED" }
 };
 
 function subjectLookup(key){
-  const k = key.toLowerCase();
+  const k = (key || "").toLowerCase().trim();
   const rec = SUBJECTS[k];
   if(!rec) return null;
+
+  // Special case: MENTOR always denied (ominous control)
+  if(k === "mentor"){
+    return [
+      "RECORD FOUND",
+      "SUBJECT: MENTOR",
+      "ID: " + rec.id,
+      "STATUS: " + rec.status,
+      "ACCESS: " + rec.access,
+      "DETAILS: [REDACTED]"
+    ];
+  }
 
   return [
     "RECORD FOUND",
@@ -171,7 +188,7 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // Allowed utility
+  // CLEAR (allowed)
   if(value === "clear"){
     output.textContent = "";
     return;
@@ -184,7 +201,7 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // Subject list
+  // Subjects list
   if(value === "subjects:list" || value === "subject:list"){
     respondMulti([
       "SUBJECT INDEX AVAILABLE",
@@ -194,9 +211,9 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // Subject lookup: "subject alex"
+  // Subject lookup
   if(value.startsWith("subject ")){
-    const key = value.replace("subject ","").trim();
+    const key = value.slice("subject ".length).trim();
     if(!key){
       respond("SUBJECT KEY REQUIRED");
       return;
@@ -210,8 +227,8 @@ input.addEventListener("keydown", (e) => {
     return;
   }
 
-  // Navigation commands
-  const res = nav(value);
+  // Navigation
+  const res = route(value);
   if(res){
     respond(res.msg);
     setTimeout(() => { window.location.href = res.url; }, 400);
