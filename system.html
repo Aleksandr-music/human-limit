@@ -8,25 +8,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- IMPORTANT: if your file is named styles.css, change href -->
+  <link rel="stylesheet" href="style.css">
 
   <style>
-    /* page-specific layout only (system.html) */
+    /* page-specific (system.html only) */
 
-    /* top title */
     .title{
       font-size:18px;
       margin-bottom:26px;
     }
 
-    /* menu nodes should be block on this page */
+    /* main nodes should be block here */
     .menu .node{
       display:block;
-      line-height:30px;
       font-size:16px;
+      line-height:30px;
     }
 
-    /* service link: subtle */
+    /* service node: subtle */
     .menu .node--service{
       margin-top:10px;
       font-size:14px;
@@ -35,19 +36,18 @@
     .menu .node--service::before{ color:var(--dim); }
     .menu .node--service:hover{ color:var(--fg); }
 
-    /* status line */
     .status{
       margin-top:34px;
       font-size:13px;
     }
 
-    /* command line */
     .cmdline{
       margin-top:28px;
       font-size:14px;
     }
 
-    .cmdline input{
+    /* input is allowed to select/paste because your style.css already enables it */
+    #cmd{
       background:none;
       border:none;
       outline:none;
@@ -57,18 +57,12 @@
       width:min(420px, 80vw);
     }
 
-    /* output */
     .output{
       margin-top:18px;
       font-size:14px;
       color:var(--dim);
       min-height:18px;
       white-space:pre-line;
-    }
-
-    /* keep cursor aligned */
-    .cursor{
-      margin-left:6px;
     }
   </style>
 </head>
@@ -83,7 +77,6 @@
     <a class="node" href="subjects.html">SUBJECTS</a>
     <a class="node" href="archive.html">ARCHIVE</a>
 
-    <!-- subtle service entry -->
     <a class="node node--service" href="state.html">STATE MONITOR</a>
   </nav>
 
@@ -242,8 +235,7 @@
 
       if(value.startsWith("observe ")){
         const key = value.slice("observe ".length).trim();
-        const msg = OBSERVE[key] || "OBSERVATION: NO TARGET FOUND";
-        respond(msg);
+        respond(OBSERVE[key] || "OBSERVATION: NO TARGET FOUND");
         return;
       }
 
@@ -263,11 +255,8 @@
           return;
         }
         const lines = subjectLookup(key);
-        if(lines){
-          respondMulti(lines);
-        }else{
-          respond("NO RECORD FOUND");
-        }
+        if(lines) respondMulti(lines);
+        else respond("NO RECORD FOUND");
         return;
       }
 
@@ -281,7 +270,6 @@
       respond("COMMAND NOT RECOGNIZED");
     });
 
-    // keep focus on load (mobile-friendly)
     window.addEventListener("load", focusCmd);
   </script>
 
