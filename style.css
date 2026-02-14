@@ -20,10 +20,10 @@ body{
   text-rendering:optimizeLegibility;
 }
 
-/* убирает синий tap-highlight на Android / mobile */
+/* убирает синий tap-highlight + фиксирует геометрию */
 *{
   -webkit-tap-highlight-color: transparent;
-  box-sizing: border-box;   /* ← важная защита от layout-сдвигов */
+  box-sizing: border-box;
 }
 
 /* text tones */
@@ -43,7 +43,7 @@ body{
   text-decoration:underline;
 }
 
-/* стабильный префикс */
+/* предотвращает “скачок” текста при hover */
 .node::before{
   content: "> ";
   color:var(--fg);
@@ -68,9 +68,8 @@ body{
 .spacer-2{ height:28px; }
 .spacer-3{ height:16px; }
 
-/* общий стиль заголовков системы */
+/* полезно для всех “системных” страниц */
 .title{
   font-weight:600;
   letter-spacing:0.3px;
-  color:var(--fg);          /* ← исключает случайные переопределения */
 }
