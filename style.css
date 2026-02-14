@@ -1,75 +1,90 @@
-:root{
-  --bg:#0b0b0b;
-  --fg:#cfcfcf;
-  --dim:#8e8e8e;
-  --dim2:#5f5f5f;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Style</title>
 
-html,body{ height:100%; }
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --fg:#cfcfcf;
+      --dim:#8e8e8e;
+      --dim2:#5f5f5f;
+    }
 
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:"JetBrains Mono", monospace;
-  padding:64px 48px;
-  line-height:26px;
+    html,body{ height:100%; }
 
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  text-rendering:optimizeLegibility;
-}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family:"JetBrains Mono", monospace;
+      padding:64px 48px;
+      line-height:26px;
 
-/* убирает синий tap-highlight + фиксирует геометрию */
-*{
-  -webkit-tap-highlight-color: transparent;
-  box-sizing: border-box;
-}
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      text-rendering:optimizeLegibility;
+    }
 
-/* text tones */
-.dim{ color:var(--dim); }
-.dim2{ color:var(--dim2); }
-.warn{ color:var(--fg); }
+    /* убирает синий tap-highlight + фиксирует геометрию */
+    *{
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
 
-/* system node link */
-.node{
-  display:inline-block;
-  color:var(--fg);
-  text-decoration:none;
-  cursor:pointer;
-}
+    /* text tones */
+    .dim{ color:var(--dim); }
+    .dim2{ color:var(--dim2); }
+    .warn{ color:var(--fg); }
 
-.node:hover{
-  text-decoration:underline;
-}
+    /* system node link */
+    .node{
+      display:inline-block;
+      color:var(--fg);
+      text-decoration:none;
+      cursor:pointer;
+    }
 
-/* предотвращает “скачок” текста при hover */
-.node::before{
-  content: "> ";
-  color:var(--fg);
-}
+    .node:hover{
+      text-decoration:underline;
+    }
 
-/* blinking cursor */
-.cursor{
-  display:inline-block;
-  width:10px;
-  margin-left:6px;
-  animation:blink 1s infinite;
-}
+    /* предотвращает “скачок” текста при hover */
+    .node::before{
+      content: "> ";
+      color:var(--fg);
+    }
 
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
+    /* blinking cursor */
+    .cursor{
+      display:inline-block;
+      width:10px;
+      margin-left:6px;
+      animation:blink 1s infinite;
+    }
 
-/* spacing helpers */
-.spacer-1{ height:18px; }
-.spacer-2{ height:28px; }
-.spacer-3{ height:16px; }
+    @keyframes blink{
+      0%{opacity:0;}
+      50%{opacity:1;}
+      100%{opacity:0;}
+    }
 
-/* полезно для всех “системных” страниц */
-.title{
-  font-weight:600;
-  letter-spacing:0.3px;
-}
+    /* spacing helpers */
+    .spacer-1{ height:18px; }
+    .spacer-2{ height:28px; }
+    .spacer-3{ height:16px; }
+
+    /* полезно для всех “системных” страниц */
+    .title{
+      font-weight:600;
+      letter-spacing:0.3px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="title">STYLE TEST</div>
+</body>
+</html>
