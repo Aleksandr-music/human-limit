@@ -21,9 +21,7 @@ body{
   text-rendering:optimizeLegibility;
 
   overflow-x:hidden;
-
-  /* важно: не запрещаем выделение глобально */
-  user-select:text;
+  user-select:text; /* CHANGED: allow selection by default */
 }
 
 a{
@@ -38,20 +36,15 @@ a{
   -webkit-tap-highlight-color:transparent;
 }
 
-/* text tones */
 .dim{ color:var(--dim); }
 .dim2{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
-/* system node link */
 .node{
   display:inline-block;
   color:var(--fg);
   text-decoration:none;
   cursor:pointer;
-
-  /* декоративные элементы интерфейса лучше не выделять */
-  user-select:none;
 }
 
 .node:hover{ text-decoration:underline; }
@@ -61,14 +54,11 @@ a{
   color:var(--fg);
 }
 
-/* blinking cursor */
 .cursor{
   display:inline-block;
   width:10px;
   margin-left:6px;
   animation:blink 1s infinite;
-
-  user-select:none;
 }
 
 @keyframes blink{
@@ -78,17 +68,19 @@ a{
   100%{opacity:1;}
 }
 
-/* spacing helpers */
 .spacer-1{ height:18px; }
 .spacer-2{ height:28px; }
 .spacer-3{ height:16px; }
 
-/* common title */
 .title{
   font-weight:600;
   letter-spacing:0.3px;
   color:var(--fg);
+}
 
+/* keep UI elements non-selectable (prevents accidental highlight on mobile) */
+.title, .node, .cursor{
+  -webkit-user-select:none;
   user-select:none;
 }
 
@@ -98,7 +90,7 @@ input, textarea{
   user-select:text;
 }
 
-/* allow copying output text */
+/* optional: allow copying output text */
 .output{
   -webkit-user-select:text;
   user-select:text;
