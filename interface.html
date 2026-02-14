@@ -1,47 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Initializing</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Initializing</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --bg:#0b0b0b;
-  --fg:#cfcfcf;
-  --dim:#8e8e8e;
-}
+  <link rel="stylesheet" href="style.css">
 
-html,body{height:100%;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:"JetBrains Mono", monospace;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
+  <style>
+    /* page-specific layout only */
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
 
-p{
-  font-weight:300;
-  font-size:16px;
-  color:var(--fg);
-}
-</style>
-
-<script>
-setTimeout(() => {
-  window.location.href = "system.html";
-}, 1600);
-</script>
+    .msg{
+      font-weight:300;
+      font-size:16px;
+      color:var(--fg);
+      margin:0;
+    }
+  </style>
 </head>
 
 <body>
-  <p>Accessing world parameters…</p>
+  <p class="msg">Accessing world parameters…</p>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "system.html";
+    }, 1600);
+  </script>
 </body>
 </html>
