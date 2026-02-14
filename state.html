@@ -35,38 +35,31 @@ body{
 .dim{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
-a{ color:var(--fg); text-decoration:none; }
-a:hover{ text-decoration:underline; }
-
-.cursor{
-  display:inline-block;
-  margin-left:6px;
-  animation:blink 1s infinite;
+a{
+  color:var(--fg);
+  text-decoration:none;
 }
 
-@keyframes blink{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
+a:hover{
+  text-decoration:underline;
 }
 </style>
 </head>
 
 <body>
 
-<div class="title">SYSTEM STATE MONITOR<span class="cursor">_</span></div>
+<div class="title">SYSTEM STATE MONITOR</div>
 
 <div class="dim">ENVIRONMENT: STABLE</div>
 <div class="dim">DRIFT LEVEL: WITHIN TOLERANCE</div>
 <div class="dim">ANOMALIES: NOT DISCLOSED</div>
 
-<div style="height:18px;"></div>
+<br>
 
 <div class="warn">Certain deviations are not visible to subjects.</div>
 <div class="warn">Observation does not imply permission.</div>
 
-<div style="height:28px;"></div>
-
+<br>
 <a href="system.html">RETURN TO SYSTEM</a>
 
 </body>
