@@ -135,3 +135,40 @@ input, textarea{
   -webkit-user-select:text;
   user-select:text;
 }
+/* ===== SUBJECT DATABASE INTERACTION ===== */
+
+.subject-row{
+  display:block;
+  color:var(--dim);
+  cursor:pointer;
+  text-decoration:none;
+  transition:color .12s ease, opacity .12s ease;
+}
+
+.subject-row:hover{
+  color:var(--fg);      /* мягкое усиление, без свечения */
+  text-decoration:none; /* важно: не выглядит как ссылка */
+}
+
+.subject-row:active{
+  opacity:0.55;         /* лёгкий "terminal feedback" */
+}
+
+.subject-row:focus{
+  outline:none;
+  color:var(--fg);
+}
+
+/* во время "поиска" блокируем UI без визуального шума */
+.is-busy .subject-row,
+.is-busy .cmd,
+.is-busy .node{
+  pointer-events:none;
+  opacity:0.6;
+}
+
+/* hint уже почти идеален, но делаем его более «машинным» */
+.hint{
+  color:var(--dim2);
+  transition:opacity .15s ease;
+}
