@@ -19,23 +19,52 @@
   white-space:pre-line;
 }
 
+/* clickable subject rows */
+.subject-row{
+  display:block;
+  color:var(--dim);
+  text-decoration:none;
+  cursor:pointer;
+  user-select:none;
+}
+.subject-row:hover{
+  color:var(--fg);
+  text-decoration:underline;
+}
+.subject-row:focus{
+  outline:none;
+  text-decoration:underline;
+}
+.subject-row::before{
+  content:"";
+}
+
+/* terminal commands */
 .cmd{
   color:var(--fg);
   cursor:pointer;
   user-select:none;
 }
-.cmd:hover{
-  text-decoration:underline;
-}
+.cmd:hover{ text-decoration:underline; }
 .cmd::before{
   content:"> ";
   color:var(--fg);
 }
+
 .hint{
   margin-top:10px;
   color:var(--dim2);
   font-size:13px;
   min-height:18px;
+  white-space:pre-line;
+}
+
+/* lock UI during lookup */
+.is-busy .subject-row,
+.is-busy .cmd,
+.is-busy .node{
+  pointer-events:none;
+  opacity:0.7;
 }
 </style>
 </head>
@@ -45,14 +74,44 @@
 <div class="title">SUBJECT DATABASE<span class="cursor">_</span></div>
 
 <div class="block">INDEX STATUS: PARTIAL
-ACCESS LEVEL: LIMITED
-
-S-001  ALEX    ACTIVE    LIMITED
-S-002  MENTOR  REDACTED  DENIED
-S-003  KIWI    ACTIVE    LIMITED
-S-004  FRENCH  ACTIVE    LIMITED</div>
+ACCESS LEVEL: LIMITED</div>
 
 <div class="spacer-1"></div>
+
+<!-- SUBJECT LIST (clickable, but looks like plain text) -->
+<a class="subject-row"
+   href="subject-alex.html"
+   data-target="subject-alex.html"
+   data-id="S-001"
+   data-name="ALEX"
+   data-status="ACTIVE"
+   data-access="LIMITED">S-001  ALEX    ACTIVE    LIMITED</a>
+
+<a class="subject-row"
+   href="subject-mentor.html"
+   data-target="subject-mentor.html"
+   data-id="S-002"
+   data-name="MENTOR"
+   data-status="REDACTED"
+   data-access="DENIED">S-002  MENTOR  REDACTED  DENIED</a>
+
+<a class="subject-row"
+   href="subject-kiwi.html"
+   data-target="subject-kiwi.html"
+   data-id="S-003"
+   data-name="KIWI"
+   data-status="ACTIVE"
+   data-access="LIMITED">S-003  KIWI    ACTIVE    LIMITED</a>
+
+<a class="subject-row"
+   href="subject-french.html"
+   data-target="subject-french.html"
+   data-id="S-004"
+   data-name="FRENCH"
+   data-status="ACTIVE"
+   data-access="LIMITED">S-004  FRENCH  ACTIVE    LIMITED</a>
+
+<div class="spacer-2"></div>
 
 <div class="block">QUERY VIA TERMINAL</div>
 <div class="cmd" data-cmd="subjects:list">subjects:list</div>
@@ -68,14 +127,19 @@ S-004  FRENCH  ACTIVE    LIMITED</div>
 <script>
 (function(){
   const hint = document.getElementById("hint");
-  function say(t){ hint.textContent = t ? ("> " + t) : ""; }
+  const body = document.body;
+
+  function say(t){
+    hint.textContent = t ? (t.startsWith(">") ? t : ("> " + t)) : "";
+  }
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
   async function copy(text){
     try{
       await navigator.clipboard.writeText(text);
       say("COPIED: " + text);
     }catch(e){
-      // fallback: selection
       const ta = document.createElement("textarea");
       ta.value = text;
       ta.style.position = "fixed";
@@ -89,8 +153,52 @@ S-004  FRENCH  ACTIVE    LIMITED</div>
     setTimeout(() => say(""), 1200);
   }
 
+  async function lookupAndGo(opts){
+    // opts: { target, id, name, status, access }
+    body.classList.add("is-busy");
+
+    // minimal, readable “system scan”
+    const lines = [
+      `QUERY: ${opts.id} ${opts.name}`,
+      `STATUS: ${opts.status}`,
+      `ACCESS: ${opts.access}`,
+      "",
+      "INDEX: SEARCHING…",
+      "TRACE: OPEN NODES…",
+      "DECRYPT: STREAM…",
+      "OPEN RECORD…"
+    ];
+
+    // show step-by-step
+    hint.textContent = "";
+    for (let i = 0; i < lines.length; i++){
+      hint.textContent += (lines[i] === "" ? "\n" : ("> " + lines[i] + "\n"));
+      await sleep(i < 3 ? 180 : 220);
+    }
+
+    // short pause, then redirect
+    await sleep(250);
+    window.location.href = opts.target;
+  }
+
+  // command copy (as before)
   document.querySelectorAll(".cmd").forEach(el => {
     el.addEventListener("click", () => copy(el.dataset.cmd || ""));
+  });
+
+  // subject click -> lookup -> redirect
+  document.querySelectorAll(".subject-row").forEach(a => {
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = a.dataset.target || a.getAttribute("href");
+      lookupAndGo({
+        target,
+        id: a.dataset.id || "S-???",
+        name: a.dataset.name || "UNKNOWN",
+        status: a.dataset.status || "UNKNOWN",
+        access: a.dataset.access || "UNKNOWN"
+      });
+    });
   });
 })();
 </script>
