@@ -19,24 +19,21 @@
   white-space:pre-line;
 }
 
-/* clickable subject rows */
+/* SUBJECT ROWS: выглядят как текст, но кликабельны */
 .subject-row{
   display:block;
   color:var(--dim);
-  text-decoration:none;
   cursor:pointer;
+  text-decoration:none;
   user-select:none;
 }
 .subject-row:hover{
   color:var(--fg);
-  text-decoration:underline;
+  text-decoration:none; /* важно: не как ссылка */
 }
 .subject-row:focus{
   outline:none;
-  text-decoration:underline;
-}
-.subject-row::before{
-  content:"";
+  color:var(--fg);
 }
 
 /* terminal commands */
@@ -78,7 +75,7 @@ ACCESS LEVEL: LIMITED</div>
 
 <div class="spacer-1"></div>
 
-<!-- SUBJECT LIST (clickable, but looks like plain text) -->
+<!-- SUBJECT LIST -->
 <a class="subject-row"
    href="subject-alex.html"
    data-target="subject-alex.html"
@@ -129,16 +126,27 @@ ACCESS LEVEL: LIMITED</div>
   const hint = document.getElementById("hint");
   const body = document.body;
 
-  function say(t){
-    hint.textContent = t ? (t.startsWith(">") ? t : ("> " + t)) : "";
+  function setBusy(state){
+    body.classList.toggle("is-busy", !!state);
   }
 
-  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+  function clearHint(){
+    hint.textContent = "";
+  }
+
+  function writeLine(line){
+    // line может быть "" для пустой строки
+    hint.textContent += (line === "" ? "\n" : ("> " + line + "\n"));
+  }
+
+  function sleep(ms){
+    return new Promise(r => setTimeout(r, ms));
+  }
 
   async function copy(text){
     try{
       await navigator.clipboard.writeText(text);
-      say("COPIED: " + text);
+      hint.textContent = "> COPIED: " + text;
     }catch(e){
       const ta = document.createElement("textarea");
       ta.value = text;
@@ -146,19 +154,22 @@ ACCESS LEVEL: LIMITED</div>
       ta.style.opacity = "0";
       document.body.appendChild(ta);
       ta.select();
-      try{ document.execCommand("copy"); say("COPIED: " + text); }
-      catch(_){ say("COPY FAILED"); }
+      try{
+        document.execCommand("copy");
+        hint.textContent = "> COPIED: " + text;
+      }catch(_){
+        hint.textContent = "> COPY FAILED";
+      }
       document.body.removeChild(ta);
     }
-    setTimeout(() => say(""), 1200);
+    setTimeout(() => { hint.textContent = ""; }, 1200);
   }
 
   async function lookupAndGo(opts){
-    // opts: { target, id, name, status, access }
-    body.classList.add("is-busy");
+    setBusy(true);
+    clearHint();
 
-    // minimal, readable “system scan”
-    const lines = [
+    const steps = [
       `QUERY: ${opts.id} ${opts.name}`,
       `STATUS: ${opts.status}`,
       `ACCESS: ${opts.access}`,
@@ -169,28 +180,30 @@ ACCESS LEVEL: LIMITED</div>
       "OPEN RECORD…"
     ];
 
-    // show step-by-step
-    hint.textContent = "";
-    for (let i = 0; i < lines.length; i++){
-      hint.textContent += (lines[i] === "" ? "\n" : ("> " + lines[i] + "\n"));
-      await sleep(i < 3 ? 180 : 220);
+    for(let i=0;i<steps.length;i++){
+      writeLine(steps[i]);
+      await sleep(i < 3 ? 170 : 220);
     }
 
-    // short pause, then redirect
-    await sleep(250);
+    await sleep(220);
     window.location.href = opts.target;
   }
 
-  // command copy (as before)
+  // commands -> copy
   document.querySelectorAll(".cmd").forEach(el => {
     el.addEventListener("click", () => copy(el.dataset.cmd || ""));
   });
 
   // subject click -> lookup -> redirect
   document.querySelectorAll(".subject-row").forEach(a => {
+    // keyboard support (Enter/Space)
+    a.setAttribute("role", "button");
+    a.setAttribute("tabindex", "0");
+
     a.addEventListener("click", (e) => {
       e.preventDefault();
       const target = a.dataset.target || a.getAttribute("href");
+
       lookupAndGo({
         target,
         id: a.dataset.id || "S-???",
@@ -199,7 +212,17 @@ ACCESS LEVEL: LIMITED</div>
         access: a.dataset.access || "UNKNOWN"
       });
     });
+
+    a.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        a.click();
+      }
+    });
   });
+
+  // safety: если вернулись назад — снимаем busy
+  window.addEventListener("pageshow", () => setBusy(false));
 })();
 </script>
 
