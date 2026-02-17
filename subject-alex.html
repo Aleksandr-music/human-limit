@@ -1,1 +1,420 @@
+<!-- subject-alex.html  | Human Limit — Subject File (standalone page) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUBJECT: ALEX — Internal Registry</title>
 
+  <!-- Optional: JetBrains Mono (safe to remove if you prefer local fonts only) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --paper:#cfcfcf;
+      --paper2:#bdbdbd;
+      --ink:#111;
+      --line:#1a1a1a;
+      --muted:#2a2a2a;
+      --stamp:#1b1b1b;
+      --shadow: rgba(0,0,0,.55);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 50% 20%, #151515 0%, var(--bg) 65%);
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color:#eaeaea;
+      display:flex;
+      min-height:100svh;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    /* A4-ish canvas */
+    .sheet-wrap{
+      width:min(860px, 100%);
+    }
+    .sheet{
+      position:relative;
+      background:
+        radial-gradient(800px 420px at 35% 15%, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.18)),
+        repeating-linear-gradient(
+          0deg,
+          rgba(0,0,0,.075) 0px,
+          rgba(0,0,0,.075) 1px,
+          rgba(0,0,0,0) 2px,
+          rgba(0,0,0,0) 18px
+        ),
+        linear-gradient(180deg, var(--paper), var(--paper2));
+      border: 2px solid rgba(0,0,0,.45);
+      box-shadow: 0 18px 55px var(--shadow);
+      aspect-ratio: 210 / 297; /* A4 */
+      overflow:hidden;
+      color: var(--ink);
+    }
+
+    .noise{
+      pointer-events:none;
+      position:absolute; inset:0;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      mix-blend-mode:multiply;
+      opacity:.6;
+    }
+
+    .header{
+      padding:18px 18px 10px 18px;
+      border-bottom:2px solid rgba(0,0,0,.55);
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:start;
+    }
+    .header h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+    .subline{
+      margin-top:6px;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(0,0,0,.70);
+      font-weight:600;
+    }
+    .meta{
+      text-align:right;
+      min-width:250px;
+    }
+    .meta .id{
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.08em;
+    }
+    .meta .small{
+      margin-top:8px;
+      font-size:11px;
+      letter-spacing:.06em;
+      color:rgba(0,0,0,.75);
+      text-transform:uppercase;
+      line-height:1.35;
+    }
+
+    /* Stamp (top-right) */
+    .stamp{
+      position:absolute;
+      top:14px;
+      right:14px;
+      width:124px;
+      height:124px;
+      opacity:.25;
+      transform: rotate(8deg);
+      filter: contrast(120%) saturate(0%);
+      background: center/contain no-repeat url("hl-shield-stamp.png"); /* <-- put your shield stamp file next to this html */
+      mix-blend-mode:multiply;
+    }
+
+    .content{
+      padding:16px 18px 18px 18px;
+      display:grid;
+      grid-template-rows: auto 1fr;
+      gap:14px;
+      height:calc(100% - 74px);
+    }
+
+    /* Photo frame 16:9 */
+    .photo-frame{
+      border:2px solid rgba(0,0,0,.55);
+      background: rgba(0,0,0,.08);
+      aspect-ratio: 16 / 9;
+      position:relative;
+      overflow:hidden;
+    }
+    .photo-frame .label{
+      position:absolute;
+      left:10px; top:10px;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background: rgba(255,255,255,.55);
+      padding:4px 6px;
+      border:1px solid rgba(0,0,0,.35);
+      font-weight:700;
+    }
+    .photo-frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: grayscale(100%) contrast(115%);
+    }
+    .photo-frame .placeholder{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(0,0,0,.55);
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    /* Lines list */
+    .lines{
+      border-top:2px solid rgba(0,0,0,.45);
+      padding-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:0;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      align-items:center;
+      gap:10px;
+      padding:10px 0;
+      border-bottom:1px solid rgba(0,0,0,.35); /* goes to the page edge via container padding */
+      font-size:12px;
+    }
+    .row .k{
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      color:rgba(0,0,0,.85);
+    }
+    .row .v{
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-weight:700;
+      color:rgba(0,0,0,.80);
+      position:relative;
+      line-height:1.25;
+      word-break:break-word;
+    }
+
+    /* "CLASSIFIED" text (your plan: no marker scribbles in the image) */
+    .classified{
+      color:rgba(0,0,0,.60);
+    }
+
+    /* Optional: subtle “redaction bar” look (still text-based) */
+    .redact-bar{
+      display:inline-block;
+      padding:2px 8px;
+      background: rgba(0,0,0,.85);
+      color: rgba(255,255,255,.88);
+      border-radius:2px;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+
+    /* Footer */
+    .footer{
+      position:absolute;
+      left:18px;
+      right:18px;
+      bottom:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      font-size:10px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(0,0,0,.65);
+    }
+    .footer .date{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .footer .date .box{
+      width:140px;
+      height:14px;
+      background: rgba(0,0,0,.85);
+      border-radius:2px;
+    }
+
+    @media (max-width:680px){
+      .row{ grid-template-columns: 1fr; gap:6px; }
+      .meta{ min-width:0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sheet-wrap">
+    <div class="sheet" id="sheet">
+      <div class="stamp" aria-hidden="true"></div>
+      <div class="noise" aria-hidden="true"></div>
+
+      <div class="header">
+        <div>
+          <h1>SUBJECT PROFILE — INTERNAL REGISTRY</h1>
+          <div class="subline" id="subjectTitle">SUBJECT: ALEX</div>
+        </div>
+
+        <div class="meta">
+          <div class="id" id="subjectId">ID: S–AT–C–003481</div>
+          <div class="small">
+            CLASSIFICATION: <span id="classification">ACTIVE UNIT</span><br/>
+            ACCESS STATUS: <span id="accessStatus">LIMITED</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="photo-frame" id="photoFrame">
+          <div class="label">PHOTO — 16:9</div>
+
+          <!-- Put your mugshot/banner image file next to this HTML and set data.photo -->
+          <!-- If photo is empty, placeholder text is shown -->
+          <img id="photo" alt="" style="display:none" />
+          <div class="placeholder" id="photoPlaceholder">INSERT IMAGE LATER</div>
+        </div>
+
+        <div class="lines" id="lines"></div>
+      </div>
+
+      <div class="footer">
+        <div>HUMAN LIMIT / INTERNAL FILE</div>
+        <div class="date">
+          <div>CREATED:</div>
+          <div class="box" title="CLASSIFIED"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Canon fields policy:
+     * - If you don't want to publish a value: set value to { classified: true }
+     * - If you want value visible: set value to string
+     * - You can optionally render "CLASSIFIED" as a black bar with text using renderMode: "bar"
+     */
+
+    const data = {
+      subject: "ALEX",
+      // Your new canonical age:
+      age: "37",
+      heightCm: "188",
+      // Do NOT guess. If not fixed in canon, keep classified:
+      eyeColor: { classified: true },
+
+      // ID canon: [C]-[T]-[R]-[NNNNNN]
+      // You can change this anytime without touching layout:
+      id: "S–AT–C–003481",
+
+      classification: "ACTIVE UNIT",
+      accessStatus: "LIMITED",
+
+      // Leave empty for now; later point to your banner/mugshot:
+      photo: "", // e.g. "hl-subject-alex-mugshot.png"
+
+      rows: [
+        // Must start with: age, height, eye color
+        ["AGE", "37"],
+        ["HEIGHT", "188 CM"],
+        ["EYE COLOR", { classified: true }],
+
+        // Core status
+        ["PSYCHOLOGICAL STATE", "STABLE / CONTROLLED"],
+        ["PHYSICAL CONDITION", "OPTIMAL"],
+
+        // Identity / origin (keep classified unless you want to reveal)
+        ["REAL NAME", { classified: true }],
+        ["MARITAL STATUS", { classified: true }],
+        ["NATIONALITY", { classified: true }],
+        ["COUNTRY OF BIRTH", { classified: true }],
+        ["LANGUAGES", { classified: true }],
+
+        // Medical / control
+        ["MEDICAL EXAMINER", { classified: true }],
+        ["TREATMENT UNIT", { classified: true }],
+        ["CHRONIC MEDICATION", { classified: true }],
+        ["RESTRAINT DEVICE — BRACELET S/N", { classified: true }],
+        ["IMPLANTED DEVICE — CAPSULE S/N", { classified: true }],
+
+        // Skills / thinking (values can be “CLASSIFIED” if you prefer)
+        ["COMBAT SPECIALIZATION", { classified: true }],
+        ["WEAPON PROFICIENCY", { classified: true }],
+        ["TACTICAL APTITUDE", { classified: true }],
+        ["ANALYTICAL THINKING", { classified: true }],
+        ["SITUATIONAL AWARENESS", { classified: true }],
+        ["DECISION LATENCY", { classified: true }],
+        ["STRESS RESISTANCE", { classified: true }],
+        ["COMPLIANCE INDEX", { classified: true }],
+        ["ESCAPE RISK", { classified: true }],
+
+        // Last lines (your rule: recruiter + card author as last separate lines)
+        ["RECRUITER", { classified: true, renderMode: "bar", text: "CLASSIFIED" }],
+        ["FILE AUTHOR", { classified: true, renderMode: "bar", text: "CLASSIFIED" }],
+      ],
+    };
+
+    function renderValue(v){
+      if (typeof v === "string") return `<span>${escapeHtml(v)}</span>`;
+      if (v && v.classified){
+        if (v.renderMode === "bar") {
+          const t = v.text || "CLASSIFIED";
+          return `<span class="redact-bar">${escapeHtml(t)}</span>`;
+        }
+        return `<span class="classified">CLASSIFIED</span>`;
+      }
+      return `<span class="classified">CLASSIFIED</span>`;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // Header
+    document.getElementById("subjectTitle").textContent = `SUBJECT: ${data.subject}`;
+    document.getElementById("subjectId").textContent = `ID: ${data.id}`;
+    document.getElementById("classification").textContent = data.classification;
+    document.getElementById("accessStatus").textContent = data.accessStatus;
+
+    // Photo
+    const img = document.getElementById("photo");
+    const ph = document.getElementById("photoPlaceholder");
+    if (data.photo && data.photo.trim().length){
+      img.src = data.photo;
+      img.style.display = "block";
+      ph.style.display = "none";
+    } else {
+      img.style.display = "none";
+      ph.style.display = "flex";
+    }
+
+    // Lines (must run to page edges: handled by container + row border)
+    const lines = document.getElementById("lines");
+    data.rows.forEach(([k,v]) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="k">${escapeHtml(k)}:</div>
+        <div class="v">${renderValue(v)}</div>
+      `;
+      lines.appendChild(row);
+    });
+  </script>
+</body>
+</html>
