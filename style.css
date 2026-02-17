@@ -172,3 +172,9 @@ input, textarea{
   color:var(--dim2);
   transition:opacity .15s ease;
 }
+@media (max-width:680px){
+  body{
+    padding:28px 16px;
+    line-height:24px;
+  }
+}
