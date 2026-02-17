@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SUBJECT: ALEX — Internal Registry</title>
 
-  <!-- Optional: JetBrains Mono (safe to remove if you prefer local fonts only) -->
+  <!-- Optional: JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -17,13 +17,11 @@
       --paper:#cfcfcf;
       --paper2:#bdbdbd;
       --ink:#111;
-      --line:#1a1a1a;
-      --muted:#2a2a2a;
-      --stamp:#1b1b1b;
       --shadow: rgba(0,0,0,.55);
     }
 
     *{ box-sizing:border-box; }
+
     body{
       margin:0;
       background: radial-gradient(1200px 800px at 50% 20%, #151515 0%, var(--bg) 65%);
@@ -37,9 +35,8 @@
     }
 
     /* A4-ish canvas */
-    .sheet-wrap{
-      width:min(860px, 100%);
-    }
+    .sheet-wrap{ width:min(860px, 100%); }
+
     .sheet{
       position:relative;
       background:
@@ -77,6 +74,7 @@
       gap:12px;
       align-items:start;
     }
+
     .header h1{
       margin:0;
       font-size:18px;
@@ -84,6 +82,7 @@
       text-transform:uppercase;
       font-weight:700;
     }
+
     .subline{
       margin-top:6px;
       font-size:12px;
@@ -92,15 +91,18 @@
       color:rgba(0,0,0,.70);
       font-weight:600;
     }
+
     .meta{
       text-align:right;
       min-width:250px;
     }
+
     .meta .id{
       font-size:13px;
       font-weight:700;
       letter-spacing:.08em;
     }
+
     .meta .small{
       margin-top:8px;
       font-size:11px;
@@ -110,7 +112,7 @@
       line-height:1.35;
     }
 
-    /* Stamp (top-right) */
+    /* Stamp (top-right) — IMPORTANT: correct path to your repo file */
     .stamp{
       position:absolute;
       top:14px;
@@ -120,16 +122,20 @@
       opacity:.25;
       transform: rotate(8deg);
       filter: contrast(120%) saturate(0%);
-      background: center/contain no-repeat url("hl-shield-stamp.png"); /* <-- put your shield stamp file next to this html */
+      background: center/contain no-repeat url("images/png/hl-shield-stamp.png");
       mix-blend-mode:multiply;
+      pointer-events:none;
     }
 
+    /* Content area MUST NOT overlap footer on small screens */
     .content{
-      padding:16px 18px 18px 18px;
-      display:grid;
-      grid-template-rows: auto 1fr;
+      padding:16px 18px 56px 18px; /* reserve space for footer */
+      display:flex;
+      flex-direction:column;
       gap:14px;
       height:calc(100% - 74px);
+      overflow:auto;              /* prevents overlap */
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Photo frame 16:9 */
@@ -139,7 +145,9 @@
       aspect-ratio: 16 / 9;
       position:relative;
       overflow:hidden;
+      flex:0 0 auto;
     }
+
     .photo-frame .label{
       position:absolute;
       left:10px; top:10px;
@@ -151,6 +159,7 @@
       border:1px solid rgba(0,0,0,.35);
       font-weight:700;
     }
+
     .photo-frame img{
       width:100%;
       height:100%;
@@ -158,6 +167,7 @@
       display:block;
       filter: grayscale(100%) contrast(115%);
     }
+
     .photo-frame .placeholder{
       position:absolute;
       inset:0;
@@ -177,7 +187,6 @@
       padding-top:10px;
       display:flex;
       flex-direction:column;
-      gap:0;
     }
 
     .row{
@@ -186,31 +195,28 @@
       align-items:center;
       gap:10px;
       padding:10px 0;
-      border-bottom:1px solid rgba(0,0,0,.35); /* goes to the page edge via container padding */
+      border-bottom:1px solid rgba(0,0,0,.35);
       font-size:12px;
     }
+
     .row .k{
       text-transform:uppercase;
       letter-spacing:.08em;
       font-weight:700;
       color:rgba(0,0,0,.85);
     }
+
     .row .v{
       text-transform:uppercase;
       letter-spacing:.06em;
       font-weight:700;
       color:rgba(0,0,0,.80);
-      position:relative;
       line-height:1.25;
       word-break:break-word;
     }
 
-    /* "CLASSIFIED" text (your plan: no marker scribbles in the image) */
-    .classified{
-      color:rgba(0,0,0,.60);
-    }
+    .classified{ color:rgba(0,0,0,.60); }
 
-    /* Optional: subtle “redaction bar” look (still text-based) */
     .redact-bar{
       display:inline-block;
       padding:2px 8px;
@@ -234,12 +240,18 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       color:rgba(0,0,0,.65);
+
+      background: rgba(207,207,207,.85);
+      padding-top:8px;
+      border-top:1px solid rgba(0,0,0,.35);
     }
+
     .footer .date{
       display:flex;
       gap:10px;
       align-items:center;
     }
+
     .footer .date .box{
       width:140px;
       height:14px;
@@ -248,8 +260,11 @@
     }
 
     @media (max-width:680px){
+      body{ padding:16px; }
       .row{ grid-template-columns: 1fr; gap:6px; }
-      .meta{ min-width:0; }
+      .meta{ min-width:0; text-align:left; }
+      .header{ grid-template-columns: 1fr; }
+      .stamp{ width:104px; height:104px; top:12px; right:12px; }
     }
   </style>
 </head>
@@ -279,8 +294,6 @@
         <div class="photo-frame" id="photoFrame">
           <div class="label">PHOTO — 16:9</div>
 
-          <!-- Put your mugshot/banner image file next to this HTML and set data.photo -->
-          <!-- If photo is empty, placeholder text is shown -->
           <img id="photo" alt="" style="display:none" />
           <div class="placeholder" id="photoPlaceholder">INSERT IMAGE LATER</div>
         </div>
@@ -299,56 +312,35 @@
   </div>
 
   <script>
-    /**
-     * Canon fields policy:
-     * - If you don't want to publish a value: set value to { classified: true }
-     * - If you want value visible: set value to string
-     * - You can optionally render "CLASSIFIED" as a black bar with text using renderMode: "bar"
-     */
-
     const data = {
       subject: "ALEX",
-      // Your new canonical age:
-      age: "37",
-      heightCm: "188",
-      // Do NOT guess. If not fixed in canon, keep classified:
-      eyeColor: { classified: true },
-
-      // ID canon: [C]-[T]-[R]-[NNNNNN]
-      // You can change this anytime without touching layout:
       id: "S–AT–C–003481",
-
       classification: "ACTIVE UNIT",
       accessStatus: "LIMITED",
 
-      // Leave empty for now; later point to your banner/mugshot:
-      photo: "", // e.g. "hl-subject-alex-mugshot.png"
+      // put your mugshot here later, e.g. "images/png/hl-subject-alex.png"
+      photo: "",
 
       rows: [
-        // Must start with: age, height, eye color
         ["AGE", "37"],
         ["HEIGHT", "188 CM"],
         ["EYE COLOR", { classified: true }],
 
-        // Core status
         ["PSYCHOLOGICAL STATE", "STABLE / CONTROLLED"],
         ["PHYSICAL CONDITION", "OPTIMAL"],
 
-        // Identity / origin (keep classified unless you want to reveal)
         ["REAL NAME", { classified: true }],
         ["MARITAL STATUS", { classified: true }],
         ["NATIONALITY", { classified: true }],
         ["COUNTRY OF BIRTH", { classified: true }],
         ["LANGUAGES", { classified: true }],
 
-        // Medical / control
         ["MEDICAL EXAMINER", { classified: true }],
         ["TREATMENT UNIT", { classified: true }],
         ["CHRONIC MEDICATION", { classified: true }],
         ["RESTRAINT DEVICE — BRACELET S/N", { classified: true }],
         ["IMPLANTED DEVICE — CAPSULE S/N", { classified: true }],
 
-        // Skills / thinking (values can be “CLASSIFIED” if you prefer)
         ["COMBAT SPECIALIZATION", { classified: true }],
         ["WEAPON PROFICIENCY", { classified: true }],
         ["TACTICAL APTITUDE", { classified: true }],
@@ -359,7 +351,6 @@
         ["COMPLIANCE INDEX", { classified: true }],
         ["ESCAPE RISK", { classified: true }],
 
-        // Last lines (your rule: recruiter + card author as last separate lines)
         ["RECRUITER", { classified: true, renderMode: "bar", text: "CLASSIFIED" }],
         ["FILE AUTHOR", { classified: true, renderMode: "bar", text: "CLASSIFIED" }],
       ],
@@ -404,7 +395,7 @@
       ph.style.display = "flex";
     }
 
-    // Lines (must run to page edges: handled by container + row border)
+    // Lines
     const lines = document.getElementById("lines");
     data.rows.forEach(([k,v]) => {
       const row = document.createElement("div");
