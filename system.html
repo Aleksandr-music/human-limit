@@ -15,14 +15,14 @@
     :root{
       --banner: url("images/png/hl-system-layered-banner-01.png");
 
-      /* IMPORTANT:
-         do NOT override --dim from style.css (it is used as a color)
-         use a dedicated variable for overlay alpha */
+      /* overlay alpha (separate from --dim color in style.css) */
       --bg-dim-alpha: 0.04;
 
-      /* Parallax state (updated by JS) */
-      --mx: 0px;
-      --my: 0px;
+      /* 3D parallax state (updated by JS) */
+      --rx: 0deg; /* rotateX */
+      --ry: 0deg; /* rotateY */
+      --tx: 0px;  /* translateX */
+      --ty: 0px;  /* translateY */
     }
 
     /* Disable global banner layers from style.css on this page */
@@ -40,42 +40,86 @@
       overflow:hidden;
     }
 
-    /* Multi-layer background (one PNG, 3 depth layers) */
+    /* --- 3D background stage --- */
     .bg{
       position:fixed;
       inset:0;
       z-index:-2;
       overflow:hidden;
       background:#0b0b0b;
+
+      /* true 3D stage */
+      perspective: 900px;
+      transform-style: preserve-3d;
     }
 
+    /* a wrapper that we rotate in 3D (keeps layers crisp) */
+    .bg-scene{
+      position:absolute;
+      inset:-4vh -4vw;
+      transform-style: preserve-3d;
+      will-change: transform;
+
+      transform:
+        translate3d(var(--tx), var(--ty), 0)
+        rotateX(var(--rx))
+        rotateY(var(--ry));
+    }
+
+    /* Base layer rules */
     .bg-layer{
       position:absolute;
-      inset:-3vh -3vw; /* prevents edges during motion */
+      inset:0;
+
       background-image: var(--banner);
       background-repeat:no-repeat;
       background-position:center center;
       background-size:cover;
-      will-change:transform;
-      transform: translate3d(0,0,0);
+
+      will-change: transform;
+      transform-style: preserve-3d;
+
+      /* keep crisp on iOS */
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
     }
 
-    /* Add tiny scale differences so depth is visible even without moving the mouse */
+    /*
+      Depth is created by Z-translation + slight scale.
+      No blend-modes (keeps clarity).
+    */
     .bg-layer-1{
-      opacity:1;
-      transform: translate3d(calc(var(--mx) * 0.25), calc(var(--my) * 0.25), 0) scale(1.00);
+      opacity: 1;
+      transform: translateZ(-60px) scale(1.02);
     }
 
     .bg-layer-2{
-      opacity:0.55;
-      mix-blend-mode: screen;
-      transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0) scale(1.01);
+      opacity: 0.45;
+      transform: translateZ(-20px) scale(1.01);
     }
 
     .bg-layer-3{
-      opacity:0.25;
-      mix-blend-mode: lighten;
-      transform: translate3d(calc(var(--mx) * 0.9), calc(var(--my) * 0.9), 0) scale(1.02);
+      opacity: 0.22;
+      transform: translateZ(20px) scale(1.00);
+    }
+
+    /* subtle electronic scan / grain (does not blur image) */
+    .bg-fx{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity: 0.10;
+      mix-blend-mode: normal;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.05) 0px,
+          rgba(255,255,255,0.05) 1px,
+          rgba(0,0,0,0) 3px,
+          rgba(0,0,0,0) 6px
+        );
+      transform: translateZ(80px);
     }
 
     .bg-dim{
@@ -83,31 +127,32 @@
       inset:0;
       pointer-events:none;
       background: rgba(0,0,0,var(--bg-dim-alpha));
+      transform: translateZ(90px);
     }
 
-    /* Mobile: keep stable, avoid jitter */
-    @media (max-width: 680px){
+    /* Mobile/tablet: keep full composition + still show depth (no crop surprises) */
+    @media (max-width: 980px){
       :root{ --bg-dim-alpha: 0.06; }
 
       .bg-layer{
-        inset:0;
-        background-size:cover;
+        background-size: cover;
+        background-position: center center;
       }
 
-      /* on mobile we keep layers but without motion; scale still gives subtle depth */
-      .bg-layer-1{ transform: scale(1.00); }
-      .bg-layer-2{ transform: scale(1.01); }
-      .bg-layer-3{ transform: scale(1.02); }
+      /* increase depth separation a bit for tablets/phones */
+      .bg-layer-1{ transform: translateZ(-70px) scale(1.03); }
+      .bg-layer-2{ transform: translateZ(-20px) scale(1.015); opacity:0.42; }
+      .bg-layer-3{ transform: translateZ(25px)  scale(1.00); opacity:0.22; }
     }
 
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
-      .bg-layer{
-        transform: none !important;
+      .bg-scene{
+        transform:none !important;
       }
     }
 
-    /* page-specific (system.html only) */
+    /* --- page-specific (system.html only) --- */
     .title{
       font-size:18px;
       margin-bottom:26px;
@@ -159,12 +204,15 @@
 
 <body>
 
-  <!-- Multi-layer parallax background -->
+  <!-- 3D layered background -->
   <div class="bg" aria-hidden="true">
-    <div class="bg-layer bg-layer-1"></div>
-    <div class="bg-layer bg-layer-2"></div>
-    <div class="bg-layer bg-layer-3"></div>
-    <div class="bg-dim"></div>
+    <div class="bg-scene" id="bgScene">
+      <div class="bg-layer bg-layer-1"></div>
+      <div class="bg-layer bg-layer-2"></div>
+      <div class="bg-layer bg-layer-3"></div>
+      <div class="bg-fx"></div>
+      <div class="bg-dim"></div>
+    </div>
   </div>
 
   <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
@@ -197,47 +245,139 @@
   <div id="output" class="output"></div>
 
   <script>
-    // --- Parallax (desktop only) ---
+    // --- 3D Parallax: pointer + device orientation fallback ---
     (() => {
       const root = document.documentElement;
-      const max = 18; // px: subtle parallax
 
-      const isMobile = matchMedia("(max-width: 680px)").matches;
       const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (isMobile || reduce) return;
+      if (reduce) return;
 
-      let tx = 0, ty = 0;
-      let cx = 0, cy = 0;
-      let raf = 0;
+      // limits tuned to stay crisp (no nausea, no distortion)
+      const MAX_ROT = 6;   // degrees
+      const MAX_MOV = 14;  // px
 
-      function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+      let tx=0, ty=0, rx=0, ry=0;
+      let cx=0, cy=0, crx=0, cry=0;
+      let raf=0;
 
-      function onMove(e){
-        const w = window.innerWidth || 1;
-        const h = window.innerHeight || 1;
-        const nx = (e.clientX / w) * 2 - 1; // -1..1
-        const ny = (e.clientY / h) * 2 - 1; // -1..1
-        tx = clamp(nx * max, -max, max);
-        ty = clamp(ny * max, -max, max);
-        if (!raf) raf = requestAnimationFrame(tick);
+      function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+      function apply(){
+        root.style.setProperty("--tx", cx.toFixed(2) + "px");
+        root.style.setProperty("--ty", cy.toFixed(2) + "px");
+        root.style.setProperty("--rx", crx.toFixed(2) + "deg");
+        root.style.setProperty("--ry", cry.toFixed(2) + "deg");
       }
 
       function tick(){
         raf = 0;
-        cx += (tx - cx) * 0.08;
-        cy += (ty - cy) * 0.08;
-        root.style.setProperty("--mx", cx.toFixed(2) + "px");
-        root.style.setProperty("--my", cy.toFixed(2) + "px");
+        // smooth follow
+        cx  += (tx  - cx)  * 0.08;
+        cy  += (ty  - cy)  * 0.08;
+        crx += (rx  - crx) * 0.08;
+        cry += (ry  - cry) * 0.08;
 
-        if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1){
+        apply();
+
+        if (
+          Math.abs(tx-cx)  > 0.08 ||
+          Math.abs(ty-cy)  > 0.08 ||
+          Math.abs(rx-crx) > 0.05 ||
+          Math.abs(ry-cry) > 0.05
+        ){
           raf = requestAnimationFrame(tick);
         }
       }
 
-      window.addEventListener("mousemove", onMove, { passive: true });
+      function schedule(){
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      // Desktop / pointer
+      function onPointer(e){
+        const w = window.innerWidth || 1;
+        const h = window.innerHeight || 1;
+        const nx = (e.clientX / w) * 2 - 1; // -1..1
+        const ny = (e.clientY / h) * 2 - 1;
+
+        tx = clamp(nx * MAX_MOV, -MAX_MOV, MAX_MOV);
+        ty = clamp(ny * MAX_MOV, -MAX_MOV, MAX_MOV);
+
+        // rotate opposite for depth feel
+        ry = clamp(nx * MAX_ROT, -MAX_ROT, MAX_ROT);
+        rx = clamp(-ny * MAX_ROT, -MAX_ROT, MAX_ROT);
+
+        schedule();
+      }
+
+      window.addEventListener("pointermove", onPointer, { passive:true });
+
+      // Mobile / iPad: device orientation if available
+      let usedGyro = false;
+
+      function onOrient(e){
+        // beta: front-back tilt [-180..180], gamma: left-right tilt [-90..90]
+        const beta = typeof e.beta === "number" ? e.beta : 0;
+        const gamma = typeof e.gamma === "number" ? e.gamma : 0;
+
+        // normalize small, stable range
+        const nb = clamp(beta / 25, -1, 1);
+        const ng = clamp(gamma / 25, -1, 1);
+
+        // use rotation more than translation for crispness
+        ry = clamp(ng * (MAX_ROT * 0.9), -MAX_ROT, MAX_ROT);
+        rx = clamp(-nb * (MAX_ROT * 0.9), -MAX_ROT, MAX_ROT);
+
+        tx = clamp(ng * (MAX_MOV * 0.35), -MAX_MOV, MAX_MOV);
+        ty = clamp(nb * (MAX_MOV * 0.35), -MAX_MOV, MAX_MOV);
+
+        usedGyro = true;
+        schedule();
+      }
+
+      // iOS may require permission; we try silently, fallback to idle drift
+      function startGyro(){
+        if (typeof DeviceOrientationEvent === "undefined") return false;
+
+        if (typeof DeviceOrientationEvent.requestPermission === "function"){
+          // If not granted, we just won't get events (fallback runs)
+          DeviceOrientationEvent.requestPermission().then((res) => {
+            if (res === "granted"){
+              window.addEventListener("deviceorientation", onOrient, true);
+            }
+          }).catch(() => {});
+          return true;
+        } else {
+          window.addEventListener("deviceorientation", onOrient, true);
+          return true;
+        }
+      }
+
+      const gyroPossible = startGyro();
+
+      // Fallback: subtle idle drift for touch devices with no gyro events
+      let t0 = performance.now();
+      function idle(now){
+        if (usedGyro) return; // gyro took over
+        const t = (now - t0) / 1000;
+
+        // very subtle, keeps “3D” alive
+        ry = Math.sin(t * 0.35) * 2.0;
+        rx = Math.cos(t * 0.28) * 1.6;
+        tx = Math.sin(t * 0.30) * 4.0;
+        ty = Math.cos(t * 0.24) * 3.0;
+
+        schedule();
+        requestAnimationFrame(idle);
+      }
+
+      // run idle drift only on touch-centric devices or when gyro exists but doesn’t fire
+      if (matchMedia("(hover: none)").matches || gyroPossible){
+        requestAnimationFrame(idle);
+      }
     })();
 
-    // --- Command console ---
+    // --- Command console (unchanged logic) ---
     const input = document.getElementById("cmd");
     const output = document.getElementById("output");
 
