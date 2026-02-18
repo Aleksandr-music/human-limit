@@ -12,41 +12,45 @@
     color:#eaeaea;
     background:#0b0b0b;
 
-    background-image: none !important;
-    background-color: #0b0b0b !important;
+    /* гасим возможные глобальные фоны из style.css */
+    background-image:none !important;
+    background-color:#0b0b0b !important;
 
-    position: relative;
-    overflow: hidden;
+    position:relative;
+    overflow:hidden;
   }
 
-  /* ФОН */
+  /* ФОН-КАРТИНКА */
   body::before{
     content:"";
-    position: fixed;
-    inset: 0;
-    z-index: -2;
+    position:fixed;
+    inset:0;
+    z-index:-2;
 
-    background-image: url("images/png/hl-entry-map.png?v=3");
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: cover;
+    background-image:url("images/png/hl-entry-map.png?v=3");
+    background-repeat:no-repeat;
+    background-position:center center;
+    background-size:cover; /* десктоп по умолчанию */
 
-    filter: none;
-    transform: translateZ(0);
+    /* ВАЖНО: убираем translateZ(0) — на iOS часто даёт мыло */
+    transform:none;
+    filter:none;
   }
 
-  /* ЛЁГКОЕ ЗАТЕМНЕНИЕ (регулируется одной цифрой) */
+  /* ЛЁГКОЕ ЗАТЕМНЕНИЕ */
   body::after{
     content:"";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-
-    background: rgba(0,0,0,0.14); /* ← меняй 0.10–0.18 по вкусу */
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:rgba(0,0,0,0.12); /* 0.10–0.18 */
     pointer-events:none;
   }
 
+  /* ТЕКСТ И КНОПКА — ВСЕГДА ПОВЕРХ */
   .entry{
+    position:relative;
+    z-index:5;
     max-width:420px;
     padding:24px 18px;
   }
@@ -69,26 +73,24 @@
   }
 
   .entry button{
-    background: none;
-    border: 1px solid rgba(255,255,255,.45);
+    background:none;
+    border:1px solid rgba(255,255,255,.45);
     color:#eaeaea;
     padding:10px 22px;
     font-family:"JetBrains Mono", monospace;
     font-size:14px;
     cursor:pointer;
-
     text-shadow:0 2px 12px rgba(0,0,0,.55);
   }
-
   .entry button:hover{
-    border-color: rgba(255,255,255,.75);
+    border-color:rgba(255,255,255,.75);
   }
 
-  /* Смартфон — без обрезки краёв */
-  @media (max-width: 680px){
+  /* iPad + смартфон: НЕ УВЕЛИЧИВАТЬ картинку (чтобы не мылить и не резать) */
+  @media (max-width: 1024px){
     body::before{
-      background-size: contain;
-      background-position: center center;
+      background-size:contain;
+      background-position:center center;
     }
   }
 </style>
