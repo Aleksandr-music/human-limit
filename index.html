@@ -15,115 +15,119 @@
     :root{
       --banner: url("images/png/hl-entry-map.png?v=3");
 
-      /* FIX: make banner visible (was too dark) */
-      --dim: 0.04;
-
-      /* FIX: gently lift exposure/contrast on desktop too */
-      --banner-brightness: 1.18;
-      --banner-contrast: 1.06;
-      --banner-saturate: 1.04;
+      /* ONLY overlays (do not touch the image itself) */
+      --veil: 0.03;        /* общая лёгкая вуаль */
+      --topFade: 0.55;     /* затемнение сверху */
+      --bottomFade: 0.12;  /* затемнение снизу */
 
       --breath-scale-a: 1.02;
       --breath-scale-b: 1.04;
     }
 
-    html, body { height: 100%; }
+    html, body { height:100%; }
 
     body{
-      margin: 0;
-      min-height: 100svh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      margin:0;
+      min-height:100svh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
 
-      color: #eaeaea;
-      background: #0b0b0b;
+      color:#eaeaea;
+      background:#0b0b0b;
 
-      position: relative;
-      overflow: hidden;
+      position:relative;
+      overflow:hidden;
 
-      background-image: none !important;
-      background-color: #0b0b0b !important;
+      background-image:none !important;
+      background-color:#0b0b0b !important;
     }
 
+    /* IMAGE: untouched */
     body::before{
       content:"";
-      position: fixed;
-      inset: 0;
-      z-index: -2;
+      position:fixed;
+      inset:0;
+      z-index:-3;
 
       background-image: var(--banner);
-      background-repeat: no-repeat;
-      background-position: center bottom;
-      background-size: cover;
+      background-repeat:no-repeat;
+      background-position:center bottom;
+      background-size:cover;
 
-      filter: brightness(var(--banner-brightness)) contrast(var(--banner-contrast)) saturate(var(--banner-saturate));
-      -webkit-filter: brightness(var(--banner-brightness)) contrast(var(--banner-contrast)) saturate(var(--banner-saturate));
-
-      transform-origin: 50% 50%;
-      will-change: transform;
+      transform-origin:50% 50%;
+      will-change:transform;
       animation: mapBreath 14s ease-in-out infinite;
     }
 
+    /* OVERLAYS ONLY (this is what we tune) */
     body::after{
       content:"";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
 
-      /* FIX: reduced dim overlay */
-      background: rgba(0,0,0,var(--dim));
+      /* 1) лёгкая общая вуаль  2) градиент сверху для читаемости заголовка */
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0,0,0,var(--topFade)) 0%,
+          rgba(0,0,0,0.22) 35%,
+          rgba(0,0,0,0.10) 60%,
+          rgba(0,0,0,var(--bottomFade)) 100%
+        ),
+        rgba(0,0,0,var(--veil));
     }
 
     .entry{
-      position: relative;
-      z-index: 10;
+      position:relative;
+      z-index:10;
 
-      max-width: 420px;
-      padding: 24px 18px;
+      max-width:420px;
+      padding:24px 18px;
 
-      opacity: 0;
+      opacity:0;
       transform: translateY(10px);
       animation: entryIn 700ms ease-out 120ms forwards;
     }
 
     .entry-title{
-      font-family: "JetBrains Mono", monospace;
-      font-weight: 600;
-      font-size: 22px;
-      letter-spacing: 1px;
-      margin: 0 0 12px 0;
-      text-shadow: 0 2px 12px rgba(0,0,0,.55);
+      font-family:"JetBrains Mono", monospace;
+      font-weight:600;
+      font-size:22px;
+      letter-spacing:1px;
+      margin:0 0 12px 0;
+      text-shadow:0 2px 12px rgba(0,0,0,.55);
     }
 
     .entry-text{
-      font-family: "JetBrains Mono", monospace;
-      font-weight: 300;
-      font-size: 16px;
-      margin: 0 0 18px 0;
-      text-shadow: 0 2px 10px rgba(0,0,0,.35);
+      font-family:"JetBrains Mono", monospace;
+      font-weight:300;
+      font-size:16px;
+      margin:0 0 18px 0;
+      text-shadow:0 2px 10px rgba(0,0,0,.35);
     }
 
     .entry button{
-      background: none;
-      border: 1px solid rgba(255,255,255,.45);
-      color: #eaeaea;
-      padding: 10px 22px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 14px;
-      cursor: pointer;
-      text-shadow: 0 2px 10px rgba(0,0,0,.35);
+      background:none;
+      border:1px solid rgba(255,255,255,.45);
+      color:#eaeaea;
+      padding:10px 22px;
+      font-family:"JetBrains Mono", monospace;
+      font-size:14px;
+      cursor:pointer;
+      text-shadow:0 2px 10px rgba(0,0,0,.35);
     }
 
     .entry button:hover{
-      border-color: rgba(255,255,255,.75);
+      border-color:rgba(255,255,255,.75);
     }
 
     @keyframes entryIn{
-      from{ opacity: 0; transform: translateY(10px); }
-      to{ opacity: 1; transform: translateY(0); }
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
     }
 
     @keyframes mapBreath{
@@ -134,23 +138,22 @@
 
     @media (max-width: 680px){
       :root{
-        --dim: 0.03;
-        --banner-brightness: 1.14;
-        --banner-contrast: 1.04;
-        --banner-saturate: 1.04;
+        --veil: 0.02;
+        --topFade: 0.42;
+        --bottomFade: 0.08;
       }
 
       body::before{
-        background-size: contain;
-        background-position: center center;
-        animation: none;
-        transform: none;
+        background-size:contain;
+        background-position:center center;
+        animation:none;
+        transform:none;
       }
     }
 
     @media (prefers-reduced-motion: reduce){
-      .entry{ animation: none; opacity: 1; transform: none; }
-      body::before{ animation: none; transform: none; }
+      .entry{ animation:none; opacity:1; transform:none; }
+      body::before{ animation:none; transform:none; }
     }
   </style>
 </head>
