@@ -9,25 +9,102 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <!-- IMPORTANT: if your file is named styles.css, change href -->
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* page-specific (system.html only) */
+    :root{
+      --banner: url("images/png/hl-system-layered-banner-01.png");
+      --dim: 0.04;
 
+      /* Parallax state (updated by JS) */
+      --mx: 0px;
+      --my: 0px;
+    }
+
+    /* Disable global banner layers from style.css on this page */
+    body::before,
+    body::after{
+      display:none !important;
+      content:none !important;
+    }
+
+    html, body { height:100%; }
+
+    body{
+      margin:0;
+      min-height:100svh;
+      overflow:hidden;
+    }
+
+    /* Multi-layer background (one PNG, 3 depth layers) */
+    .bg{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      overflow:hidden;
+      background:#0b0b0b;
+    }
+
+    .bg-layer{
+      position:absolute;
+      inset:-3vh -3vw; /* prevents edges during motion */
+      background-image: var(--banner);
+      background-repeat:no-repeat;
+      background-position:center center;
+      background-size:cover;
+      will-change:transform;
+      transform: translate3d(0,0,0);
+    }
+
+    .bg-layer-1{
+      opacity:1;
+      transform: translate3d(calc(var(--mx) * 0.25), calc(var(--my) * 0.25), 0);
+    }
+
+    .bg-layer-2{
+      opacity:0.55;
+      mix-blend-mode: screen;
+      transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0);
+    }
+
+    .bg-layer-3{
+      opacity:0.25;
+      mix-blend-mode: lighten;
+      transform: translate3d(calc(var(--mx) * 0.9), calc(var(--my) * 0.9), 0);
+    }
+
+    .bg-dim{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background: rgba(0,0,0,var(--dim));
+    }
+
+    /* Mobile: keep stable, avoid jitter */
+    @media (max-width: 680px){
+      .bg-layer{
+        inset:0;
+        background-size:cover;
+      }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .bg-layer{ transform:none !important; }
+    }
+
+    /* page-specific (system.html only) */
     .title{
       font-size:18px;
       margin-bottom:26px;
     }
 
-    /* main nodes should be block here */
     .menu .node{
       display:block;
       font-size:16px;
       line-height:30px;
     }
 
-    /* service node: subtle */
     .menu .node--service{
       margin-top:10px;
       font-size:14px;
@@ -46,7 +123,6 @@
       font-size:14px;
     }
 
-    /* input is allowed to select/paste because your style.css already enables it */
     #cmd{
       background:none;
       border:none;
@@ -68,6 +144,14 @@
 </head>
 
 <body>
+
+  <!-- Multi-layer parallax background -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg-layer bg-layer-1"></div>
+    <div class="bg-layer bg-layer-2"></div>
+    <div class="bg-layer bg-layer-3"></div>
+    <div class="bg-dim"></div>
+  </div>
 
   <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
 
@@ -99,6 +183,47 @@
   <div id="output" class="output"></div>
 
   <script>
+    // --- Parallax (desktop only) ---
+    (() => {
+      const root = document.documentElement;
+      const max = 18; // px: subtle parallax
+
+      const isMobile = matchMedia("(max-width: 680px)").matches;
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (isMobile || reduce) return;
+
+      let tx = 0, ty = 0;
+      let cx = 0, cy = 0;
+      let raf = 0;
+
+      function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+      function onMove(e){
+        const w = window.innerWidth || 1;
+        const h = window.innerHeight || 1;
+        const nx = (e.clientX / w) * 2 - 1; // -1..1
+        const ny = (e.clientY / h) * 2 - 1; // -1..1
+        tx = clamp(nx * max, -max, max);
+        ty = clamp(ny * max, -max, max);
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      function tick(){
+        raf = 0;
+        cx += (tx - cx) * 0.08;
+        cy += (ty - cy) * 0.08;
+        root.style.setProperty("--mx", cx.toFixed(2) + "px");
+        root.style.setProperty("--my", cy.toFixed(2) + "px");
+
+        if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1){
+          raf = requestAnimationFrame(tick);
+        }
+      }
+
+      window.addEventListener("mousemove", onMove, { passive: true });
+    })();
+
+    // --- Command console ---
     const input = document.getElementById("cmd");
     const output = document.getElementById("output");
 
