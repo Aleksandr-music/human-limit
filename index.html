@@ -120,13 +120,16 @@
     }
 
     @media (max-width: 680px){
-      :root{ --dim: 0.12; }
+      :root{ --dim: 0.06; }
 
       body::before{
         background-size:contain;
         background-position:center center;
         animation:none;
         transform:none;
+
+        filter: brightness(1.14) contrast(1.04) saturate(1.04);
+        -webkit-filter: brightness(1.14) contrast(1.04) saturate(1.04);
       }
     }
 
