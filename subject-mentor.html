@@ -173,12 +173,13 @@
     }
 
     .photo-frame img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      filter: grayscale(100%) contrast(115%);
-    }
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  background: rgba(0,0,0,.12);
+  filter: grayscale(100%) contrast(115%);
+}
 
     .photo-frame .placeholder{
       position:absolute;
