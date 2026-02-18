@@ -1,1 +1,418 @@
+<!-- subject-kiwi.html | Human Limit — Subject File (standalone page) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUBJECT: KIWI — Internal Registry</title>
 
+  <!-- Optional: JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --paper:#cfcfcf;
+      --paper2:#bdbdbd;
+      --ink:#111;
+      --shadow: rgba(0,0,0,.55);
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 50% 20%, #151515 0%, var(--bg) 65%);
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color:#eaeaea;
+      display:flex;
+      min-height:100svh;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .sheet-wrap{ width:min(860px, 100%); }
+
+    .sheet{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      background:
+        radial-gradient(800px 420px at 35% 15%, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.18)),
+        repeating-linear-gradient(
+          0deg,
+          rgba(0,0,0,.075) 0px,
+          rgba(0,0,0,.075) 1px,
+          rgba(0,0,0,0) 2px,
+          rgba(0,0,0,0) 18px
+        ),
+        linear-gradient(180deg, var(--paper), var(--paper2));
+      border: 2px solid rgba(0,0,0,.45);
+      box-shadow: 0 18px 55px var(--shadow);
+      aspect-ratio: 210 / 297;
+      overflow:hidden;
+      color: var(--ink);
+    }
+
+    .noise{
+      pointer-events:none;
+      position:absolute; inset:0;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      mix-blend-mode:multiply;
+      opacity:.6;
+    }
+
+    .header{
+      padding:18px 18px 10px 18px;
+      border-bottom:2px solid rgba(0,0,0,.55);
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:start;
+      flex:0 0 auto;
+    }
+
+    .header h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+
+    .subline{
+      margin-top:6px;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(0,0,0,.70);
+      font-weight:600;
+    }
+
+    .meta{
+      text-align:right;
+      min-width:250px;
+    }
+
+    .meta .id{
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.08em;
+    }
+
+    .meta .small{
+      margin-top:8px;
+      font-size:11px;
+      letter-spacing:.06em;
+      color:rgba(0,0,0,.75);
+      text-transform:uppercase;
+      line-height:1.35;
+    }
+
+    .stamp{
+      position:absolute;
+      top:14px;
+      right:14px;
+      width:124px;
+      height:124px;
+      opacity:.25;
+      transform: rotate(8deg);
+      filter: contrast(120%) saturate(0%);
+      background: center/contain no-repeat url("images/png/hl-shield-stamp.png");
+      mix-blend-mode:multiply;
+      pointer-events:none;
+    }
+
+    /* Back link — in flow (same as Alex/Mentor) */
+    .back-link,
+    .back-link:visited{
+      display:inline-block;
+      margin:10px 0 0 18px;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(0,0,0,.65);
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .back-link:hover{
+      color:rgba(0,0,0,.9);
+      text-decoration:none;
+    }
+
+    .content{
+      padding:16px 18px 18px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      flex:1 1 auto;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      min-height:0;
+    }
+
+    .photo-frame{
+      border:2px solid rgba(0,0,0,.55);
+      background: rgba(0,0,0,.08);
+      aspect-ratio: 16 / 9;
+      position:relative;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+
+    .photo-frame .label{
+      position:absolute;
+      left:10px; top:10px;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background: rgba(255,255,255,.55);
+      padding:4px 6px;
+      border:1px solid rgba(0,0,0,.35);
+      font-weight:700;
+    }
+
+    .photo-frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: grayscale(100%) contrast(115%);
+    }
+
+    .photo-frame .placeholder{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(0,0,0,.55);
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    .lines{
+      border-top:2px solid rgba(0,0,0,.45);
+      padding-top:10px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      align-items:center;
+      gap:10px;
+      padding:10px 0;
+      border-bottom:1px solid rgba(0,0,0,.35);
+      font-size:12px;
+    }
+
+    .row .k{
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:700;
+      color:rgba(0,0,0,.85);
+    }
+
+    .row .v{
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      font-weight:700;
+      color:rgba(0,0,0,.80);
+      line-height:1.25;
+      word-break:break-word;
+    }
+
+    .classified{ color:rgba(0,0,0,.60); }
+
+    .redact-bar{
+      display:inline-block;
+      padding:2px 8px;
+      background: rgba(0,0,0,.85);
+      color: rgba(255,255,255,.88);
+      border-radius:2px;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+
+    .footer{
+      position:relative;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      font-size:10px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(0,0,0,.65);
+      background: rgba(207,207,207,.85);
+      padding:10px 18px 14px 18px;
+      border-top:1px solid rgba(0,0,0,.35);
+      flex:0 0 auto;
+    }
+
+    .footer .date{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .footer .date .box{
+      width:140px;
+      height:14px;
+      background: rgba(0,0,0,.85);
+      border-radius:2px;
+    }
+
+    @media (max-width:680px){
+      body{ padding:16px; }
+      .row{ grid-template-columns: 1fr; gap:6px; }
+      .meta{ min-width:0; text-align:left; }
+      .header{ grid-template-columns: 1fr; }
+      .stamp{ width:104px; height:104px; top:12px; right:12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sheet-wrap">
+    <div class="sheet" id="sheet">
+      <div class="stamp" aria-hidden="true"></div>
+      <div class="noise" aria-hidden="true"></div>
+
+      <div class="header">
+        <div>
+          <h1>SUBJECT PROFILE — INTERNAL REGISTRY</h1>
+          <div class="subline" id="subjectTitle">SUBJECT: KIWI</div>
+        </div>
+
+        <div class="meta">
+          <div class="id" id="subjectId">ID: S–AT–C–0034XX</div>
+          <div class="small">
+            CLASSIFICATION: <span id="classification">ACTIVE UNIT</span><br/>
+            ACCESS STATUS: <span id="accessStatus">LIMITED</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="subjects.html" class="back-link">← BACK TO DATABASE</a>
+
+      <div class="content">
+        <div class="photo-frame" id="photoFrame">
+          <div class="label">PHOTO — 16:9</div>
+
+          <img id="photo" alt="" style="display:none" />
+          <div class="placeholder" id="photoPlaceholder">INSERT IMAGE LATER</div>
+        </div>
+
+        <div class="lines" id="lines"></div>
+      </div>
+
+      <div class="footer">
+        <div>HUMAN LIMIT / INTERNAL FILE</div>
+        <div class="date">
+          <div>CREATED:</div>
+          <div class="box" title="CLASSIFIED"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      subject: "KIWI",
+      id: "S–AT–C–0034XX",              // TODO: set final ID
+      classification: "ACTIVE UNIT",
+      accessStatus: "LIMITED",
+
+      // TODO: set mugshot path
+      photo: "images/png/hl-subject-kiwi-mugshot.png",
+
+      rows: [
+        ["CALLSIGN / NICKNAME", "KIWI"],
+
+        // TODO: fill when approved
+        ["AGE", { classified: true }],
+        ["HEIGHT", { classified: true }],
+        ["EYE COLOR", { classified: true }],
+
+        ["PSYCHOLOGICAL STATE", "STABLE / CONTROLLED"],
+        ["PHYSICAL CONDITION", "OPTIMAL"],
+
+        ["REAL NAME", { classified: true }],
+        ["NATIONALITY", { classified: true }],
+        ["LANGUAGES", { classified: true }],
+
+        ["COMBAT SPECIALIZATION", { classified: true }],
+        ["WEAPON PROFICIENCY", { classified: true }],
+        ["TACTICAL APTITUDE", { classified: true }],
+        ["SITUATIONAL AWARENESS", { classified: true }],
+        ["STRESS RESISTANCE", { classified: true }],
+        ["COMPLIANCE INDEX", { classified: true }],
+        ["ESCAPE RISK", { classified: true }],
+
+        ["FILE AUTHOR", { classified: true, renderMode: "bar", text: "CLASSIFIED" }],
+      ],
+    };
+
+    function renderValue(v){
+      if (typeof v === "string") return `<span>${escapeHtml(v)}</span>`;
+      if (v && v.classified){
+        if (v.renderMode === "bar") {
+          const t = v.text || "CLASSIFIED";
+          return `<span class="redact-bar">${escapeHtml(t)}</span>`;
+        }
+        return `<span class="classified">CLASSIFIED</span>`;
+      }
+      return `<span class="classified">CLASSIFIED</span>`;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // Header
+    document.getElementById("subjectTitle").textContent = `SUBJECT: ${data.subject}`;
+    document.getElementById("subjectId").textContent = `ID: ${data.id}`;
+    document.getElementById("classification").textContent = data.classification;
+    document.getElementById("accessStatus").textContent = data.accessStatus;
+
+    // Photo
+    const img = document.getElementById("photo");
+    const ph = document.getElementById("photoPlaceholder");
+    if (data.photo && data.photo.trim().length){
+      img.src = data.photo;
+      img.style.display = "block";
+      ph.style.display = "none";
+    } else {
+      img.style.display = "none";
+      ph.style.display = "flex";
+    }
+
+    // Lines
+    const lines = document.getElementById("lines");
+    data.rows.forEach(([k,v]) => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="k">${escapeHtml(k)}:</div>
+        <div class="v">${renderValue(v)}</div>
+      `;
+      lines.appendChild(row);
+    });
+  </script>
+</body>
+</html>
