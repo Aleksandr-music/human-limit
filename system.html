@@ -121,35 +121,49 @@
       .bg-layer{ background-size:cover; background-position:center center; }
     }
 
-    /* ANDROID FIX: kill 3D (flicker source) and use 2D layered drift (stable) */
+    /* =========================================================
+       ANDROID FIX:
+       - kill 3D stage (perspective/translateZ/scene transform)
+       - animate ONLY layers in 2D via --mx/--my (stable)
+       ========================================================= */
     html.android .bg{
-      perspective:none;
-      transform-style: flat;
+      perspective:none !important;
+      transform-style: flat !important;
     }
+
+    /* IMPORTANT: bg-scene becomes a static container on Android */
     html.android .bg-scene{
       inset:-3vh -3vw;
       transform:none !important;
+      will-change:auto !important;
     }
+
+    /* Remove any Z stacking on Android (main flicker source) */
     html.android .bg-layer{
-      transform-style: flat;
-      backface-visibility: visible;
-      -webkit-backface-visibility: visible;
+      transform-style: flat !important;
+      backface-visibility: visible !important;
+      -webkit-backface-visibility: visible !important;
+      will-change: transform;
+      transform: none !important; /* reset base */
     }
+
+    /* 2D depth via different motion multipliers + tiny scale */
     html.android .bg-layer-1{
       opacity:1;
-      transform: translate3d(calc(var(--mx) * 0.18), calc(var(--my) * 0.18), 0) scale(1.01);
+      transform: translate3d(calc(var(--mx) * 0.14), calc(var(--my) * 0.14), 0) scale(1.01) !important;
     }
     html.android .bg-layer-2{
-      opacity:0.42;
-      transform: translate3d(calc(var(--mx) * 0.40), calc(var(--my) * 0.40), 0) scale(1.015);
+      opacity:0.40;
+      transform: translate3d(calc(var(--mx) * 0.32), calc(var(--my) * 0.32), 0) scale(1.015) !important;
     }
     html.android .bg-layer-3{
-      opacity:0.22;
-      transform: translate3d(calc(var(--mx) * 0.70), calc(var(--my) * 0.70), 0) scale(1.02);
+      opacity:0.20;
+      transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0) scale(1.02) !important;
     }
+
     html.android .bg-fx,
     html.android .bg-dim{
-      transform:none;
+      transform:none !important;
     }
 
     /* Respect reduced motion */
@@ -281,9 +295,9 @@
         function tick(now){
           const t = (now - t0) / 1000;
 
-          // VERY slow, small amplitude (prevents any shimmer)
-          const mx = Math.sin(t * 0.12) * 10;  // px
-          const my = Math.cos(t * 0.10) * 7;   // px
+          // VERY slow, small amplitude
+          const mx = Math.sin(t * 0.10) * 9;  // px
+          const my = Math.cos(t * 0.08) * 6;  // px
 
           root.style.setProperty("--mx", mx.toFixed(2) + "px");
           root.style.setProperty("--my", my.toFixed(2) + "px");
@@ -351,7 +365,6 @@
       function idle(now){
         const t = (now - t0) / 1000;
 
-        // very subtle, cinematic drift
         const ry = Math.sin(t * 0.14) * 2.2;   // deg
         const rx = Math.cos(t * 0.11) * 1.6;   // deg
         const tx = Math.sin(t * 0.12) * 6.0;   // px
@@ -389,14 +402,14 @@
 
     function nav(node){
       const map = {
-        world:   {msg:"ACCESSING WORLD NODE",    url:"world.html"},
-        system:  {msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
-        mechanics:{msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html"},
-        subjects:{msg:"ACCESSING SUBJECTS NODE", url:"subjects.html"},
-        archive: {msg:"ACCESSING ARCHIVE NODE",  url:"archive.html"},
-        state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"},
-        monitor: {msg:"ACCESSING STATE MONITOR", url:"state.html"},
-        entry:   {msg:"RETURNING TO ENTRY POINT",url:"index.html"},
+        world:   {msg:"ACCESSING WORLD NODE",     url:"world.html"},
+        system:  {msg:"ACCESSING SYSTEM NODE",    url:"mechanics.html"},
+        mechanics:{msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
+        subjects:{msg:"ACCESSING SUBJECTS NODE",  url:"subjects.html"},
+        archive: {msg:"ACCESSING ARCHIVE NODE",   url:"archive.html"},
+        state:   {msg:"ACCESSING STATE MONITOR",  url:"state.html"},
+        monitor: {msg:"ACCESSING STATE MONITOR",  url:"state.html"},
+        entry:   {msg:"RETURNING TO ENTRY POINT", url:"index.html"},
         interface:{msg:"ACCESSING INTERFACE NODE",url:"interface.html"}
       };
       return map[node] || null;
@@ -442,14 +455,12 @@
       const q = (query || "").trim();
       if (!q) return [];
 
-      const hits = INDEX
+      return INDEX
         .map(it => ({ it, sc: scoreHit(q, it) }))
         .filter(x => x.sc > 0)
         .sort((a,b) => b.sc - a.sc)
         .map(x => x.it)
         .slice(0, 6);
-
-      return hits;
     }
 
     function restricted(cmd){
@@ -481,14 +492,12 @@
     const SUBJECTS = {
       alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED", page:"subject-alex.html"},
       kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED", page:"subject-kiwi.html"},
-      french: {id:"S-004", status:"ACTIVE",   access:"LIMITED", page:"subjects.html"}, /* file not present in your list */
       mentor: {id:"S-002", status:"REDACTED", access:"DENIED",  page:"subject-mentor.html"}
     };
 
     const OBSERVE = {
       alex:   "OBSERVATION: ACTIVE / CHANNELS: MULTIPLE",
       kiwi:   "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
-      french: "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
       mentor: "OBSERVATION: DISALLOWED / REQUEST LOGGED"
     };
 
