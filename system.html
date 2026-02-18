@@ -18,11 +18,15 @@
       /* overlay alpha (separate from --dim color in style.css) */
       --bg-dim-alpha: 0.04;
 
-      /* 3D parallax state (updated by JS) */
-      --rx: 0deg; /* rotateX */
-      --ry: 0deg; /* rotateY */
-      --tx: 0px;  /* translateX */
-      --ty: 0px;  /* translateY */
+      /* Desktop 3D parallax state (updated by JS) */
+      --rx: 0deg;
+      --ry: 0deg;
+      --tx: 0px;
+      --ty: 0px;
+
+      /* Mobile/Android 2D drift state (updated by JS) */
+      --mx: 0px;
+      --my: 0px;
     }
 
     /* Disable global banner layers from style.css on this page */
@@ -40,7 +44,7 @@
       overflow:hidden;
     }
 
-    /* --- 3D background stage --- */
+    /* --- background stage --- */
     .bg{
       position:fixed;
       inset:0;
@@ -48,12 +52,11 @@
       overflow:hidden;
       background:#0b0b0b;
 
-      /* true 3D stage */
+      /* Desktop/iPad: 3D stage */
       perspective: 900px;
       transform-style: preserve-3d;
     }
 
-    /* a wrapper that we rotate in 3D (keeps layers crisp) */
     .bg-scene{
       position:absolute;
       inset:-4vh -4vw;
@@ -66,7 +69,6 @@
         rotateY(var(--ry));
     }
 
-    /* Base layer rules */
     .bg-layer{
       position:absolute;
       inset:0;
@@ -79,38 +81,21 @@
       will-change: transform;
       transform-style: preserve-3d;
 
-      /* keep crisp on iOS */
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
+      backface-visibility:hidden;
+      -webkit-backface-visibility:hidden;
       transform: translateZ(0);
     }
 
-    /*
-      Depth is created by Z-translation + slight scale.
-      No blend-modes (keeps clarity).
-    */
-    .bg-layer-1{
-      opacity: 1;
-      transform: translateZ(-60px) scale(1.02);
-    }
+    /* Desktop/iPad depth: Z translation (crisp) */
+    .bg-layer-1{ opacity:1;    transform: translateZ(-60px) scale(1.02); }
+    .bg-layer-2{ opacity:0.45; transform: translateZ(-20px) scale(1.01); }
+    .bg-layer-3{ opacity:0.22; transform: translateZ( 20px) scale(1.00); }
 
-    .bg-layer-2{
-      opacity: 0.45;
-      transform: translateZ(-20px) scale(1.01);
-    }
-
-    .bg-layer-3{
-      opacity: 0.22;
-      transform: translateZ(20px) scale(1.00);
-    }
-
-    /* subtle electronic scan / grain (does not blur image) */
     .bg-fx{
       position:absolute;
       inset:0;
       pointer-events:none;
-      opacity: 0.10;
-      mix-blend-mode: normal;
+      opacity:0.10;
       background:
         repeating-linear-gradient(
           to bottom,
@@ -130,26 +115,47 @@
       transform: translateZ(90px);
     }
 
-    /* Mobile/tablet: keep full composition + still show depth (no crop surprises) */
+    /* Mobile/tablet defaults */
     @media (max-width: 980px){
       :root{ --bg-dim-alpha: 0.06; }
+      .bg-layer{ background-size:cover; background-position:center center; }
+    }
 
-      .bg-layer{
-        background-size: cover;
-        background-position: center center;
-      }
-
-      /* increase depth separation a bit for tablets/phones */
-      .bg-layer-1{ transform: translateZ(-70px) scale(1.03); }
-      .bg-layer-2{ transform: translateZ(-20px) scale(1.015); opacity:0.42; }
-      .bg-layer-3{ transform: translateZ(25px)  scale(1.00); opacity:0.22; }
+    /* ANDROID FIX: kill 3D (flicker source) and use 2D layered drift (stable) */
+    html.android .bg{
+      perspective:none;
+      transform-style: flat;
+    }
+    html.android .bg-scene{
+      inset:-3vh -3vw;
+      transform:none !important;
+    }
+    html.android .bg-layer{
+      transform-style: flat;
+      backface-visibility: visible;
+      -webkit-backface-visibility: visible;
+    }
+    html.android .bg-layer-1{
+      opacity:1;
+      transform: translate3d(calc(var(--mx) * 0.18), calc(var(--my) * 0.18), 0) scale(1.01);
+    }
+    html.android .bg-layer-2{
+      opacity:0.42;
+      transform: translate3d(calc(var(--mx) * 0.40), calc(var(--my) * 0.40), 0) scale(1.015);
+    }
+    html.android .bg-layer-3{
+      opacity:0.22;
+      transform: translate3d(calc(var(--mx) * 0.70), calc(var(--my) * 0.70), 0) scale(1.02);
+    }
+    html.android .bg-fx,
+    html.android .bg-dim{
+      transform:none;
     }
 
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
-      .bg-scene{
-        transform:none !important;
-      }
+      .bg-scene{ transform:none !important; }
+      html.android .bg-layer{ transform:none !important; }
     }
 
     /* --- page-specific (system.html only) --- */
@@ -189,7 +195,7 @@
       color:var(--fg);
       font-family:"JetBrains Mono", monospace;
       font-size:14px;
-      width:min(420px, 80vw);
+      width:min(520px, 84vw);
     }
 
     .output{
@@ -204,7 +210,7 @@
 
 <body>
 
-  <!-- 3D layered background -->
+  <!-- layered background -->
   <div class="bg" aria-hidden="true">
     <div class="bg-scene" id="bgScene">
       <div class="bg-layer bg-layer-1"></div>
@@ -245,139 +251,125 @@
   <div id="output" class="output"></div>
 
   <script>
-    // --- 3D Parallax: pointer + device orientation fallback ---
+    // =========================================================
+    // 0) Platform mode: ANDROID => 2D drift only (no flicker)
+    // =========================================================
+    (() => {
+      const ua = navigator.userAgent || "";
+      const isAndroid = /Android/i.test(ua);
+      if (isAndroid) document.documentElement.classList.add("android");
+    })();
+
+    // =========================================================
+    // 1) Background motion:
+    //    - Desktop: pointer 3D parallax
+    //    - iPad/iOS touch: slow idle 3D drift (NO gyro)
+    //    - Android: very slow idle 2D drift (stable)
+    // =========================================================
     (() => {
       const root = document.documentElement;
 
       const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduce) return;
 
-      // limits tuned to stay crisp (no nausea, no distortion)
-      const MAX_ROT = 6;   // degrees
-      const MAX_MOV = 14;  // px
+      const isAndroid = root.classList.contains("android");
+      const canHover = matchMedia("(hover: hover)").matches;
 
-      let tx=0, ty=0, rx=0, ry=0;
-      let cx=0, cy=0, crx=0, cry=0;
-      let raf=0;
+      // --- ANDROID: slow 2D drift (requested) ---
+      if (isAndroid){
+        let t0 = performance.now();
+        function tick(now){
+          const t = (now - t0) / 1000;
 
-      function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+          // VERY slow, small amplitude (prevents any shimmer)
+          const mx = Math.sin(t * 0.12) * 10;  // px
+          const my = Math.cos(t * 0.10) * 7;   // px
 
-      function apply(){
-        root.style.setProperty("--tx", cx.toFixed(2) + "px");
-        root.style.setProperty("--ty", cy.toFixed(2) + "px");
-        root.style.setProperty("--rx", crx.toFixed(2) + "deg");
-        root.style.setProperty("--ry", cry.toFixed(2) + "deg");
-      }
+          root.style.setProperty("--mx", mx.toFixed(2) + "px");
+          root.style.setProperty("--my", my.toFixed(2) + "px");
 
-      function tick(){
-        raf = 0;
-        // smooth follow
-        cx  += (tx  - cx)  * 0.08;
-        cy  += (ty  - cy)  * 0.08;
-        crx += (rx  - crx) * 0.08;
-        cry += (ry  - cry) * 0.08;
-
-        apply();
-
-        if (
-          Math.abs(tx-cx)  > 0.08 ||
-          Math.abs(ty-cy)  > 0.08 ||
-          Math.abs(rx-crx) > 0.05 ||
-          Math.abs(ry-cry) > 0.05
-        ){
-          raf = requestAnimationFrame(tick);
+          requestAnimationFrame(tick);
         }
+        requestAnimationFrame(tick);
+        return;
       }
 
-      function schedule(){
-        if (!raf) raf = requestAnimationFrame(tick);
-      }
+      // --- DESKTOP: pointer-driven 3D parallax ---
+      if (canHover){
+        const MAX_ROT = 6;   // deg
+        const MAX_MOV = 14;  // px
 
-      // Desktop / pointer
-      function onPointer(e){
-        const w = window.innerWidth || 1;
-        const h = window.innerHeight || 1;
-        const nx = (e.clientX / w) * 2 - 1; // -1..1
-        const ny = (e.clientY / h) * 2 - 1;
+        let tx=0, ty=0, rx=0, ry=0;
+        let cx=0, cy=0, crx=0, cry=0;
+        let raf=0;
 
-        tx = clamp(nx * MAX_MOV, -MAX_MOV, MAX_MOV);
-        ty = clamp(ny * MAX_MOV, -MAX_MOV, MAX_MOV);
-
-        // rotate opposite for depth feel
-        ry = clamp(nx * MAX_ROT, -MAX_ROT, MAX_ROT);
-        rx = clamp(-ny * MAX_ROT, -MAX_ROT, MAX_ROT);
-
-        schedule();
-      }
-
-      window.addEventListener("pointermove", onPointer, { passive:true });
-
-      // Mobile / iPad: device orientation if available
-      let usedGyro = false;
-
-      function onOrient(e){
-        // beta: front-back tilt [-180..180], gamma: left-right tilt [-90..90]
-        const beta = typeof e.beta === "number" ? e.beta : 0;
-        const gamma = typeof e.gamma === "number" ? e.gamma : 0;
-
-        // normalize small, stable range
-        const nb = clamp(beta / 25, -1, 1);
-        const ng = clamp(gamma / 25, -1, 1);
-
-        // use rotation more than translation for crispness
-        ry = clamp(ng * (MAX_ROT * 0.9), -MAX_ROT, MAX_ROT);
-        rx = clamp(-nb * (MAX_ROT * 0.9), -MAX_ROT, MAX_ROT);
-
-        tx = clamp(ng * (MAX_MOV * 0.35), -MAX_MOV, MAX_MOV);
-        ty = clamp(nb * (MAX_MOV * 0.35), -MAX_MOV, MAX_MOV);
-
-        usedGyro = true;
-        schedule();
-      }
-
-      // iOS may require permission; we try silently, fallback to idle drift
-      function startGyro(){
-        if (typeof DeviceOrientationEvent === "undefined") return false;
-
-        if (typeof DeviceOrientationEvent.requestPermission === "function"){
-          // If not granted, we just won't get events (fallback runs)
-          DeviceOrientationEvent.requestPermission().then((res) => {
-            if (res === "granted"){
-              window.addEventListener("deviceorientation", onOrient, true);
-            }
-          }).catch(() => {});
-          return true;
-        } else {
-          window.addEventListener("deviceorientation", onOrient, true);
-          return true;
+        function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+        function apply(){
+          root.style.setProperty("--tx", cx.toFixed(2) + "px");
+          root.style.setProperty("--ty", cy.toFixed(2) + "px");
+          root.style.setProperty("--rx", crx.toFixed(2) + "deg");
+          root.style.setProperty("--ry", cry.toFixed(2) + "deg");
         }
+        function tick(){
+          raf = 0;
+          cx  += (tx  - cx)  * 0.08;
+          cy  += (ty  - cy)  * 0.08;
+          crx += (rx  - crx) * 0.08;
+          cry += (ry  - cry) * 0.08;
+          apply();
+
+          if (
+            Math.abs(tx-cx)  > 0.08 ||
+            Math.abs(ty-cy)  > 0.08 ||
+            Math.abs(rx-crx) > 0.05 ||
+            Math.abs(ry-cry) > 0.05
+          ){
+            raf = requestAnimationFrame(tick);
+          }
+        }
+        function schedule(){ if(!raf) raf = requestAnimationFrame(tick); }
+
+        window.addEventListener("pointermove", (e) => {
+          const w = window.innerWidth || 1;
+          const h = window.innerHeight || 1;
+          const nx = (e.clientX / w) * 2 - 1;
+          const ny = (e.clientY / h) * 2 - 1;
+
+          tx = clamp(nx * MAX_MOV, -MAX_MOV, MAX_MOV);
+          ty = clamp(ny * MAX_MOV, -MAX_MOV, MAX_MOV);
+          ry = clamp(nx * MAX_ROT, -MAX_ROT, MAX_ROT);
+          rx = clamp(-ny * MAX_ROT, -MAX_ROT, MAX_ROT);
+
+          schedule();
+        }, { passive:true });
+
+        return;
       }
 
-      const gyroPossible = startGyro();
-
-      // Fallback: subtle idle drift for touch devices with no gyro events
+      // --- TOUCH (iPad/iOS): slow idle 3D drift, NO gyro ---
       let t0 = performance.now();
       function idle(now){
-        if (usedGyro) return; // gyro took over
         const t = (now - t0) / 1000;
 
-        // very subtle, keeps “3D” alive
-        ry = Math.sin(t * 0.35) * 2.0;
-        rx = Math.cos(t * 0.28) * 1.6;
-        tx = Math.sin(t * 0.30) * 4.0;
-        ty = Math.cos(t * 0.24) * 3.0;
+        // very subtle, cinematic drift
+        const ry = Math.sin(t * 0.14) * 2.2;   // deg
+        const rx = Math.cos(t * 0.11) * 1.6;   // deg
+        const tx = Math.sin(t * 0.12) * 6.0;   // px
+        const ty = Math.cos(t * 0.10) * 4.0;   // px
 
-        schedule();
+        root.style.setProperty("--ry", ry.toFixed(2) + "deg");
+        root.style.setProperty("--rx", rx.toFixed(2) + "deg");
+        root.style.setProperty("--tx", tx.toFixed(2) + "px");
+        root.style.setProperty("--ty", ty.toFixed(2) + "px");
+
         requestAnimationFrame(idle);
       }
-
-      // run idle drift only on touch-centric devices or when gyro exists but doesn’t fire
-      if (matchMedia("(hover: none)").matches || gyroPossible){
-        requestAnimationFrame(idle);
-      }
+      requestAnimationFrame(idle);
     })();
 
-    // --- Command console (unchanged logic) ---
+    // =========================================================
+    // 2) Command console + internal search (site "router")
+    // =========================================================
     const input = document.getElementById("cmd");
     const output = document.getElementById("output");
 
@@ -399,19 +391,75 @@
       const map = {
         world:   {msg:"ACCESSING WORLD NODE",    url:"world.html"},
         system:  {msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
+        mechanics:{msg:"ACCESSING SYSTEM NODE",  url:"mechanics.html"},
         subjects:{msg:"ACCESSING SUBJECTS NODE", url:"subjects.html"},
         archive: {msg:"ACCESSING ARCHIVE NODE",  url:"archive.html"},
-        state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"}
+        state:   {msg:"ACCESSING STATE MONITOR", url:"state.html"},
+        monitor: {msg:"ACCESSING STATE MONITOR", url:"state.html"},
+        entry:   {msg:"RETURNING TO ENTRY POINT",url:"index.html"},
+        interface:{msg:"ACCESSING INTERFACE NODE",url:"interface.html"}
       };
       return map[node] || null;
+    }
+
+    // --- internal search index (matches your actual filenames) ---
+    const INDEX = [
+      { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"] },
+
+      { key:"system",    title:"SYSTEM",    url:"mechanics.html",      tags:["rules","protocol","mechanics","laws","core"] },
+      { key:"mechanics", title:"MECHANICS", url:"mechanics.html",      tags:["system","logic","structure"] },
+
+      { key:"subjects",  title:"SUBJECTS",  url:"subjects.html",       tags:["profiles","entities","index","persons"] },
+      { key:"alex",      title:"ALEX",      url:"subject-alex.html",   tags:["subject","profile","s-001"] },
+      { key:"kiwi",      title:"KIWI",      url:"subject-kiwi.html",   tags:["subject","profile","s-003"] },
+      { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"] },
+
+      { key:"archive",   title:"ARCHIVE",   url:"archive.html",        tags:["logs","records","history","files"] },
+
+      { key:"state",     title:"STATE",     url:"state.html",          tags:["monitor","status","telemetry","system state"] },
+
+      { key:"entry",     title:"ENTRY",     url:"index.html",          tags:["start","gateway","root"] },
+      { key:"interface", title:"INTERFACE", url:"interface.html",      tags:["ui","layer","transition"] }
+    ];
+
+    let LAST_RESULTS = [];
+
+    function scoreHit(q, item){
+      const s = q.toLowerCase();
+      const key = item.key.toLowerCase();
+      const title = item.title.toLowerCase();
+      const tags = (item.tags || []).join(" ").toLowerCase();
+
+      if (key === s) return 100;
+      if (title === s) return 90;
+      if (key.startsWith(s)) return 70;
+      if (title.includes(s)) return 55;
+      if (tags.includes(s)) return 35;
+      return 0;
+    }
+
+    function doSearch(query){
+      const q = (query || "").trim();
+      if (!q) return [];
+
+      const hits = INDEX
+        .map(it => ({ it, sc: scoreHit(q, it) }))
+        .filter(x => x.sc > 0)
+        .sort((a,b) => b.sc - a.sc)
+        .map(x => x.it)
+        .slice(0, 6);
+
+      return hits;
     }
 
     function restricted(cmd){
       if(cmd === "help"){
         respondMulti([
           "LIMITED PROTOCOL AVAILABLE",
-          "NAV: world | system | subjects | archive",
+          "NAV: world | system | subjects | archive | state | entry",
           "QUERY: subjects:list | subject <key>",
+          "SEARCH: search <term> | <term> (implicit)",
+          "OPEN: open <n> (from last results)",
           "UTILITY: clear"
         ]);
         return "__handled__";
@@ -431,10 +479,10 @@
     }
 
     const SUBJECTS = {
-      alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED"},
-      kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED"},
-      french: {id:"S-004", status:"ACTIVE",   access:"LIMITED"},
-      mentor: {id:"S-002", status:"REDACTED", access:"DENIED"}
+      alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED", page:"subject-alex.html"},
+      kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED", page:"subject-kiwi.html"},
+      french: {id:"S-004", status:"ACTIVE",   access:"LIMITED", page:"subjects.html"}, /* file not present in your list */
+      mentor: {id:"S-002", status:"REDACTED", access:"DENIED",  page:"subject-mentor.html"}
     };
 
     const OBSERVE = {
@@ -467,6 +515,11 @@
         "STATUS: " + rec.status,
         "ACCESS: " + rec.access
       ];
+    }
+
+    function go(url, msg){
+      if (msg) respond(msg);
+      setTimeout(() => { window.location.href = url; }, 360);
     }
 
     input.addEventListener("keydown", (e) => {
@@ -522,7 +575,7 @@
         respondMulti([
           "SUBJECT INDEX AVAILABLE",
           "QUERY FORMAT: subject <key>",
-          "KNOWN KEYS: alex, mentor, kiwi, french"
+          "KNOWN KEYS: alex, mentor, kiwi"
         ]);
         return;
       }
@@ -539,11 +592,67 @@
         return;
       }
 
+      // OPEN <n>
+      if (value.startsWith("open ")){
+        const n = parseInt(value.slice(5).trim(), 10);
+        if (!Number.isFinite(n) || n < 1 || n > LAST_RESULTS.length){
+          respond("OPEN: INVALID INDEX");
+          return;
+        }
+        const hit = LAST_RESULTS[n-1];
+        go(hit.url, "OPENING: " + hit.title);
+        return;
+      }
+
+      // SEARCH <term>
+      if (value.startsWith("search ")){
+        const q = raw.slice(7).trim();
+        const hits = doSearch(q);
+        LAST_RESULTS = hits;
+
+        if (!hits.length){
+          respond("SEARCH: NO RESULTS");
+          return;
+        }
+
+        if (hits.length === 1){
+          go(hits[0].url, "SEARCH HIT: " + hits[0].title);
+          return;
+        }
+
+        respondMulti([
+          "SEARCH RESULTS:",
+          ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+          "TYPE: open <n>"
+        ]);
+        return;
+      }
+
+      // direct NAV by key
       const res = nav(value);
       if(res){
-        respond(res.msg);
-        setTimeout(() => { window.location.href = res.url; }, 400);
+        go(res.url, res.msg);
         return;
+      }
+
+      // implicit search (typing any term)
+      {
+        const hits = doSearch(raw);
+        LAST_RESULTS = hits;
+
+        if (hits.length === 1){
+          go(hits[0].url, "SEARCH HIT: " + hits[0].title);
+          return;
+        }
+
+        if (hits.length > 1){
+          respondMulti([
+            "SEARCH RESULTS:",
+            ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+            "TYPE: open <n>"
+          ]);
+          return;
+        }
       }
 
       respond("COMMAND NOT RECOGNIZED");
