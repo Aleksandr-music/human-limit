@@ -172,9 +172,28 @@ input, textarea{
   color:var(--dim2);
   transition:opacity .15s ease;
 }
+
 @media (max-width:680px){
+
   body{
     padding:28px 16px;
     line-height:24px;
   }
-}
+
+  .back-link{
+    position:absolute;
+    top:12px;
+    left:14px;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:rgba(0,0,0,.65);
+    text-decoration:none;
+    font-weight:700;
+  }
+
+  .back-link:hover{
+    color:rgba(0,0,0,.9);
+  }
+
+} 
