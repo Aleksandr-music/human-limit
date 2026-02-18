@@ -191,6 +191,22 @@
     .menu .node--service::before{ color:var(--dim); }
     .menu .node--service:hover{ color:var(--fg); }
 
+    /* BACK button styled like links */
+    .menu .node--back{
+      background:none;
+      border:none;
+      padding:0;
+      cursor:pointer;
+      text-align:left;
+      font-family:inherit;
+      font-size:14px;
+      line-height:30px;
+      color:var(--dim);
+    }
+    .menu .node--back:hover{
+      color:var(--fg);
+    }
+
     /* Lockdown: menu becomes non-interactive (command-only) */
     html.lock .menu{
       pointer-events:none;
@@ -327,6 +343,9 @@
     <a class="node" href="archive.html">ARCHIVE</a>
 
     <a class="node node--service" href="state.html">STATE MONITOR</a>
+
+    <!-- Back button (no | character used) -->
+    <button class="node node--service node--back" id="backBtn" type="button">BACK</button>
   </nav>
 
   <div class="status dim" id="status">
@@ -454,6 +473,7 @@
     // =========================================================
     // 2) Command console + internal search + fuzzy + UX features
     //    Included:
+    //    - Back button + "back" command
     //    - No '|' character usage
     //    - Hint in input line
     //    - History (ArrowUp / ArrowDown)
@@ -471,6 +491,16 @@
     const hint = document.getElementById("hint");
     const bgFx = document.getElementById("bgFx");
     const sessionMeta = document.getElementById("sessionMeta");
+    const backBtn = document.getElementById("backBtn");
+
+    // ----- back button behavior -----
+    function doBack(){
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = "index.html";
+    }
+    if (backBtn){
+      backBtn.addEventListener("click", doBack, { passive:true });
+    }
 
     // ----- session flags -----
     const SESSION_KEY = "hl_session_state_v1";
@@ -545,15 +575,16 @@
       setTimeout(() => bgFx.classList.remove("pulse"), 900);
     }
 
+    function escapeRegExp(s){
+      return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
     function renderLines(lines, highlightTerm){
       const term = (highlightTerm || "").trim();
-      const safeTerm = term ? escapeHtml(term) : "";
-
       const out = lines.map(line => {
         let safe = escapeHtml(line);
 
         if (term && term.length >= 2){
-          // highlight first occurrence (subtle)
           const re = new RegExp(escapeRegExp(term), "i");
           safe = safe.replace(re, (m) => `<span class="hl">${escapeHtml(m)}</span>`);
         }
@@ -570,10 +601,6 @@
 
     function respondMulti(lines, highlightTerm){
       renderLines(lines, highlightTerm || "");
-    }
-
-    function escapeRegExp(s){
-      return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
     function nav(node){
@@ -645,9 +672,8 @@
 
     // ----- Tab autocomplete -----
     const TOKENS = [
-      "help","clear","search","open","map","trace","lock","unlock","drift",
+      "help","clear","search","open","map","trace","lock","unlock","drift","back","return",
       "world","system","mechanics","subjects","archive","state","monitor","entry","interface",
-      "subject","subjects:list","subject:list","observe",
       "alex","kiwi","mentor"
     ];
 
@@ -656,16 +682,6 @@
       const parts = raw.split(/\s+/);
       const last = parts[parts.length - 1] || "";
       const head = parts.slice(0, -1).join(" ");
-
-      // Special: "subject <key>"
-      if (parts[0] === "subject" && parts.length === 2){
-        const k = last.toLowerCase();
-        const keys = ["alex","kiwi","mentor"];
-        const matches = keys.filter(x => x.startsWith(k));
-        if (matches.length === 1){
-          return "subject " + matches[0];
-        }
-      }
 
       const q = last.toLowerCase();
       if (!q) return null;
@@ -762,14 +778,12 @@
     function confidentSuggestion(sug){
       if (!sug || !sug.length) return null;
       if (sug.length === 1) return sug[0];
-      // if top is distance 1 and runner-up is >= 3, treat as confident
-      if (sug[0].d <= 1 && sug[1].d >= 3) return sug[0];
-      // if top is distance 0, always confident
       if (sug[0].d === 0) return sug[0];
+      if (sug[0].d <= 1 && sug[1].d >= 3) return sug[0];
       return null;
     }
 
-    // ----- Site map (ASCII tree without '|' characters) -----
+    // ----- Site map (ASCII tree without '|') -----
     function siteMapLines(){
       return [
         "ROOT",
@@ -795,7 +809,7 @@
         "FORMAT: trace <node>"
       ];
 
-      const url = n.url || n.url;
+      const url = n.url;
       return [
         "TRACE ROUTE",
         "SYSTEM -> ROUTER",
@@ -816,6 +830,7 @@
           "MAP: map",
           "TRACE: trace <node>",
           "MODE: lock, unlock",
+          "BACK: back",
           "UTILITY: clear",
           "INPUT: ArrowUp, ArrowDown history; Tab autocomplete"
         ]);
@@ -848,6 +863,11 @@
         return "__handled__";
       }
 
+      if(cmd === "back" || cmd === "return"){
+        doBack();
+        return "__handled__";
+      }
+
       if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
       return null;
     }
@@ -860,7 +880,6 @@
       if (msg) lines.push(msg);
       if (meta && meta.length) lines.push(...meta);
 
-      // show parsing for 0.5–1s then redirect
       const parsing = [
         "PARSING...",
         "ROUTE RESOLUTION...",
@@ -1048,7 +1067,6 @@
         const best = confidentSuggestion(sug);
 
         if (sug.length){
-          // AUTO-REDIRECT if confident
           if (best){
             LAST_RESULTS = [best.it];
             go(best.it.url, "CORRECTED: " + best.it.title, [
