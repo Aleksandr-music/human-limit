@@ -1,100 +1,105 @@
-<style>
-  html, body { height: 100%; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Human Limit</title>
 
-  body{
-    margin:0;
-    min-height:100svh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-    color:#eaeaea;
-    background:#0b0b0b;
+  <link rel="stylesheet" href="style.css">
 
-    background-image:none !important;
-    background-color:#0b0b0b !important;
+  <style>
+    :root{
+      --banner: url("images/png/hl-entry-map.png?v=3");
+      --banner-opacity: 1;
+      --banner-dim: 0.10;
+      --banner-blur: 0px;
+    }
 
-    position:relative;
-    overflow:hidden;
-  }
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
 
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:-2;
+    .entry{
+      max-width:420px;
+      padding:24px 18px;
+      opacity:0;
+      transform: translateY(10px);
+      animation: entryIn 700ms ease-out 120ms forwards;
+    }
 
-    background-image:url("images/png/hl-entry-map.png?v=3");
-    background-repeat:no-repeat;
-    background-position:center bottom;
-    background-size:cover;
+    .entry-title{
+      font-weight:600;
+      font-size:22px;
+      letter-spacing:1px;
+      margin:0 0 12px 0;
+      text-shadow:0 2px 12px rgba(0,0,0,.55);
+    }
 
-    filter: brightness(1.12) contrast(1.06) saturate(1.04);
-    -webkit-filter: brightness(1.12) contrast(1.06) saturate(1.04);
+    .entry-text{
+      font-weight:300;
+      font-size:16px;
+      margin:0 0 18px 0;
+      text-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
 
-    transform:none;
-  }
+    button{
+      background:none;
+      border:1px solid rgba(255,255,255,.45);
+      color:var(--fg);
+      padding:10px 22px;
+      font-family:"JetBrains Mono", monospace;
+      font-size:14px;
+      cursor:pointer;
+      text-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
 
-  body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:-1;
-    pointer-events:none;
-    background: rgba(0,0,0,0.06);
-  }
+    button:hover{
+      border-color:rgba(255,255,255,.75);
+    }
 
-  .entry{
-    position:relative;
-    z-index:5;
-    max-width:420px;
-    padding:24px 18px;
-  }
-
-  .entry-title{
-    font-family:"JetBrains Mono", monospace;
-    font-weight:600;
-    font-size:22px;
-    letter-spacing:1px;
-    margin:0 0 12px 0;
-    text-shadow:0 2px 12px rgba(0,0,0,.55);
-  }
-
-  .entry-text{
-    font-family:"JetBrains Mono", monospace;
-    font-weight:300;
-    font-size:16px;
-    margin:0 0 18px 0;
-    text-shadow:0 2px 10px rgba(0,0,0,.35);
-  }
-
-  .entry button{
-    background:none;
-    border:1px solid rgba(255,255,255,.45);
-    color:#eaeaea;
-    padding:10px 22px;
-    font-family:"JetBrains Mono", monospace;
-    font-size:14px;
-    cursor:pointer;
-    text-shadow:0 2px 10px rgba(0,0,0,.35);
-  }
-
-  .entry button:hover{
-    border-color:rgba(255,255,255,.75);
-  }
-
-  @media (max-width: 680px){
+    /* Subtle “map breathing” (targets the global banner layer from style.css) */
     body::before{
-      background-size: cover;
-      background-position: center 45%;
-
-      filter: brightness(1.22) contrast(1.06) saturate(1.06);
-      -webkit-filter: brightness(1.22) contrast(1.06) saturate(1.06);
+      animation: mapBreath 14s ease-in-out 0s infinite;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
     }
 
-    body::after{
-      background: rgba(0,0,0,0.03);
+    @keyframes entryIn{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
     }
-  }
-</style>
+
+    @keyframes mapBreath{
+      0%   { transform: scale(1.02); opacity: var(--banner-opacity); }
+      50%  { transform: scale(1.04); opacity: calc(var(--banner-opacity) * 0.92); }
+      100% { transform: scale(1.02); opacity: var(--banner-opacity); }
+    }
+
+    /* Smartphone: slightly brighter banner */
+    @media (max-width: 680px){
+      :root{ --banner-dim: 0.05; }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .entry{ animation:none; opacity:1; transform:none; }
+      body::before{ animation:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="entry">
+    <div class="entry-title">HUMAN LIMIT</div>
+    <div class="entry-text">The world is already decided.</div>
+    <button onclick="location.href='interface.html'">Access World</button>
+  </div>
+</body>
+</html>
