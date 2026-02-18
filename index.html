@@ -1,7 +1,6 @@
 <style>
   /* только layout этой страницы */
 
-  /* фон + оверлей */
   body{
     margin:0;
     min-height:100svh;
@@ -10,7 +9,10 @@
     justify-content:center;
     text-align:center;
 
-    /* ВАЖНО: центрируем по НИЗУ, чтобы пол оставался и текст не "плавал" */
+    /* fallback если картинка не подгрузилась */
+    background-color:#0b0b0b;
+
+    /* оверлей + фон */
     background-image:
       linear-gradient(
         to bottom,
@@ -18,14 +20,12 @@
         rgba(0,0,0,.55) 45%,
         rgba(0,0,0,.78) 100%
       ),
-      url("images/hl-entry-map.png"); /* <-- поставь здесь имя файла */
+      url("images/png/hl-entry-map.png?v=1"); /* ✅ правильный путь + анти-кэш */
     background-size:cover;
     background-position:center bottom;
     background-repeat:no-repeat;
-    background-attachment:fixed;
   }
 
-  /* запас по краям на мобильных */
   .entry{
     max-width:420px;
     padding:24px 18px;
@@ -63,10 +63,5 @@
 
   .entry button:hover{
     border-color:var(--fg);
-  }
-
-  /* мобильная корректировка: убираем fixed-attachment (часто ломает) */
-  @media (max-width: 680px){
-    body{ background-attachment:scroll; }
   }
 </style>
