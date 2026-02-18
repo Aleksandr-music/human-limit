@@ -101,12 +101,16 @@
     }
 
     @media (max-width: 1024px){
-      body::before{
-        background-size:contain;
-        background-position:center center;
-        background-color:#0b0b0b;
-      }
-    }
+  body::before{
+    background-size: contain;
+    background-position: center center;
+    background-color: #0b0b0b;
+
+    /* добавляем свет ТОЛЬКО для смартфонов */
+    filter: brightness(1.35) contrast(1.08) saturate(1.08);
+    -webkit-filter: brightness(1.35) contrast(1.08) saturate(1.08);
+  }
+} 
   </style>
 </head>
 
