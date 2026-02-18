@@ -128,19 +128,23 @@
       pointer-events:none;
     }
 
-    .back-link,
-    .back-link:visited{
-      position:absolute;
-      top:12px;
-      left:14px;
-      font-size:11px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:rgba(0,0,0,.65);
-      text-decoration:none;
-      font-weight:700;
-      z-index:5;
-    }
+    /* Back link — same layout behavior as Mentor (in flow, not pinned) */
+.back-link,
+.back-link:visited{
+  display:inline-block;
+  margin:10px 0 0 18px;   /* опускаем и выравниваем по левому отступу контента */
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(0,0,0,.65);
+  text-decoration:none;
+  font-weight:700;
+}
+
+.back-link:hover{
+  color:rgba(0,0,0,.9);
+  text-decoration:none;
+} 
 
     .back-link:hover{
       color:rgba(0,0,0,.9);
