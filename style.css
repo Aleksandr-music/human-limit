@@ -4,12 +4,10 @@
   --dim:#8e8e8e;
   --dim2:#5f5f5f;
 
-  /* ===== GLOBAL PAGE BANNER (background) ===== */
-  /* Set per-page: --banner: url("images/world.jpg"); */
-  --banner: none;          /* default: no banner */
-  --banner-opacity: 0.14;  /* adjust globally */
-  --banner-blur: 0px;      /* optional */
-  --banner-dim: 0.55;      /* dark overlay strength */
+  --banner: none;
+  --banner-opacity: 0.14;
+  --banner-blur: 0px;
+  --banner-dim: 0.55;
 }
 
 html,body{ height:100%; }
@@ -30,10 +28,9 @@ body{
   overflow-x:hidden;
   user-select:text;
 
-  position:relative; /* needed for overlay stacking */
+  position:relative;
 }
 
-/* banner image layer */
 body::before{
   content:"";
   position:fixed;
@@ -49,10 +46,9 @@ body::before{
   filter: blur(var(--banner-blur));
   transform: scale(1.02);
 
-  pointer-events:none; /* IMPORTANT: never block taps */
+  pointer-events:none;
 }
 
-/* dark overlay layer */
 body::after{
   content:"";
   position:fixed;
@@ -61,7 +57,7 @@ body::after{
 
   background: rgba(0,0,0,var(--banner-dim));
 
-  pointer-events:none; /* IMPORTANT: never block taps */
+  pointer-events:none;
 }
 
 a{
@@ -118,24 +114,20 @@ a{
   color:var(--fg);
 }
 
-/* keep UI elements non-selectable */
 .title, .node, .cursor{
   -webkit-user-select:none;
   user-select:none;
 }
 
-/* allow paste/selection in inputs */
 input, textarea{
   -webkit-user-select:text;
   user-select:text;
 }
 
-/* allow copying output text */
 .output{
   -webkit-user-select:text;
   user-select:text;
 }
-/* ===== SUBJECT DATABASE INTERACTION ===== */
 
 .subject-row{
   display:block;
@@ -146,12 +138,12 @@ input, textarea{
 }
 
 .subject-row:hover{
-  color:var(--fg);      /* мягкое усиление, без свечения */
-  text-decoration:none; /* важно: не выглядит как ссылка */
+  color:var(--fg);
+  text-decoration:none;
 }
 
 .subject-row:active{
-  opacity:0.55;         /* лёгкий "terminal feedback" */
+  opacity:0.55;
 }
 
 .subject-row:focus{
@@ -159,7 +151,6 @@ input, textarea{
   color:var(--fg);
 }
 
-/* во время "поиска" блокируем UI без визуального шума */
 .is-busy .subject-row,
 .is-busy .cmd,
 .is-busy .node{
@@ -167,33 +158,32 @@ input, textarea{
   opacity:0.6;
 }
 
-/* hint уже почти идеален, но делаем его более «машинным» */
 .hint{
   color:var(--dim2);
   transition:opacity .15s ease;
 }
 
-@media (max-width:680px){
+/* GLOBAL BACK LINK (canonical like Mentor) */
+.back-link{
+  position:absolute;
+  top:12px;
+  left:14px;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(0,0,0,.65);
+  text-decoration:none;
+  font-weight:700;
+  z-index:5;
+}
 
+.back-link:hover{
+  color:rgba(0,0,0,.9);
+}
+
+@media (max-width:680px){
   body{
     padding:28px 16px;
     line-height:24px;
   }
-
-  .back-link{
-    position:absolute;
-    top:12px;
-    left:14px;
-    font-size:11px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    color:rgba(0,0,0,.65);
-    text-decoration:none;
-    font-weight:700;
-  }
-
-  .back-link:hover{
-    color:rgba(0,0,0,.9);
-  }
-
-} 
+}
