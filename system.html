@@ -23,10 +23,6 @@
       --ry: 0deg;
       --tx: 0px;
       --ty: 0px;
-
-      /* Mobile/Android 2D drift state (updated by JS) */
-      --mx: 0px;
-      --my: 0px;
     }
 
     /* Disable global banner layers from style.css on this page */
@@ -44,7 +40,7 @@
       overflow:hidden;
     }
 
-    /* --- background stage --- */
+    /* --- background stage (DESKTOP/TABLET) --- */
     .bg{
       position:fixed;
       inset:0;
@@ -52,7 +48,6 @@
       overflow:hidden;
       background:#0b0b0b;
 
-      /* Desktop/iPad: 3D stage */
       perspective: 900px;
       transform-style: preserve-3d;
     }
@@ -86,7 +81,7 @@
       transform: translateZ(0);
     }
 
-    /* Desktop/iPad depth: Z translation (crisp) */
+    /* Desktop/iPad depth */
     .bg-layer-1{ opacity:1;    transform: translateZ(-60px) scale(1.02); }
     .bg-layer-2{ opacity:0.45; transform: translateZ(-20px) scale(1.01); }
     .bg-layer-3{ opacity:0.22; transform: translateZ( 20px) scale(1.00); }
@@ -115,61 +110,58 @@
       transform: translateZ(90px);
     }
 
-    /* Mobile/tablet defaults */
+    /* Tablet defaults */
     @media (max-width: 980px){
       :root{ --bg-dim-alpha: 0.06; }
       .bg-layer{ background-size:cover; background-position:center center; }
     }
 
     /* =========================================================
-       ANDROID FIX:
-       - kill 3D stage (perspective/translateZ/scene transform)
-       - animate ONLY layers in 2D via --mx/--my (stable)
+       MOBILE FIX (ALL smartphones):
+       - disable 3D completely
+       - single background layer only
+       - slow drift via background-position (NO transforms, NO rAF)
        ========================================================= */
-    html.android .bg{
+    html.mobile .bg{
       perspective:none !important;
       transform-style: flat !important;
     }
-
-    /* IMPORTANT: bg-scene becomes a static container on Android */
-    html.android .bg-scene{
-      inset:-3vh -3vw;
+    html.mobile .bg-scene{
+      inset:0 !important;
       transform:none !important;
       will-change:auto !important;
     }
 
-    /* Remove any Z stacking on Android (main flicker source) */
-    html.android .bg-layer{
-      transform-style: flat !important;
+    html.mobile .bg-layer{
+      transform:none !important;
+      will-change:auto !important;
       backface-visibility: visible !important;
       -webkit-backface-visibility: visible !important;
-      will-change: transform;
-      transform: none !important; /* reset base */
+
+      /* drift without transforms */
+      animation: driftBg 26s ease-in-out infinite alternate;
+      background-position: 50% 50%;
     }
 
-    /* 2D depth via different motion multipliers + tiny scale */
-    html.android .bg-layer-1{
-      opacity:1;
-      transform: translate3d(calc(var(--mx) * 0.14), calc(var(--my) * 0.14), 0) scale(1.01) !important;
-    }
-    html.android .bg-layer-2{
-      opacity:0.40;
-      transform: translate3d(calc(var(--mx) * 0.32), calc(var(--my) * 0.32), 0) scale(1.015) !important;
-    }
-    html.android .bg-layer-3{
-      opacity:0.20;
-      transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0) scale(1.02) !important;
+    html.mobile .bg-layer-2,
+    html.mobile .bg-layer-3{
+      display:none !important;
     }
 
-    html.android .bg-fx,
-    html.android .bg-dim{
+    html.mobile .bg-fx,
+    html.mobile .bg-dim{
       transform:none !important;
     }
 
-    /* Respect reduced motion */
+    @keyframes driftBg{
+      0%   { background-position: 48% 52%; }
+      50%  { background-position: 52% 48%; }
+      100% { background-position: 50% 54%; }
+    }
+
     @media (prefers-reduced-motion: reduce){
+      html.mobile .bg-layer{ animation:none !important; }
       .bg-scene{ transform:none !important; }
-      html.android .bg-layer{ transform:none !important; }
     }
 
     /* --- page-specific (system.html only) --- */
@@ -266,49 +258,35 @@
 
   <script>
     // =========================================================
-    // 0) Platform mode: ANDROID => 2D drift only (no flicker)
+    // 0) Platform mode:
+    //    mobile => disable 3D (stable)
     // =========================================================
     (() => {
-      const ua = navigator.userAgent || "";
-      const isAndroid = /Android/i.test(ua);
-      if (isAndroid) document.documentElement.classList.add("android");
+      const root = document.documentElement;
+      const isMobile =
+        matchMedia("(hover: none)").matches ||
+        matchMedia("(pointer: coarse)").matches ||
+        matchMedia("(max-width: 820px)").matches;
+
+      if (isMobile) root.classList.add("mobile");
     })();
 
     // =========================================================
     // 1) Background motion:
-    //    - Desktop: pointer 3D parallax
-    //    - iPad/iOS touch: slow idle 3D drift (NO gyro)
-    //    - Android: very slow idle 2D drift (stable)
+    //    - MOBILE: CSS drift only (no JS)
+    //    - DESKTOP: pointer 3D parallax
+    //    - iPad/tablet (not mobile class): slow idle 3D drift
     // =========================================================
     (() => {
       const root = document.documentElement;
+      if (root.classList.contains("mobile")) return;
 
       const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduce) return;
 
-      const isAndroid = root.classList.contains("android");
       const canHover = matchMedia("(hover: hover)").matches;
 
-      // --- ANDROID: slow 2D drift (requested) ---
-      if (isAndroid){
-        let t0 = performance.now();
-        function tick(now){
-          const t = (now - t0) / 1000;
-
-          // VERY slow, small amplitude
-          const mx = Math.sin(t * 0.10) * 9;  // px
-          const my = Math.cos(t * 0.08) * 6;  // px
-
-          root.style.setProperty("--mx", mx.toFixed(2) + "px");
-          root.style.setProperty("--my", my.toFixed(2) + "px");
-
-          requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-        return;
-      }
-
-      // --- DESKTOP: pointer-driven 3D parallax ---
+      // Desktop: pointer-driven 3D
       if (canHover){
         const MAX_ROT = 6;   // deg
         const MAX_MOV = 14;  // px
@@ -360,7 +338,7 @@
         return;
       }
 
-      // --- TOUCH (iPad/iOS): slow idle 3D drift, NO gyro ---
+      // Tablet/iPad: slow idle drift (3D allowed)
       let t0 = performance.now();
       function idle(now){
         const t = (now - t0) / 1000;
@@ -381,7 +359,7 @@
     })();
 
     // =========================================================
-    // 2) Command console + internal search (site "router")
+    // 2) Command console + internal search + fuzzy suggestions
     // =========================================================
     const input = document.getElementById("cmd");
     const output = document.getElementById("output");
@@ -415,7 +393,6 @@
       return map[node] || null;
     }
 
-    // --- internal search index (matches your actual filenames) ---
     const INDEX = [
       { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"] },
 
@@ -463,12 +440,69 @@
         .slice(0, 6);
     }
 
+    // --- fuzzy: Levenshtein distance with small cutoff (fast) ---
+    function levenshtein(a, b, maxDist){
+      a = (a || "").toLowerCase();
+      b = (b || "").toLowerCase();
+      const al = a.length, bl = b.length;
+
+      if (Math.abs(al - bl) > maxDist) return maxDist + 1;
+      if (al === 0) return bl;
+      if (bl === 0) return al;
+
+      const v0 = new Array(bl + 1);
+      const v1 = new Array(bl + 1);
+
+      for (let j = 0; j <= bl; j++) v0[j] = j;
+
+      for (let i = 0; i < al; i++){
+        v1[0] = i + 1;
+        let rowMin = v1[0];
+
+        for (let j = 0; j < bl; j++){
+          const cost = a[i] === b[j] ? 0 : 1;
+          const del = v0[j + 1] + 1;
+          const ins = v1[j] + 1;
+          const sub = v0[j] + cost;
+          const val = Math.min(del, ins, sub);
+          v1[j + 1] = val;
+          if (val < rowMin) rowMin = val;
+        }
+
+        if (rowMin > maxDist) return maxDist + 1;
+        for (let j = 0; j <= bl; j++) v0[j] = v1[j];
+      }
+      return v0[bl];
+    }
+
+    function fuzzySuggest(query){
+      const q = (query || "").trim().toLowerCase();
+      if (!q || q.length < 2) return [];
+
+      const maxDist = q.length <= 4 ? 1 : 2;
+
+      const scored = INDEX.map(it => {
+        const k = it.key.toLowerCase();
+        const t = it.title.toLowerCase();
+
+        const dk = levenshtein(q, k, maxDist);
+        const dt = levenshtein(q, t, maxDist);
+
+        const d = Math.min(dk, dt);
+        return { it, d };
+      }).filter(x => x.d <= maxDist)
+        .sort((a,b) => a.d - b.d)
+        .map(x => x.it)
+        .slice(0, 5);
+
+      return scored;
+    }
+
     function restricted(cmd){
       if(cmd === "help"){
         respondMulti([
           "LIMITED PROTOCOL AVAILABLE",
           "NAV: world | system | subjects | archive | state | entry",
-          "QUERY: subjects:list | subject <key>",
           "SEARCH: search <term> | <term> (implicit)",
           "OPEN: open <n> (from last results)",
           "UTILITY: clear"
@@ -487,43 +521,6 @@
 
       if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
       return null;
-    }
-
-    const SUBJECTS = {
-      alex:   {id:"S-001", status:"ACTIVE",   access:"LIMITED", page:"subject-alex.html"},
-      kiwi:   {id:"S-003", status:"ACTIVE",   access:"LIMITED", page:"subject-kiwi.html"},
-      mentor: {id:"S-002", status:"REDACTED", access:"DENIED",  page:"subject-mentor.html"}
-    };
-
-    const OBSERVE = {
-      alex:   "OBSERVATION: ACTIVE / CHANNELS: MULTIPLE",
-      kiwi:   "OBSERVATION: ACTIVE / CHANNELS: LIMITED",
-      mentor: "OBSERVATION: DISALLOWED / REQUEST LOGGED"
-    };
-
-    function subjectLookup(key){
-      const k = (key || "").toLowerCase().trim();
-      const rec = SUBJECTS[k];
-      if(!rec) return null;
-
-      if(k === "mentor"){
-        return [
-          "RECORD FOUND",
-          "SUBJECT: MENTOR",
-          "ID: " + rec.id,
-          "STATUS: " + rec.status,
-          "ACCESS: " + rec.access,
-          "DETAILS: [REDACTED]"
-        ];
-      }
-
-      return [
-        "RECORD FOUND",
-        "SUBJECT: " + k.toUpperCase(),
-        "ID: " + rec.id,
-        "STATUS: " + rec.status,
-        "ACCESS: " + rec.access
-      ];
     }
 
     function go(url, msg){
@@ -555,52 +552,6 @@
         return;
       }
 
-      if(value === "drift"){
-        respondMulti([
-          "DRIFT STATUS",
-          "LEVEL: WITHIN TOLERANCE",
-          "OBSERVABILITY: LIMITED",
-          "DISCLOSURE: NOT REQUIRED"
-        ]);
-        return;
-      }
-
-      if(value === "observe"){
-        respondMulti([
-          "OBSERVATION PROTOCOL",
-          "FORMAT: observe <subject>",
-          "DISCLOSURE: MINIMAL"
-        ]);
-        return;
-      }
-
-      if(value.startsWith("observe ")){
-        const key = value.slice("observe ".length).trim();
-        respond(OBSERVE[key] || "OBSERVATION: NO TARGET FOUND");
-        return;
-      }
-
-      if(value === "subjects:list" || value === "subject:list"){
-        respondMulti([
-          "SUBJECT INDEX AVAILABLE",
-          "QUERY FORMAT: subject <key>",
-          "KNOWN KEYS: alex, mentor, kiwi"
-        ]);
-        return;
-      }
-
-      if(value.startsWith("subject ")){
-        const key = value.slice("subject ".length).trim();
-        if(!key){
-          respond("SUBJECT KEY REQUIRED");
-          return;
-        }
-        const lines = subjectLookup(key);
-        if(lines) respondMulti(lines);
-        else respond("NO RECORD FOUND");
-        return;
-      }
-
       // OPEN <n>
       if (value.startsWith("open ")){
         const n = parseInt(value.slice(5).trim(), 10);
@@ -620,7 +571,17 @@
         LAST_RESULTS = hits;
 
         if (!hits.length){
-          respond("SEARCH: NO RESULTS");
+          const sug = fuzzySuggest(q);
+          if (!sug.length){
+            respond("SEARCH: NO RESULTS");
+            return;
+          }
+          LAST_RESULTS = sug;
+          respondMulti([
+            "DID YOU MEAN:",
+            ...sug.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+            "TYPE: open <n>"
+          ]);
           return;
         }
 
@@ -658,6 +619,18 @@
           respondMulti([
             "SEARCH RESULTS:",
             ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+            "TYPE: open <n>"
+          ]);
+          return;
+        }
+
+        // fuzzy fallback
+        const sug = fuzzySuggest(raw);
+        if (sug.length){
+          LAST_RESULTS = sug;
+          respondMulti([
+            "DID YOU MEAN:",
+            ...sug.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
             "TYPE: open <n>"
           ]);
           return;
