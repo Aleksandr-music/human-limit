@@ -1,73 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Human Limit</title>
+<style>
+  /* только layout этой страницы */
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  /* фон + оверлей */
+  body{
+    margin:0;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
 
-  <link rel="stylesheet" href="style.css">
+    /* ВАЖНО: центрируем по НИЗУ, чтобы пол оставался и текст не "плавал" */
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(0,0,0,.35) 0%,
+        rgba(0,0,0,.55) 45%,
+        rgba(0,0,0,.78) 100%
+      ),
+      url("images/hl-entry-map.jpg"); /* <-- поставь здесь имя файла */
+    background-size:cover;
+    background-position:center bottom;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+  }
 
-  <style>
-    /* только layout этой страницы */
+  /* запас по краям на мобильных */
+  .entry{
+    max-width:420px;
+    padding:24px 18px;
+  }
 
-    body{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
+  .entry-title{
+    font-weight:600;
+    font-size:22px;
+    letter-spacing:1px;
+    margin-bottom:18px;
+    color:var(--fg);
+    text-shadow:0 2px 14px rgba(0,0,0,.65);
+  }
 
-    .entry{
-      max-width:420px;
-    }
+  .entry-text{
+    font-weight:300;
+    font-size:16px;
+    margin:6px 0;
+    color:var(--fg);
+    text-shadow:0 2px 14px rgba(0,0,0,.65);
+  }
 
-    .entry-title{
-      font-weight:600;
-      font-size:22px;
-      letter-spacing:1px;
-      margin-bottom:18px;
-      color:var(--fg);
-    }
+  .entry button{
+    margin-top:26px;
+    background:none;
+    border:1px solid var(--dim);
+    color:var(--fg);
+    padding:10px 22px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:14px;
+    cursor:pointer;
+    text-shadow:0 2px 14px rgba(0,0,0,.65);
+    backdrop-filter: blur(2px);
+  }
 
-    .entry-text{
-      font-weight:300;
-      font-size:16px;
-      margin:6px 0;
-      color:var(--fg);
-    }
+  .entry button:hover{
+    border-color:var(--fg);
+  }
 
-    .entry button{
-      margin-top:26px;
-      background:none;
-      border:1px solid var(--dim);
-      color:var(--fg);
-      padding:10px 22px;
-      font-family:"JetBrains Mono", monospace;
-      font-size:14px;
-      cursor:pointer;
-    }
-
-    .entry button:hover{
-      border-color:var(--fg);
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="entry">
-  <div class="entry-title">HUMAN LIMIT</div>
-
-  <div class="entry-text">The world is already decided.</div>
-
-  <button onclick="location.href='interface.html'">
-    Access World
-  </button>
-</div>
-
-</body>
-</html>
+  /* мобильная корректировка: убираем fixed-attachment (часто ломает) */
+  @media (max-width: 680px){
+    body{ background-attachment:scroll; }
+  }
+</style>
