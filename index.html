@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    html, body{ height:100%; }
+    html, body { height: 100%; }
 
     body{
       margin:0;
@@ -25,34 +25,35 @@
       color:#eaeaea;
       background:#0b0b0b;
 
-      /* важно: фон делаем через псевдо-слои, чтобы iPad Safari не "терял" background */
-      position:relative;
-      overflow:hidden;
+      /* ВАЖНО: обнуляем любые глобальные затемнения из style.css */
+      background-image: none !important;
+      background-color: #0b0b0b !important;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* ФОН-КАРТИНКА */
+    /* КАРТИНКА БЕЗ ОВЕРЛЕЯ */
     body::before{
       content:"";
-      position:fixed;
-      inset:0;
-      z-index:-2;
-      background: url("images/png/hl-entry-map.png?v=2") center bottom / cover no-repeat;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+
+      background-image: url("images/png/hl-entry-map.png?v=3") !important;
+      background-repeat: no-repeat !important;
+      background-position: center bottom !important;
+      background-size: cover !important;
+
+      /* никаких фильтров/затемнений */
+      opacity: 1 !important;
+      filter: none !important;
       transform: translateZ(0);
     }
 
-    /* МЯГКИЙ ОВЕРЛЕЙ (почти без затемнения) */
+    /* ОБЯЗАТЕЛЬНО: убиваем любой overlay-слой (если есть) */
     body::after{
-      content:"";
-      position:fixed;
-      inset:0;
-      z-index:-1;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,.04) 0%,
-        rgba(0,0,0,.10) 45%,
-        rgba(0,0,0,.22) 100%
-      );
-      pointer-events:none;
+      content:none !important;
+      background:none !important;
     }
 
     .entry{
@@ -66,7 +67,7 @@
       font-size:22px;
       letter-spacing:1px;
       margin:0 0 12px 0;
-      text-shadow:0 2px 12px rgba(0,0,0,.65);
+      text-shadow:0 2px 12px rgba(0,0,0,.75);
     }
 
     .entry-text{
@@ -74,31 +75,33 @@
       font-weight:300;
       font-size:16px;
       margin:0 0 18px 0;
-      text-shadow:0 2px 12px rgba(0,0,0,.65);
+      text-shadow:0 2px 12px rgba(0,0,0,.75);
     }
 
     .entry button{
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.28);
+      background: none; /* без подложки */
+      border: 1px solid rgba(255,255,255,.45);
       color:#eaeaea;
       padding:10px 22px;
       font-family:"JetBrains Mono", monospace;
       font-size:14px;
       cursor:pointer;
-      text-shadow:0 2px 12px rgba(0,0,0,.65);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
+
+      /* убираем blur — он тоже может “мутнить” */
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+
+      text-shadow:0 2px 12px rgba(0,0,0,.75);
     }
     .entry button:hover{
-      border-color: rgba(255,255,255,.55);
-      background: rgba(0,0,0,.22);
+      border-color: rgba(255,255,255,.75);
     }
 
-    /* Смартфон: показываем карту целиком, без обрезки */
+    /* Смартфон: показываем картинку целиком */
     @media (max-width: 680px){
       body::before{
-        background-size:contain;
-        background-position:center center;
+        background-size: contain !important;
+        background-position: center center !important;
       }
     }
   </style>
