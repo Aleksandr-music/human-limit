@@ -8,49 +8,40 @@
     align-items:center;
     justify-content:center;
     text-align:center;
-
     color:#eaeaea;
     background:#0b0b0b;
-
-    /* гасим возможные глобальные фоны из style.css */
     background-image:none !important;
     background-color:#0b0b0b !important;
-
     position:relative;
     overflow:hidden;
+    isolation:isolate;
   }
 
-  /* ФОН-КАРТИНКА */
   body::before{
     content:"";
     position:fixed;
     inset:0;
-    z-index:-2;
-
+    z-index:0;
     background-image:url("images/png/hl-entry-map.png?v=3");
     background-repeat:no-repeat;
-    background-position:center center;
-    background-size:cover; /* десктоп по умолчанию */
-
-    /* ВАЖНО: убираем translateZ(0) — на iOS часто даёт мыло */
-    transform:none;
-    filter:none;
+    background-position:center bottom;
+    background-size:cover;
+    transform:translateZ(0);
+    pointer-events:none;
   }
 
-  /* ЛЁГКОЕ ЗАТЕМНЕНИЕ */
   body::after{
     content:"";
     position:fixed;
     inset:0;
-    z-index:-1;
-    background:rgba(0,0,0,0.12); /* 0.10–0.18 */
+    z-index:1;
+    background:rgba(0,0,0,0.14);
     pointer-events:none;
   }
 
-  /* ТЕКСТ И КНОПКА — ВСЕГДА ПОВЕРХ */
   .entry{
     position:relative;
-    z-index:5;
+    z-index:2;
     max-width:420px;
     padding:24px 18px;
   }
@@ -82,12 +73,12 @@
     cursor:pointer;
     text-shadow:0 2px 12px rgba(0,0,0,.55);
   }
+
   .entry button:hover{
     border-color:rgba(255,255,255,.75);
   }
 
-  /* iPad + смартфон: НЕ УВЕЛИЧИВАТЬ картинку (чтобы не мылить и не резать) */
-  @media (max-width: 1024px){
+  @media (max-width:680px){
     body::before{
       background-size:contain;
       background-position:center center;
