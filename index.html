@@ -1,87 +1,114 @@
-<style>
-  html, body { height: 100%; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Human Limit</title>
 
-  body{
-    margin:0;
-    min-height:100svh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    color:#eaeaea;
-    background:#0b0b0b;
-    background-image:none !important;
-    background-color:#0b0b0b !important;
-    position:relative;
-    overflow:hidden;
-    isolation:isolate;
-  }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:0;
-    background-image:url("images/png/hl-entry-map.png?v=3");
-    background-repeat:no-repeat;
-    background-position:center bottom;
-    background-size:cover;
-    transform:translateZ(0);
-    pointer-events:none;
-  }
+  <link rel="stylesheet" href="style.css">
 
-  body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:1;
-    background:rgba(0,0,0,0.14);
-    pointer-events:none;
-  }
+  <style>
+    html, body { height: 100%; }
 
-  .entry{
-    position:relative;
-    z-index:2;
-    max-width:420px;
-    padding:24px 18px;
-  }
+    body{
+      margin:0;
+      min-height:100svh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
 
-  .entry-title{
-    font-family:"JetBrains Mono", monospace;
-    font-weight:600;
-    font-size:22px;
-    letter-spacing:1px;
-    margin:0 0 12px 0;
-    text-shadow:0 2px 12px rgba(0,0,0,.55);
-  }
+      color:#eaeaea;
+      background:#0b0b0b;
 
-  .entry-text{
-    font-family:"JetBrains Mono", monospace;
-    font-weight:300;
-    font-size:16px;
-    margin:0 0 18px 0;
-    text-shadow:0 2px 12px rgba(0,0,0,.55);
-  }
+      background-image:none !important;
+      background-color:#0b0b0b !important;
 
-  .entry button{
-    background:none;
-    border:1px solid rgba(255,255,255,.45);
-    color:#eaeaea;
-    padding:10px 22px;
-    font-family:"JetBrains Mono", monospace;
-    font-size:14px;
-    cursor:pointer;
-    text-shadow:0 2px 12px rgba(0,0,0,.55);
-  }
-
-  .entry button:hover{
-    border-color:rgba(255,255,255,.75);
-  }
-
-  @media (max-width:680px){
-    body::before{
-      background-size:contain;
-      background-position:center center;
+      position:relative;
+      overflow:hidden;
     }
-  }
-</style>
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-2;
+
+      background-image:url("images/png/hl-entry-map.png?v=3");
+      background-repeat:no-repeat;
+      background-position:center bottom;
+      background-size:cover;
+
+      transform:none;
+      filter:none;
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:rgba(0,0,0,0.12);
+      pointer-events:none;
+    }
+
+    .entry{
+      position:relative;
+      z-index:5;
+      max-width:420px;
+      padding:24px 18px;
+    }
+
+    .entry-title{
+      font-family:"JetBrains Mono", monospace;
+      font-weight:600;
+      font-size:22px;
+      letter-spacing:1px;
+      margin:0 0 12px 0;
+      text-shadow:0 2px 12px rgba(0,0,0,.55);
+    }
+
+    .entry-text{
+      font-family:"JetBrains Mono", monospace;
+      font-weight:300;
+      font-size:16px;
+      margin:0 0 18px 0;
+      text-shadow:0 2px 12px rgba(0,0,0,.55);
+    }
+
+    .entry button{
+      background:none;
+      border:1px solid rgba(255,255,255,.45);
+      color:#eaeaea;
+      padding:10px 22px;
+      font-family:"JetBrains Mono", monospace;
+      font-size:14px;
+      cursor:pointer;
+      text-shadow:0 2px 12px rgba(0,0,0,.55);
+    }
+
+    .entry button:hover{
+      border-color:rgba(255,255,255,.75);
+    }
+
+    @media (max-width: 1024px){
+      body::before{
+        background-size:contain;
+        background-position:center center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="entry">
+    <div class="entry-title">HUMAN LIMIT</div>
+    <div class="entry-text">The world is already decided.</div>
+    <button onclick="location.href='interface.html'">Access World</button>
+  </div>
+</body>
+</html>
