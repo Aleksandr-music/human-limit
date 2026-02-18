@@ -14,7 +14,11 @@
   <style>
     :root{
       --banner: url("images/png/hl-system-layered-banner-01.png");
-      --dim: 0.04;
+
+      /* IMPORTANT:
+         do NOT override --dim from style.css (it is used as a color)
+         use a dedicated variable for overlay alpha */
+      --bg-dim-alpha: 0.04;
 
       /* Parallax state (updated by JS) */
       --mx: 0px;
@@ -56,41 +60,51 @@
       transform: translate3d(0,0,0);
     }
 
+    /* Add tiny scale differences so depth is visible even without moving the mouse */
     .bg-layer-1{
       opacity:1;
-      transform: translate3d(calc(var(--mx) * 0.25), calc(var(--my) * 0.25), 0);
+      transform: translate3d(calc(var(--mx) * 0.25), calc(var(--my) * 0.25), 0) scale(1.00);
     }
 
     .bg-layer-2{
       opacity:0.55;
       mix-blend-mode: screen;
-      transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0);
+      transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0) scale(1.01);
     }
 
     .bg-layer-3{
       opacity:0.25;
       mix-blend-mode: lighten;
-      transform: translate3d(calc(var(--mx) * 0.9), calc(var(--my) * 0.9), 0);
+      transform: translate3d(calc(var(--mx) * 0.9), calc(var(--my) * 0.9), 0) scale(1.02);
     }
 
     .bg-dim{
       position:absolute;
       inset:0;
       pointer-events:none;
-      background: rgba(0,0,0,var(--dim));
+      background: rgba(0,0,0,var(--bg-dim-alpha));
     }
 
     /* Mobile: keep stable, avoid jitter */
     @media (max-width: 680px){
+      :root{ --bg-dim-alpha: 0.06; }
+
       .bg-layer{
         inset:0;
         background-size:cover;
       }
+
+      /* on mobile we keep layers but without motion; scale still gives subtle depth */
+      .bg-layer-1{ transform: scale(1.00); }
+      .bg-layer-2{ transform: scale(1.01); }
+      .bg-layer-3{ transform: scale(1.02); }
     }
 
     /* Respect reduced motion */
     @media (prefers-reduced-motion: reduce){
-      .bg-layer{ transform:none !important; }
+      .bg-layer{
+        transform: none !important;
+      }
     }
 
     /* page-specific (system.html only) */
