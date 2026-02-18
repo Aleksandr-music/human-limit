@@ -360,6 +360,9 @@
 
     // =========================================================
     // 2) Command console + internal search + fuzzy suggestions
+    //    FIXES:
+    //    - fuzzySuggest now returns distance too (for confidence)
+    //    - if ONE strong suggestion -> auto redirect
     // =========================================================
     const input = document.getElementById("cmd");
     const output = document.getElementById("output");
@@ -475,6 +478,7 @@
       return v0[bl];
     }
 
+    // Returns [{it, d}] sorted by distance
     function fuzzySuggest(query){
       const q = (query || "").trim().toLowerCase();
       if (!q || q.length < 2) return [];
@@ -489,11 +493,11 @@
         const dt = levenshtein(q, t, maxDist);
 
         const d = Math.min(dk, dt);
-        return { it, d };
-      }).filter(x => x.d <= maxDist)
-        .sort((a,b) => a.d - b.d)
-        .map(x => x.it)
-        .slice(0, 5);
+        return { it, d, maxDist };
+      })
+      .filter(x => x.d <= x.maxDist)
+      .sort((a,b) => a.d - b.d)
+      .slice(0, 5);
 
       return scored;
     }
@@ -572,14 +576,24 @@
 
         if (!hits.length){
           const sug = fuzzySuggest(q);
+
           if (!sug.length){
             respond("SEARCH: NO RESULTS");
             return;
           }
-          LAST_RESULTS = sug;
+
+          // AUTO-REDIRECT if ONE strong suggestion
+          if (sug.length === 1 && sug[0].d <= (q.length <= 4 ? 1 : 2)){
+            const hit = sug[0].it;
+            LAST_RESULTS = [hit];
+            go(hit.url, "CORRECTED: " + hit.title);
+            return;
+          }
+
+          LAST_RESULTS = sug.map(x => x.it);
           respondMulti([
             "DID YOU MEAN:",
-            ...sug.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+            ...sug.map((x,i) => `${i+1}) ${x.it.title}  [${x.it.key}]`),
             "TYPE: open <n>"
           ]);
           return;
@@ -627,10 +641,19 @@
         // fuzzy fallback
         const sug = fuzzySuggest(raw);
         if (sug.length){
-          LAST_RESULTS = sug;
+
+          // AUTO-REDIRECT if ONE strong suggestion
+          if (sug.length === 1 && sug[0].d <= (raw.length <= 4 ? 1 : 2)){
+            const hit = sug[0].it;
+            LAST_RESULTS = [hit];
+            go(hit.url, "CORRECTED: " + hit.title);
+            return;
+          }
+
+          LAST_RESULTS = sug.map(x => x.it);
           respondMulti([
             "DID YOU MEAN:",
-            ...sug.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+            ...sug.map((x,i) => `${i+1}) ${x.it.title}  [${x.it.key}]`),
             "TYPE: open <n>"
           ]);
           return;
