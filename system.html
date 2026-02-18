@@ -14,8 +14,6 @@
   <style>
     :root{
       --banner: url("images/png/hl-system-layered-banner-01.png");
-
-      /* overlay alpha (separate from --dim color in style.css) */
       --bg-dim-alpha: 0.04;
 
       /* Desktop 3D parallax state (updated by JS) */
@@ -23,6 +21,9 @@
       --ry: 0deg;
       --tx: 0px;
       --ty: 0px;
+
+      /* UI state */
+      --ui-dim-mult: 1;
     }
 
     /* Disable global banner layers from style.css on this page */
@@ -100,6 +101,12 @@
           rgba(0,0,0,0) 6px
         );
       transform: translateZ(80px);
+      transition: opacity 220ms ease;
+    }
+
+    /* subtle “event sync” pulse */
+    .bg-fx.pulse{
+      opacity:0.16;
     }
 
     .bg-dim{
@@ -184,14 +191,70 @@
     .menu .node--service::before{ color:var(--dim); }
     .menu .node--service:hover{ color:var(--fg); }
 
+    /* Lockdown: menu becomes non-interactive (command-only) */
+    html.lock .menu{
+      pointer-events:none;
+      opacity:0.65;
+      filter: saturate(0.9);
+    }
+
     .status{
       margin-top:34px;
       font-size:13px;
+      user-select:none;
+    }
+
+    /* “Heartbeat” cursor (irregular CRT-like) */
+    .cursor{
+      display:inline-block;
+      margin-left:2px;
+      animation: cursorHeart 2.8s steps(1,end) infinite;
+    }
+    @keyframes cursorHeart{
+      0% { opacity:1; }
+      7% { opacity:0; }
+      10%{ opacity:1; }
+      18%{ opacity:0; }
+      22%{ opacity:1; }
+      61%{ opacity:1; }
+      66%{ opacity:0; }
+      70%{ opacity:1; }
+      100%{ opacity:1; }
+    }
+
+    /* Packet marker without using '|' character */
+    .pkt{
+      display:inline-block;
+      width:10px;
+      height:14px;
+      margin-left:6px;
+      position:relative;
+      vertical-align:-2px;
+      opacity:0.75;
+    }
+    .pkt::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:0;
+      width:1px;
+      height:100%;
+      background: currentColor;
+      transform: translateX(-50%);
+      animation: pktBlink 6.8s steps(1,end) infinite;
+    }
+    @keyframes pktBlink{
+      0%   { opacity:0.15; }
+      70%  { opacity:0.15; }
+      73%  { opacity:0.95; }
+      76%  { opacity:0.15; }
+      100% { opacity:0.15; }
     }
 
     .cmdline{
       margin-top:28px;
       font-size:14px;
+      position:relative;
     }
 
     #cmd{
@@ -204,12 +267,40 @@
       width:min(520px, 84vw);
     }
 
+    /* Inline hint (no extra blocks) */
+    .hint{
+      position:absolute;
+      left:18px; /* after the prompt */
+      top:0;
+      color:var(--dim);
+      opacity:0.55;
+      pointer-events:none;
+      white-space:nowrap;
+      font-size:14px;
+    }
+    .hint.hidden{ display:none; }
+
     .output{
       margin-top:18px;
       font-size:14px;
       color:var(--dim);
       min-height:18px;
       white-space:pre-line;
+    }
+
+    /* grep-like highlight (subtle, monochrome) */
+    .hl{
+      color:var(--fg);
+      opacity:0.92;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    /* Session line style */
+    .status .meta{
+      color:var(--dim);
+      opacity: calc(0.85 * var(--ui-dim-mult));
     }
   </style>
 </head>
@@ -222,14 +313,14 @@
       <div class="bg-layer bg-layer-1"></div>
       <div class="bg-layer bg-layer-2"></div>
       <div class="bg-layer bg-layer-3"></div>
-      <div class="bg-fx"></div>
+      <div class="bg-fx" id="bgFx"></div>
       <div class="bg-dim"></div>
     </div>
   </div>
 
   <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
 
-  <nav class="menu" aria-label="System nodes">
+  <nav class="menu" aria-label="System nodes" id="menu">
     <a class="node" href="world.html">WORLD</a>
     <a class="node" href="mechanics.html">SYSTEM</a>
     <a class="node" href="subjects.html">SUBJECTS</a>
@@ -238,12 +329,13 @@
     <a class="node node--service" href="state.html">STATE MONITOR</a>
   </nav>
 
-  <div class="status dim">
-    ACCESS STATUS: ACTIVE<span class="cursor">_</span>
+  <div class="status dim" id="status">
+    ACCESS STATUS: ACTIVE<span class="cursor">_</span><span class="pkt" aria-hidden="true"></span>
+    <div class="meta" id="sessionMeta"></div>
   </div>
 
   <div class="cmdline">
-    > <input
+    &gt; <input
         id="cmd"
         autofocus
         inputmode="text"
@@ -252,6 +344,7 @@
         spellcheck="false"
         aria-label="Command input"
       >
+    <span id="hint" class="hint">type: world, subjects, search alex, map, trace world</span>
   </div>
 
   <div id="output" class="output"></div>
@@ -359,46 +452,147 @@
     })();
 
     // =========================================================
-    // 2) Command console + internal search + fuzzy suggestions
-    //    FIXES:
-    //    - fuzzySuggest now returns distance too (for confidence)
-    //    - if ONE strong suggestion -> auto redirect
+    // 2) Command console + internal search + fuzzy + UX features
+    //    Included:
+    //    - No '|' character usage
+    //    - Hint in input line
+    //    - History (ArrowUp / ArrowDown)
+    //    - Tab autocomplete
+    //    - Parsing + route preview before navigation
+    //    - Lock / unlock (read-only lockdown)
+    //    - map (ASCII tree without vertical bars)
+    //    - trace <node>
+    //    - session flags (INIT/ACTIVE/DEGRADED) in sessionStorage
+    //    - fuzzy auto-redirect when confident (giwi -> kiwi)
     // =========================================================
+    const root = document.documentElement;
     const input = document.getElementById("cmd");
     const output = document.getElementById("output");
+    const hint = document.getElementById("hint");
+    const bgFx = document.getElementById("bgFx");
+    const sessionMeta = document.getElementById("sessionMeta");
 
+    // ----- session flags -----
+    const SESSION_KEY = "hl_session_state_v1";
+    const ERR_KEY = "hl_session_err_v1";
+    const CMD_COUNT_KEY = "hl_session_cmd_count_v1";
+    const LOCK_KEY = "hl_lock_v1";
+
+    function getNum(k, def=0){
+      const v = parseInt(sessionStorage.getItem(k) || "", 10);
+      return Number.isFinite(v) ? v : def;
+    }
+    function setNum(k, v){ sessionStorage.setItem(k, String(v)); }
+
+    function getSessionState(){
+      return sessionStorage.getItem(SESSION_KEY) || "INIT";
+    }
+    function setSessionState(s){
+      sessionStorage.setItem(SESSION_KEY, s);
+      renderSessionMeta();
+    }
+    function incCmd(){
+      const n = getNum(CMD_COUNT_KEY, 0) + 1;
+      setNum(CMD_COUNT_KEY, n);
+      if (n >= 2 && getSessionState() === "INIT") setSessionState("ACTIVE");
+    }
+    function incErr(){
+      const n = getNum(ERR_KEY, 0) + 1;
+      setNum(ERR_KEY, n);
+      if (n >= 2) setSessionState("DEGRADED");
+      return n;
+    }
+
+    function isLocked(){
+      return sessionStorage.getItem(LOCK_KEY) === "1";
+    }
+    function setLocked(on){
+      sessionStorage.setItem(LOCK_KEY, on ? "1" : "0");
+      root.classList.toggle("lock", on);
+      root.style.setProperty("--ui-dim-mult", on ? "1.08" : "1");
+      renderSessionMeta();
+    }
+
+    function renderSessionMeta(){
+      const s = getSessionState();
+      const err = getNum(ERR_KEY, 0);
+      const cmdc = getNum(CMD_COUNT_KEY, 0);
+      const lock = isLocked() ? "LOCKED" : "OPEN";
+      sessionMeta.textContent = `SESSION: ${s}  MODE: ${lock}  COMMANDS: ${cmdc}  ERRORS: ${err}`;
+    }
+
+    // init
+    renderSessionMeta();
+    setLocked(isLocked());
+
+    // ----- helpers -----
     function focusCmd(){
       setTimeout(() => { try{ input.focus(); }catch(e){} }, 0);
     }
 
-    function respond(text){
-      output.textContent = "> " + text;
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function pulseFx(){
+      if (!bgFx) return;
+      bgFx.classList.add("pulse");
+      setTimeout(() => bgFx.classList.remove("pulse"), 900);
+    }
+
+    function renderLines(lines, highlightTerm){
+      const term = (highlightTerm || "").trim();
+      const safeTerm = term ? escapeHtml(term) : "";
+
+      const out = lines.map(line => {
+        let safe = escapeHtml(line);
+
+        if (term && term.length >= 2){
+          // highlight first occurrence (subtle)
+          const re = new RegExp(escapeRegExp(term), "i");
+          safe = safe.replace(re, (m) => `<span class="hl">${escapeHtml(m)}</span>`);
+        }
+        return `&gt; ${safe}`;
+      }).join("<br>");
+
+      output.innerHTML = out;
       focusCmd();
     }
 
-    function respondMulti(lines){
-      output.textContent = "> " + lines.join("\n> ");
-      focusCmd();
+    function respond(text){
+      renderLines([text], "");
+    }
+
+    function respondMulti(lines, highlightTerm){
+      renderLines(lines, highlightTerm || "");
+    }
+
+    function escapeRegExp(s){
+      return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
     function nav(node){
       const map = {
-        world:   {msg:"ACCESSING WORLD NODE",     url:"world.html"},
-        system:  {msg:"ACCESSING SYSTEM NODE",    url:"mechanics.html"},
-        mechanics:{msg:"ACCESSING SYSTEM NODE",   url:"mechanics.html"},
-        subjects:{msg:"ACCESSING SUBJECTS NODE",  url:"subjects.html"},
-        archive: {msg:"ACCESSING ARCHIVE NODE",   url:"archive.html"},
-        state:   {msg:"ACCESSING STATE MONITOR",  url:"state.html"},
-        monitor: {msg:"ACCESSING STATE MONITOR",  url:"state.html"},
-        entry:   {msg:"RETURNING TO ENTRY POINT", url:"index.html"},
-        interface:{msg:"ACCESSING INTERFACE NODE",url:"interface.html"}
+        world:     {msg:"ACCESSING WORLD NODE",      url:"world.html"},
+        system:    {msg:"ACCESSING SYSTEM NODE",     url:"mechanics.html"},
+        mechanics: {msg:"ACCESSING SYSTEM NODE",     url:"mechanics.html"},
+        subjects:  {msg:"ACCESSING SUBJECTS NODE",   url:"subjects.html"},
+        archive:   {msg:"ACCESSING ARCHIVE NODE",    url:"archive.html"},
+        state:     {msg:"ACCESSING STATE MONITOR",   url:"state.html"},
+        monitor:   {msg:"ACCESSING STATE MONITOR",   url:"state.html"},
+        entry:     {msg:"RETURNING TO ENTRY POINT",  url:"index.html"},
+        interface: {msg:"ACCESSING INTERFACE NODE",  url:"interface.html"}
       };
       return map[node] || null;
     }
 
     const INDEX = [
       { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"] },
-
       { key:"system",    title:"SYSTEM",    url:"mechanics.html",      tags:["rules","protocol","mechanics","laws","core"] },
       { key:"mechanics", title:"MECHANICS", url:"mechanics.html",      tags:["system","logic","structure"] },
 
@@ -408,13 +602,81 @@
       { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"] },
 
       { key:"archive",   title:"ARCHIVE",   url:"archive.html",        tags:["logs","records","history","files"] },
-
       { key:"state",     title:"STATE",     url:"state.html",          tags:["monitor","status","telemetry","system state"] },
 
       { key:"entry",     title:"ENTRY",     url:"index.html",          tags:["start","gateway","root"] },
       { key:"interface", title:"INTERFACE", url:"interface.html",      tags:["ui","layer","transition"] }
     ];
 
+    // ----- Hint behavior -----
+    function updateHint(){
+      const hasText = (input.value || "").length > 0;
+      hint.classList.toggle("hidden", hasText || document.activeElement !== input);
+    }
+    input.addEventListener("focus", updateHint);
+    input.addEventListener("blur", updateHint);
+    input.addEventListener("input", updateHint);
+
+    // ----- command history -----
+    const history = [];
+    let histPos = -1;
+
+    function pushHistory(cmd){
+      const c = (cmd || "").trim();
+      if (!c) return;
+      if (history.length && history[history.length - 1] === c) return;
+      history.push(c);
+      if (history.length > 50) history.shift();
+      histPos = history.length;
+    }
+
+    function histUp(){
+      if (!history.length) return;
+      histPos = Math.max(0, histPos - 1);
+      input.value = history[histPos] || "";
+      updateHint();
+    }
+    function histDown(){
+      if (!history.length) return;
+      histPos = Math.min(history.length, histPos + 1);
+      input.value = history[histPos] || "";
+      updateHint();
+    }
+
+    // ----- Tab autocomplete -----
+    const TOKENS = [
+      "help","clear","search","open","map","trace","lock","unlock","drift",
+      "world","system","mechanics","subjects","archive","state","monitor","entry","interface",
+      "subject","subjects:list","subject:list","observe",
+      "alex","kiwi","mentor"
+    ];
+
+    function completeToken(text){
+      const raw = text || "";
+      const parts = raw.split(/\s+/);
+      const last = parts[parts.length - 1] || "";
+      const head = parts.slice(0, -1).join(" ");
+
+      // Special: "subject <key>"
+      if (parts[0] === "subject" && parts.length === 2){
+        const k = last.toLowerCase();
+        const keys = ["alex","kiwi","mentor"];
+        const matches = keys.filter(x => x.startsWith(k));
+        if (matches.length === 1){
+          return "subject " + matches[0];
+        }
+      }
+
+      const q = last.toLowerCase();
+      if (!q) return null;
+      const matches = TOKENS.filter(t => t.startsWith(q));
+      if (matches.length !== 1) return null;
+
+      const completed = matches[0];
+      return (head ? (head + " ") : "") + completed;
+    }
+
+    // ----- Search scoring -----
     let LAST_RESULTS = [];
 
     function scoreHit(q, item){
@@ -443,7 +705,7 @@
         .slice(0, 6);
     }
 
-    // --- fuzzy: Levenshtein distance with small cutoff (fast) ---
+    // ----- fuzzy (Levenshtein) -----
     function levenshtein(a, b, maxDist){
       a = (a || "").toLowerCase();
       b = (b || "").toLowerCase();
@@ -455,7 +717,6 @@
 
       const v0 = new Array(bl + 1);
       const v1 = new Array(bl + 1);
-
       for (let j = 0; j <= bl; j++) v0[j] = j;
 
       for (let i = 0; i < al; i++){
@@ -471,45 +732,92 @@
           v1[j + 1] = val;
           if (val < rowMin) rowMin = val;
         }
-
         if (rowMin > maxDist) return maxDist + 1;
         for (let j = 0; j <= bl; j++) v0[j] = v1[j];
       }
       return v0[bl];
     }
 
-    // Returns [{it, d}] sorted by distance
+    // Returns [{it, d}] sorted
     function fuzzySuggest(query){
       const q = (query || "").trim().toLowerCase();
       if (!q || q.length < 2) return [];
 
       const maxDist = q.length <= 4 ? 1 : 2;
 
-      const scored = INDEX.map(it => {
+      return INDEX.map(it => {
         const k = it.key.toLowerCase();
         const t = it.title.toLowerCase();
-
         const dk = levenshtein(q, k, maxDist);
         const dt = levenshtein(q, t, maxDist);
-
         const d = Math.min(dk, dt);
-        return { it, d, maxDist };
+        return { it, d };
       })
-      .filter(x => x.d <= x.maxDist)
+      .filter(x => x.d <= maxDist)
       .sort((a,b) => a.d - b.d)
       .slice(0, 5);
-
-      return scored;
     }
 
+    // Confidence: auto-redirect if one suggestion is clearly best
+    function confidentSuggestion(sug){
+      if (!sug || !sug.length) return null;
+      if (sug.length === 1) return sug[0];
+      // if top is distance 1 and runner-up is >= 3, treat as confident
+      if (sug[0].d <= 1 && sug[1].d >= 3) return sug[0];
+      // if top is distance 0, always confident
+      if (sug[0].d === 0) return sug[0];
+      return null;
+    }
+
+    // ----- Site map (ASCII tree without '|' characters) -----
+    function siteMapLines(){
+      return [
+        "ROOT",
+        "  WORLD",
+        "  SYSTEM",
+        "    MECHANICS",
+        "  SUBJECTS",
+        "    ALEX",
+        "    KIWI",
+        "    MENTOR",
+        "  ARCHIVE",
+        "  STATE",
+        "  INTERFACE",
+        "  ENTRY"
+      ];
+    }
+
+    function traceLines(targetKey){
+      const key = (targetKey || "").toLowerCase().trim();
+      const n = nav(key) || INDEX.find(x => x.key === key);
+      if (!n) return [
+        "TRACE: NO TARGET FOUND",
+        "FORMAT: trace <node>"
+      ];
+
+      const url = n.url || n.url;
+      return [
+        "TRACE ROUTE",
+        "SYSTEM -> ROUTER",
+        "ROUTE MATCH -> " + key.toUpperCase(),
+        "TARGET URL -> " + url,
+        "STATUS -> OK"
+      ];
+    }
+
+    // ----- restricted / special behavior -----
     function restricted(cmd){
       if(cmd === "help"){
         respondMulti([
           "LIMITED PROTOCOL AVAILABLE",
-          "NAV: world | system | subjects | archive | state | entry",
-          "SEARCH: search <term> | <term> (implicit)",
-          "OPEN: open <n> (from last results)",
-          "UTILITY: clear"
+          "NAV: world, system, subjects, archive, state, entry",
+          "SEARCH: search <term>  OR  <term>",
+          "OPEN: open <n>  (from last results)",
+          "MAP: map",
+          "TRACE: trace <node>",
+          "MODE: lock, unlock",
+          "UTILITY: clear",
+          "INPUT: ArrowUp, ArrowDown history; Tab autocomplete"
         ]);
         return "__handled__";
       }
@@ -523,26 +831,88 @@
         return "__handled__";
       }
 
+      if(cmd === "lock"){
+        setLocked(true);
+        respond("MODE: LOCKDOWN ENABLED");
+        return "__handled__";
+      }
+
+      if(cmd === "unlock"){
+        setLocked(false);
+        respond("MODE: LOCKDOWN DISABLED");
+        return "__handled__";
+      }
+
+      if(cmd === "map"){
+        respondMulti(siteMapLines());
+        return "__handled__";
+      }
+
       if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
       return null;
     }
 
-    function go(url, msg){
-      if (msg) respond(msg);
-      setTimeout(() => { window.location.href = url; }, 360);
+    // Parsing + route preview (semantics)
+    function go(url, msg, meta){
+      pulseFx();
+
+      const lines = [];
+      if (msg) lines.push(msg);
+      if (meta && meta.length) lines.push(...meta);
+
+      // show parsing for 0.5–1s then redirect
+      const parsing = [
+        "PARSING...",
+        "ROUTE RESOLUTION...",
+        "LINK ESTABLISHED"
+      ];
+
+      respondMulti(lines.length ? lines : ["PARSING..."]);
+      setTimeout(() => {
+        respondMulti([...lines, ...parsing]);
+        setTimeout(() => { window.location.href = url; }, 450);
+      }, 280);
     }
 
+    // ----- core key handler -----
     input.addEventListener("keydown", (e) => {
-      if(e.key !== "Enter") return;
+      // history
+      if (e.key === "ArrowUp"){
+        e.preventDefault();
+        histUp();
+        return;
+      }
+      if (e.key === "ArrowDown"){
+        e.preventDefault();
+        histDown();
+        return;
+      }
+
+      // Tab autocomplete
+      if (e.key === "Tab"){
+        const next = completeToken(input.value);
+        if (next){
+          e.preventDefault();
+          input.value = next;
+          updateHint();
+        }
+        return;
+      }
+
+      if (e.key !== "Enter") return;
 
       const raw = input.value.trim();
       const value = raw.toLowerCase();
       input.value = "";
+      updateHint();
 
       if(!value){
         respond("AWAITING INPUT");
         return;
       }
+
+      pushHistory(raw);
+      incCmd();
 
       if(value === "clear"){
         output.textContent = "";
@@ -556,15 +926,37 @@
         return;
       }
 
+      // drift (status only)
+      if(value === "drift"){
+        respondMulti([
+          "DRIFT STATUS",
+          "LEVEL: WITHIN TOLERANCE",
+          "OBSERVABILITY: LIMITED",
+          "DISCLOSURE: NOT REQUIRED"
+        ]);
+        return;
+      }
+
+      // trace <node>
+      if (value.startsWith("trace ")){
+        const key = value.slice(6).trim();
+        respondMulti(traceLines(key));
+        return;
+      }
+
       // OPEN <n>
       if (value.startsWith("open ")){
         const n = parseInt(value.slice(5).trim(), 10);
         if (!Number.isFinite(n) || n < 1 || n > LAST_RESULTS.length){
-          respond("OPEN: INVALID INDEX");
+          const err = incErr();
+          respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "OPEN: INVALID INDEX");
           return;
         }
         const hit = LAST_RESULTS[n-1];
-        go(hit.url, "OPENING: " + hit.title);
+        go(hit.url, "OPENING: " + hit.title, [
+          "MATCH: " + hit.title + "  KEY: " + hit.key,
+          "ROUTE: " + hit.url
+        ]);
         return;
       }
 
@@ -576,17 +968,21 @@
 
         if (!hits.length){
           const sug = fuzzySuggest(q);
+          const best = confidentSuggestion(sug);
 
           if (!sug.length){
-            respond("SEARCH: NO RESULTS");
+            const err = incErr();
+            respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "SEARCH: NO RESULTS");
             return;
           }
 
-          // AUTO-REDIRECT if ONE strong suggestion
-          if (sug.length === 1 && sug[0].d <= (q.length <= 4 ? 1 : 2)){
-            const hit = sug[0].it;
-            LAST_RESULTS = [hit];
-            go(hit.url, "CORRECTED: " + hit.title);
+          // AUTO-REDIRECT if confident (giwi -> kiwi)
+          if (best){
+            LAST_RESULTS = [best.it];
+            go(best.it.url, "CORRECTED: " + best.it.title, [
+              "MATCH: " + best.it.title + "  KEY: " + best.it.key,
+              "ROUTE: " + best.it.url
+            ]);
             return;
           }
 
@@ -595,12 +991,15 @@
             "DID YOU MEAN:",
             ...sug.map((x,i) => `${i+1}) ${x.it.title}  [${x.it.key}]`),
             "TYPE: open <n>"
-          ]);
+          ], q);
           return;
         }
 
         if (hits.length === 1){
-          go(hits[0].url, "SEARCH HIT: " + hits[0].title);
+          go(hits[0].url, "SEARCH HIT: " + hits[0].title, [
+            "MATCH: " + hits[0].title + "  KEY: " + hits[0].key,
+            "ROUTE: " + hits[0].url
+          ]);
           return;
         }
 
@@ -608,14 +1007,17 @@
           "SEARCH RESULTS:",
           ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
           "TYPE: open <n>"
-        ]);
+        ], q);
         return;
       }
 
       // direct NAV by key
       const res = nav(value);
       if(res){
-        go(res.url, res.msg);
+        go(res.url, res.msg, [
+          "MATCH: " + value.toUpperCase(),
+          "ROUTE: " + res.url
+        ]);
         return;
       }
 
@@ -625,7 +1027,10 @@
         LAST_RESULTS = hits;
 
         if (hits.length === 1){
-          go(hits[0].url, "SEARCH HIT: " + hits[0].title);
+          go(hits[0].url, "SEARCH HIT: " + hits[0].title, [
+            "MATCH: " + hits[0].title + "  KEY: " + hits[0].key,
+            "ROUTE: " + hits[0].url
+          ]);
           return;
         }
 
@@ -634,19 +1039,22 @@
             "SEARCH RESULTS:",
             ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
             "TYPE: open <n>"
-          ]);
+          ], raw);
           return;
         }
 
         // fuzzy fallback
         const sug = fuzzySuggest(raw);
-        if (sug.length){
+        const best = confidentSuggestion(sug);
 
-          // AUTO-REDIRECT if ONE strong suggestion
-          if (sug.length === 1 && sug[0].d <= (raw.length <= 4 ? 1 : 2)){
-            const hit = sug[0].it;
-            LAST_RESULTS = [hit];
-            go(hit.url, "CORRECTED: " + hit.title);
+        if (sug.length){
+          // AUTO-REDIRECT if confident
+          if (best){
+            LAST_RESULTS = [best.it];
+            go(best.it.url, "CORRECTED: " + best.it.title, [
+              "MATCH: " + best.it.title + "  KEY: " + best.it.key,
+              "ROUTE: " + best.it.url
+            ]);
             return;
           }
 
@@ -655,15 +1063,25 @@
             "DID YOU MEAN:",
             ...sug.map((x,i) => `${i+1}) ${x.it.title}  [${x.it.key}]`),
             "TYPE: open <n>"
-          ]);
+          ], raw);
           return;
         }
       }
 
-      respond("COMMAND NOT RECOGNIZED");
+      const err = incErr();
+      respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "COMMAND NOT RECOGNIZED");
     });
 
-    window.addEventListener("load", focusCmd);
+    // Keep input focused (terminal feel)
+    window.addEventListener("load", () => {
+      focusCmd();
+      updateHint();
+    });
+
+    // Lockdown also blocks accidental clicks by re-focusing input
+    document.addEventListener("click", () => {
+      focusCmd();
+    }, { passive:true });
   </script>
 
 </body>
