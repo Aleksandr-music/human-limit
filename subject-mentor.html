@@ -129,18 +129,14 @@
       pointer-events:none;
     }
 
-    /* Back link (styled, not blue) */
+    /* Back link — SAME behavior as Alex (not fixed to top of sheet) */
     .back-link{
-      position:absolute;
-      top:12px;
-      left:14px;
       font-size:11px;
       letter-spacing:.08em;
       text-transform:uppercase;
       color:rgba(0,0,0,.65);
       text-decoration:none;
       font-weight:700;
-      z-index:5;
     }
     .back-link:hover{ color:rgba(0,0,0,.9); }
 
@@ -350,7 +346,7 @@
         ["COUNTRY OF BIRTH", { classified: true }],
         ["LANGUAGES", { classified: true }],
 
-        ["CIVIL PROFESSION", { classified: true }],
+        ["CIVIL PROFESSION", "CLASSIFIED"],
 
         ["MEDICAL EXAMINER", { classified: true }],
         ["TREATMENT UNIT", { classified: true }],
