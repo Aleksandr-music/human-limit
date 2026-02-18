@@ -23,13 +23,13 @@
       color:#eaeaea;
       background-color:#0b0b0b;
 
-      /* почти без затемнения */
+      /* Оверлей (твой вариант): 0.04 / 0.10 / 0.25 */
       background-image:
         linear-gradient(
           to bottom,
           rgba(0,0,0,.04) 0%,
           rgba(0,0,0,.10) 45%,
-          rgba(0,0,0,.22) 100%
+          rgba(0,0,0,.25) 100%
         ),
         url("images/png/hl-entry-map.png?v=1");
 
@@ -49,7 +49,7 @@
       font-size:22px;
       letter-spacing:1px;
       margin:0 0 12px 0;
-      text-shadow:0 2px 12px rgba(0,0,0,.75);
+      text-shadow:0 2px 12px rgba(0,0,0,.65);
     }
 
     .entry-text{
@@ -57,23 +57,38 @@
       font-weight:300;
       font-size:16px;
       margin:0 0 18px 0;
-      text-shadow:0 2px 12px rgba(0,0,0,.75);
+      text-shadow:0 2px 12px rgba(0,0,0,.65);
     }
 
     .entry button{
-      background: rgba(0,0,0,.18);
+      background: rgba(0,0,0,.14);
       border: 1px solid rgba(255,255,255,.28);
       color:#eaeaea;
       padding:10px 22px;
       font-family:"JetBrains Mono", monospace;
       font-size:14px;
       cursor:pointer;
-      text-shadow:0 2px 12px rgba(0,0,0,.75);
+      text-shadow:0 2px 12px rgba(0,0,0,.65);
       backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
     }
     .entry button:hover{
       border-color: rgba(255,255,255,.55);
-      background: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.18);
+    }
+
+    /* Планшеты/iPad: делаем ещё светлее, чтобы не "тонуло" */
+    @media (min-width: 681px) and (max-width: 1200px){
+      body{
+        background-image:
+          linear-gradient(
+            to bottom,
+            rgba(0,0,0,.02) 0%,
+            rgba(0,0,0,.06) 45%,
+            rgba(0,0,0,.16) 100%
+          ),
+          url("images/png/hl-entry-map.png?v=1");
+      }
     }
 
     /* Смартфон: показываем карту целиком, без обрезки */
