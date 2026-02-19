@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!-- interface.html | Human Limit — System Interface -->
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Initializing</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>HUMAN LIMIT — System Interface</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,52 +14,242 @@
 
   <style>
     :root{
-      /* Banner for interface menu */
-      --banner: url("images/png/hl-interface-banner-01.png");
-
-      /* Canon approach: do NOT brighten the image with filters.
-         Control only the dimming layers from style.css */
-      --banner-opacity: 1;
-      --banner-dim: 0.06;
-      --banner-blur: 0px;
+      --bg: url("images/png/hl-interface-noise.png?v=1");
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 1080px;
     }
-
-    html, body { height: 100%; }
-
+    html,body{height:100%}
     body{
       margin:0;
-      min-height:100svh;
-
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 760px at 70% 45%, rgba(255,255,255,.12), rgba(0,0,0,.90)),
+        linear-gradient(180deg, rgba(0,0,0,.70), rgba(0,0,0,.92)),
+        var(--bg);
+      background-size:cover;
+      background-position:center;
+      filter:saturate(.9);
+    }
+    .wrap{
+      position:relative;
+      max-width:var(--max);
+      margin:0 auto;
+      padding:58px var(--pad) 64px;
+    }
+    .top{
       display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding-bottom:16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:18px;
+    }
+    .back{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border-bottom:1px solid transparent;
+    }
+    .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
+    h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      line-height:1.2;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    .panel{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 16px;
+      background:rgba(0,0,0,.30);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .nav a{
+      display:block;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid transparent;
+      color:var(--hard);
+      text-decoration:none;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-size:13px;
+    }
+    .nav a:hover{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(0,0,0,.18);
+    }
+    .nav a .arrow{ color:var(--faint); margin-right:10px; }
+    .status{
+      margin-top:12px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:8px 14px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    @media (max-width: 720px){
+      .status{ grid-template-columns: 1fr; }
+    }
+    .k{ color:var(--faint); }
+    .v{ color:var(--hard); letter-spacing:.06em; text-transform:uppercase; }
+    .tools{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .btn{
+      display:inline-flex;
       align-items:center;
       justify-content:center;
-      flex-direction:column;
-      text-align:center;
-
-      padding: 0 !important;
-      overflow: hidden;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.30);
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      cursor:pointer;
     }
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
 
-    .msg{
-      font-weight:300;
-      font-size:16px;
-      color:var(--fg);
+    /* STATE MONITOR overlay (mode, not a nav page) */
+    .overlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(6px);
+      z-index: 20;
+    }
+    .overlay.is-open{ display:flex; }
+    .overlay .box{
+      width:min(980px, 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      background: rgba(0,0,0,.40);
+      padding:18px 16px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .overlay .head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding-bottom:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:12px;
+    }
+    .overlay .ttl{
       margin:0;
+      font-size:13px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
     }
+    .mon{
+      font-size:12px;
+      line-height:1.7;
+      color:rgba(255,255,255,.66);
+    }
+    .mon .ok{ color:rgba(255,255,255,.90); }
+    .mon .dim{ color:rgba(255,255,255,.46); }
   </style>
 </head>
-
 <body>
+  <div class="bg" aria-hidden="true"></div>
 
-  <p class="msg">Accessing world parameters...</p>
+  <main class="wrap">
+    <div class="top">
+      <a class="back" href="index.html">← Back</a>
+      <h1>HUMAN LIMIT — SYSTEM INTERFACE</h1>
+      <span></span>
+    </div>
 
-  <div class="spacer-2"></div>
+    <div class="grid">
+      <section class="panel nav" aria-label="Primary navigation">
+        <a href="world.html"><span class="arrow">&gt;</span>World</a>
+        <a href="system.html"><span class="arrow">&gt;</span>System</a>
+        <a href="subjects.html"><span class="arrow">&gt;</span>Subjects</a>
+        <a href="archive.html"><span class="arrow">&gt;</span>Archive</a>
 
-  <a class="node" href="system.html">ENTER SYSTEM</a>
+        <div class="status" aria-label="Session status">
+          <div><span class="k">Access Status:</span> <span class="v">Active</span></div>
+          <div><span class="k">Clearance:</span> <span class="v">Blue</span></div>
+          <div><span class="k">Visibility:</span> <span class="v">Partial</span></div>
+          <div><span class="k">Errors:</span> <span class="v">0</span></div>
+        </div>
 
-  <div class="spacer-1"></div>
+        <div class="tools">
+          <button class="btn" type="button" id="openMonitor">State Monitor</button>
+        </div>
+      </section>
+    </div>
+  </main>
 
-  <a class="node" href="index.html">RETURN TO ENTRY POINT</a>
+  <div class="overlay" id="monitor" role="dialog" aria-modal="true" aria-label="State Monitor">
+    <div class="box">
+      <div class="head">
+        <p class="ttl">State Monitor</p>
+        <button class="btn" type="button" id="closeMonitor">Close</button>
+      </div>
+      <div class="mon">
+        <div><span class="dim">Session Node:</span> <span class="ok">INTERFACE</span></div>
+        <div><span class="dim">Channel:</span> <span class="ok">Stable</span></div>
+        <div><span class="dim">Latency:</span> <span class="ok">Nominal</span></div>
+        <div><span class="dim">Visibility Lock:</span> <span class="ok">Engaged</span></div>
+        <div><span class="dim">Anomalies:</span> <span class="ok">None detected</span></div>
+        <div><span class="dim">Note:</span> <span class="ok">Monitor is a mode. Not a destination.</span></div>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    const monitor = document.getElementById('monitor');
+    const openBtn = document.getElementById('openMonitor');
+    const closeBtn = document.getElementById('closeMonitor');
+
+    function openMonitor(){
+      monitor.classList.add('is-open');
+    }
+    function closeMonitor(){
+      monitor.classList.remove('is-open');
+    }
+
+    openBtn.addEventListener('click', openMonitor);
+    closeBtn.addEventListener('click', closeMonitor);
+    monitor.addEventListener('click', (e) => {
+      if (e.target === monitor) closeMonitor();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMonitor();
+    });
+  </script>
 </body>
 </html>
