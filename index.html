@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!-- index.html | Human Limit — Entry Point -->
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Human Limit</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>HUMAN LIMIT — Entry Point</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,125 +13,138 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* Page-local overrides for global system (style.css) */
     :root{
-      --banner: url("images/png/hl-entry-map.png?v=3");
-
-      /* CRITICAL FIX: stop killing the banner */
-      --banner-opacity: 1;   /* was 0.14 in style.css */
-      --banner-dim: 0.06;    /* was 0.55 in style.css */
-      --banner-blur: 0px;    /* keep sharp */
-
-      --breath-scale-a: 1.02;
-      --breath-scale-b: 1.04;
+      --bg: url("images/png/hl-entry-map.png?v=3");
+      --dim: .22;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 980px;
     }
-
-    html, body { height: 100%; }
-
+    html,body{height:100%}
     body{
-      /* override style.css layout only for entry page */
-      padding: 0 !important;
-      margin: 0;
-      min-height: 100svh;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-
-      background: #0b0b0b;
-      color: #eaeaea;
-
-      overflow: hidden;
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
     }
-
-    /* Use the SAME system background layers from style.css,
-       but only animate the image layer (body::before). */
-    body::before{
-      transform-origin: 50% 50%;
-      will-change: transform;
-      animation: mapBreath 14s ease-in-out infinite;
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 700px at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.86)),
+        linear-gradient(180deg, rgba(0,0,0,.82), rgba(0,0,0,.92)),
+        var(--bg);
+      background-size:cover;
+      background-position:center;
+      filter: saturate(0.9);
+      opacity:1;
     }
-
-    .entry{
-      position: relative;
-      z-index: 10;
-
-      max-width: 420px;
-      padding: 24px 18px;
-
-      opacity: 0;
-      transform: translateY(10px);
-      animation: entryIn 700ms ease-out 120ms forwards;
+    .veil{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,var(--dim));
+      pointer-events:none;
     }
-
-    .entry-title{
-      font-family:"JetBrains Mono", monospace;
-      font-weight:600;
+    .wrap{
+      position:relative;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:70px var(--pad);
+    }
+    .panel{
+      width:min(var(--max), 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:28px 22px;
+      backdrop-filter: blur(6px);
+      background:rgba(0,0,0,.34);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .title{
+      margin:0 0 12px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
       font-size:22px;
-      letter-spacing:1px;
-      margin:0 0 12px 0;
-      text-shadow:0 2px 12px rgba(0,0,0,.55);
+      line-height:1.2;
     }
-
-    .entry-text{
-      font-family:"JetBrains Mono", monospace;
-      font-weight:300;
-      font-size:16px;
-      margin:0 0 18px 0;
-      text-shadow:0 2px 10px rgba(0,0,0,.35);
-    }
-
-    .entry button{
-      background:none;
-      border:1px solid rgba(255,255,255,.45);
-      color:#eaeaea;
-      padding:10px 22px;
-      font-family:"JetBrains Mono", monospace;
+    .tag{
+      margin:0 0 18px;
+      color:var(--muted);
       font-size:14px;
-      cursor:pointer;
-      text-shadow:0 2px 10px rgba(0,0,0,.35);
+      letter-spacing:.02em;
     }
-
-    .entry button:hover{
-      border-color:rgba(255,255,255,.75);
+    .cta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:18px;
     }
-
-    @keyframes entryIn{
-      from{ opacity:0; transform: translateY(10px); }
-      to{ opacity:1; transform: translateY(0); }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.35);
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      min-width:220px;
     }
-
-    @keyframes mapBreath{
-      0%   { transform: scale(var(--breath-scale-a)); }
-      50%  { transform: scale(var(--breath-scale-b)); }
-      100% { transform: scale(var(--breath-scale-a)); }
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
+    .hint{
+      margin-top:16px;
+      color:rgba(255,255,255,.52);
+      font-size:12px;
+      line-height:1.5;
     }
-
-    @media (max-width: 680px){
-      :root{
-        --banner-dim: 0.03; /* even less dim on mobile */
-      }
-      body::before{
-        animation: none;
-        transform: none;
-        background-size: contain;
-        background-position: center center;
-      }
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid rgba(255,255,255,.10);
+      margin-top:18px;
+      padding-top:14px;
+      color:rgba(255,255,255,.56);
+      font-size:12px;
+      letter-spacing:.04em;
     }
-
-    @media (prefers-reduced-motion: reduce){
-      .entry{ animation:none; opacity:1; transform:none; }
-      body::before{ animation:none; transform:none; }
-    }
+    .mono{ letter-spacing:.10em; text-transform:uppercase; }
   </style>
 </head>
-
 <body>
-  <div class="entry">
-    <div class="entry-title">HUMAN LIMIT</div>
-    <div class="entry-text">The world is already decided.</div>
-    <button onclick="location.href='interface.html'">Access World</button>
-  </div>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="veil" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="panel">
+      <h1 class="title">HUMAN LIMIT</h1>
+      <p class="tag">The world is already decided.</p>
+
+      <div class="cta">
+        <a class="btn" href="access.html">Access System</a>
+      </div>
+
+      <div class="hint">
+        Entry point does not reveal content.<br>
+        It initiates access.
+      </div>
+
+      <div class="row">
+        <div class="mono">ENTRY POINT</div>
+        <div>Visibility: <span class="mono">Restricted</span></div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
