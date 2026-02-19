@@ -126,6 +126,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      opacity:0.92;
     }
 
     .doc:hover{ opacity:0.75; }
@@ -156,7 +157,7 @@
     <div class="cmdline">
       &gt; <input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus aria-label="Command input">
       <div class="hint">
-        available: help, clear, subjects, archive, world, system, interface, access, search &lt;term&gt;, open &lt;n&gt;, exit
+        available: help, clear, subjects, archive, world, system, interface, entry, access, search &lt;term&gt;, open &lt;n&gt;, exit
       </div>
     </div>
 
@@ -173,6 +174,7 @@
       <a class="doc" href="../world.html">WORLD GRID (READ-ONLY)</a>
       <a class="doc" href="../mechanics.html">SYSTEM / MECHANICS</a>
       <a class="doc" href="../interface.html">INTERFACE LAYER</a>
+      <a class="doc" href="../index.html">ENTRY (ROOT)</a>
     </div>
 
   </div>
@@ -191,9 +193,7 @@
     // Session key used on system.html (kept consistent)
     const ACCESS_LEVEL_KEY = "hl_access_level_v1";
 
-    // Enforce BLUE session on this page (soft):
-    // If user comes directly without code, we still show the page,
-    // but session level is normalized to at least BLUE.
+    // Enforce BLUE session on this page (soft)
     function getAccessLevel(){
       const v = parseInt(sessionStorage.getItem(ACCESS_LEVEL_KEY) || "0", 10);
       return Number.isFinite(v) ? Math.max(0, Math.min(3, v)) : 0;
@@ -204,7 +204,7 @@
     }
     if (getAccessLevel() < 1) setAccessLevel(1);
 
-    // Search index (BLUE-allowed subset).
+    // Search index (BLUE-allowed subset)
     // IMPORTANT: use paths relative to /clearance-blue/
     const INDEX = [
       { key:"subjects",  title:"SUBJECTS",  url:"../subjects.html",       tags:["profiles","entities","index","persons"] },
@@ -288,7 +288,6 @@
       }, 240);
     }
 
-    // Command handler
     const history = [];
     let histPos = -1;
 
