@@ -187,3 +187,79 @@ input, textarea{
     line-height:24px;
   }
 }
+/* =========================
+   HUMAN LIMIT — BANNER PROTOCOL
+   Single source of truth for page backgrounds
+   ========================= */
+
+:root{
+  /* Banner file map (do not rename files) */
+  --hl-bg-entry:     url("images/png/hl-entry-banner-01.png");
+  --hl-bg-access:    url("images/png/hl-access-banner-01.png");
+  --hl-bg-interface: url("images/png/hl-interface-banner-01.png");
+  --hl-bg-world:     url("images/png/hl-world-banner-01.png");
+  --hl-bg-system:    url("images/png/hl-system-banner-01.png");
+  --hl-bg-subjects:  url("images/png/hl-subjects-banner-01.png");
+  --hl-bg-archive:   url("images/png/hl-archive-banner-01.png");
+
+  /* Global readability tuning */
+  --hl-bg-dim: 0.22;          /* overlay darkness (0–1) */
+  --hl-bg-vignette: 0.55;     /* vignette strength */
+  --hl-bg-contrast: 1.00;     /* image contrast */
+  --hl-bg-saturate: 0.90;     /* keep near-monochrome */
+}
+
+/* Apply to pages by setting body[data-bg="..."] */
+body[data-bg]{
+  position: relative;
+  background: #000;
+  overflow-x: hidden;
+}
+
+body[data-bg]::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: contrast(var(--hl-bg-contrast)) saturate(var(--hl-bg-saturate));
+}
+
+body[data-bg]::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  /* universal readability layer */
+  background:
+    radial-gradient(1200px 760px at 55% 42%,
+      rgba(255,255,255, calc(0.10 * (1 - var(--hl-bg-dim)))),
+      rgba(0,0,0, calc(var(--hl-bg-vignette)))
+    ),
+    linear-gradient(
+      180deg,
+      rgba(0,0,0, calc(var(--hl-bg-dim) + 0.10)),
+      rgba(0,0,0, calc(var(--hl-bg-dim) + 0.20))
+    );
+}
+
+/* Banner selector (the only mapping layer) */
+body[data-bg="entry"]::before     { background-image: var(--hl-bg-entry); }
+body[data-bg="access"]::before    { background-image: var(--hl-bg-access); }
+body[data-bg="interface"]::before { background-image: var(--hl-bg-interface); }
+body[data-bg="world"]::before     { background-image: var(--hl-bg-world); }
+body[data-bg="system"]::before    { background-image: var(--hl-bg-system); }
+body[data-bg="subjects"]::before  { background-image: var(--hl-bg-subjects); }
+body[data-bg="archive"]::before   { background-image: var(--hl-bg-archive); }
+
+/* Optional per-page tuning (only if you need it later) */
+body[data-bg="interface"]{
+  --hl-bg-dim: 0.26;
+}
+body[data-bg="access"]{
+  --hl-bg-dim: 0.24;
+}
