@@ -352,8 +352,17 @@
       pushHistory(raw);
 
       if (cmd === "help"){ help(); return; }
-      if (cmd === "clear"){ output.textContent = ""; return; }
-      if (cmd === "exit"){ go("../system.html", "RETURNING TO SYSTEM INTERFACE", []); return; }
+
+      if (cmd === "clear"){
+        output.innerHTML = "";
+        LAST_RESULTS = [];
+        return;
+      }
+
+      if (cmd === "exit"){
+        go("../system.html", "RETURNING TO SYSTEM INTERFACE", []);
+        return;
+      }
 
       if (cmd === "access"){
         respondMulti(["CLEARANCE STATUS", "LEVEL: BLUE", "LINE: BLUE LINE"]);
@@ -361,6 +370,10 @@
       }
 
       if (cmd.startsWith("open ")){
+        if (!LAST_RESULTS.length){
+          respond("OPEN: NO CONTEXT (RUN SEARCH FIRST)");
+          return;
+        }
         const n = parseInt(cmd.slice(5).trim(), 10);
         if (!Number.isFinite(n) || n < 1 || n > LAST_RESULTS.length){
           respond("OPEN: INVALID INDEX");
@@ -429,6 +442,18 @@
             ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
             "TYPE: open <n>"
           ], raw);
+          return;
+        }
+      }
+
+      // direct key fallback (only if user types an exact known key)
+      {
+        const hit = INDEX.find(x => x.key === cmd);
+        if (hit){
+          go(hit.url, "OPENING: " + hit.title, [
+            "MATCH: " + hit.title + "  KEY: " + hit.key,
+            "ROUTE: " + hit.url
+          ]);
           return;
         }
       }
