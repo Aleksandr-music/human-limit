@@ -3,10 +3,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SUBJECT: ALEX — Internal Registry</title>
 
-  <!-- Optional: JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -31,7 +30,7 @@
       min-height:100svh;
       align-items:center;
       justify-content:center;
-      padding:24px;
+      padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     }
 
     .sheet-wrap{ width:min(860px, 100%); }
@@ -128,7 +127,6 @@
       pointer-events:none;
     }
 
-    /* Back link — same layout behavior as Mentor (in flow, not pinned) */
     .back-link,
     .back-link:visited{
       display:inline-block;
@@ -244,9 +242,6 @@
       font-weight:800;
     }
 
-    /* hide rows by access */
-    .row[hidden]{ display:none !important; }
-
     .footer{
       position:relative;
       display:flex;
@@ -276,7 +271,7 @@
     }
 
     @media (max-width:680px){
-      body{ padding:16px; }
+      body{ padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
       .row{ grid-template-columns: 1fr; gap:6px; }
       .meta{ min-width:0; text-align:left; }
       .header{ grid-template-columns: 1fr; }
@@ -330,19 +325,25 @@
   </div>
 
   <script>
-    // 0=GREEN, 1=BLUE, 2=AMBER, 3=BLACK
+    // ACCESS LEVELS: 0=GREEN, 1=BLUE, 2=AMBER, 3=BLACK
     const ACCESS_LEVEL_KEY = "hl_access_level_v1";
+
     function getAccessLevel(){
       const v = parseInt(sessionStorage.getItem(ACCESS_LEVEL_KEY) || "0", 10);
       return Number.isFinite(v) ? Math.max(0, Math.min(3, v)) : 0;
     }
+
     const ACCESS_LEVEL = getAccessLevel();
 
     function levelName(n){
-      if (n === 1) return "BLUE";
-      if (n === 2) return "AMBER";
-      if (n === 3) return "BLACK";
-      return "GREEN";
+      if (n === 1) return "Blue";
+      if (n === 2) return "Amber";
+      if (n === 3) return "Black";
+      return "Green";
+    }
+
+    function accessPlaceholder(minLevel){
+      return `уровень доступа ${levelName(minLevel)}`;
     }
 
     const data = {
@@ -352,31 +353,51 @@
       accessStatus: "LIMITED",
       photo: "images/png/hl-subject-alex-mugshot.png",
 
-      // value rules:
-      // - string => always visible (GREEN)
-      // - { min:1|2|3, value?:string, renderMode?:"bar", text?:string }
-      //   if ACCESS_LEVEL < min => row hidden
-      //   else shown:
-      //     - if value provided => show value
-      //     - else show placeholder "ACCESS: <LEVEL>"
+      // Row rule:
+      // - "string" => always visible and open on GREEN.
+      // - { min:0|1|2|3, value?:string, renderMode?:"bar", alwaysClassified?:true }
+      //   Visible ALWAYS (no hiding). If ACCESS_LEVEL < min => placeholder text.
+      //   If ACCESS_LEVEL >= min => show value (or placeholder if value not set yet).
+      //   If alwaysClassified => show CLASSIFIED bar at all levels (including BLACK).
+
       rows: [
-        ["AGE", "37"],
-        ["HEIGHT", "188 CM"],
+        // GREEN open:
+        ["AGE",                { min: 0, value: "37" }],
+        ["HEIGHT",             { min: 0, value: "188 CM" }],
+        ["EYE COLOR",          { min: 0, value: "BLUE" }],
 
-        // SHORT secret list (different access levels) — placeholders for now
-        ["EYE COLOR", { min: 1 }],
-        ["REAL NAME", { min: 3 }],
-        ["NATIONALITY", { min: 2 }],
-        ["LANGUAGES", { min: 1 }],
-        ["CHRONIC MEDICATION", { min: 3 }],
+        // BLUE opens:
+        ["PHYSICAL CONDITION", { min: 1, value: "OPTIMAL" }],
+        ["PSYCHOLOGICAL STATE",{ min: 1, value: "STABLE / CONTROLLED" }],
+        ["LANGUAGES",          { min: 1, value: "EN / RU / DE" }],
 
-        // keep existing example with bars, now controlled by access
-        ["RECRUITER", { min: 2, renderMode: "bar", text: "ACCESS: AMBER" }],
-        ["FILE AUTHOR", { min: 3, renderMode: "bar", text: "ACCESS: BLACK" }],
+        // AMBER opens:
+        ["NATIONALITY",        { min: 2, value: "CLASSIFIED (OPENED ON AMBER)" }],
+        ["COUNTRY OF BIRTH",   { min: 2, value: "CLASSIFIED (OPENED ON AMBER)" }],
+        ["CIVIL SPECIALTY",    { min: 2, value: "CLASSIFIED (OPENED ON AMBER)" }],
+        ["ANALYTICAL THINKING",{ min: 2, value: "CLASSIFIED (OPENED ON AMBER)" }],
+        ["PAIN THRESHOLD",     { min: 2, value: "CLASSIFIED (OPENED ON AMBER)" }],
+        ["WEAPON PROFICIENCY", { min: 2, value: "CLASSIFIED (OPENED ON AMBER)" }],
 
-        // open rows
-        ["PSYCHOLOGICAL STATE", "STABLE / CONTROLLED"],
-        ["PHYSICAL CONDITION", "OPTIMAL"]
+        // BLACK opens (everything else from the big list):
+        ["REAL NAME",                      { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["MARITAL STATUS",                 { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["MEDICAL EXAMINER",               { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["TREATMENT UNIT",                 { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["CHRONIC MEDICATION",             { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["RESTRAINT DEVICE — BRACELET S/N",{ min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["IMPLANTED DEVICE — CAPSULE S/N", { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["COMBAT SPECIALIZATION",           { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["TACTICAL APTITUDE",              { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["SITUATIONAL AWARENESS",          { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["DECISION LATENCY",               { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["STRESS RESISTANCE",              { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["COMPLIANCE INDEX",               { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+        ["ESCAPE RISK",                    { min: 3, value: "CLASSIFIED (OPENED ON BLACK)" }],
+
+        // Always CLASSIFIED even on BLACK:
+        ["RECRUITER",   { min: 0, renderMode: "bar", alwaysClassified: true, value: "CLASSIFIED" }],
+        ["FILE AUTHOR", { min: 0, renderMode: "bar", alwaysClassified: true, value: "CLASSIFIED" }]
       ],
     };
 
@@ -390,34 +411,42 @@
     }
 
     function renderValue(v){
+      // plain string (open)
       if (typeof v === "string") return `<span>${escapeHtml(v)}</span>`;
 
-      // controlled object
-      if (v && typeof v === "object"){
-        const min = parseInt(v.min ?? 0, 10);
-        const lvl = Number.isFinite(min) ? Math.max(0, Math.min(3, min)) : 0;
-
-        // If unlocked: show real value if present, else show ACCESS placeholder
-        const shownText = (v.value && String(v.value).trim().length)
-          ? String(v.value)
-          : (v.text && String(v.text).trim().length)
-            ? String(v.text)
-            : `ACCESS: ${levelName(lvl)}`;
-
-        if (v.renderMode === "bar"){
-          return `<span class="redact-bar">${escapeHtml(shownText)}</span>`;
-        }
-        return `<span class="classified">${escapeHtml(shownText)}</span>`;
+      if (!v || typeof v !== "object"){
+        return `<span class="classified">${escapeHtml(accessPlaceholder(1))}</span>`;
       }
 
-      return `<span class="classified">ACCESS: BLUE</span>`;
+      if (v.alwaysClassified){
+        const t = (v.value && String(v.value).trim().length) ? String(v.value) : "CLASSIFIED";
+        return `<span class="redact-bar">${escapeHtml(t)}</span>`;
+      }
+
+      const min = Number.isFinite(parseInt(v.min, 10)) ? Math.max(0, Math.min(3, parseInt(v.min, 10))) : 0;
+
+      // Locked => show access placeholder (never hide)
+      if (ACCESS_LEVEL < min){
+        return `<span class="classified">${escapeHtml(accessPlaceholder(min))}</span>`;
+      }
+
+      // Unlocked => show value if set, else still placeholder
+      const shown = (v.value && String(v.value).trim().length) ? String(v.value) : accessPlaceholder(min);
+
+      if (v.renderMode === "bar"){
+        return `<span class="redact-bar">${escapeHtml(shown)}</span>`;
+      }
+
+      return `<span>${escapeHtml(shown)}</span>`;
     }
 
+    // header
     document.getElementById("subjectTitle").textContent = `SUBJECT: ${data.subject}`;
     document.getElementById("subjectId").textContent = `ID: ${data.id}`;
     document.getElementById("classification").textContent = data.classification;
     document.getElementById("accessStatus").textContent = data.accessStatus;
 
+    // photo
     const img = document.getElementById("photo");
     const ph = document.getElementById("photoPlaceholder");
     if (data.photo && data.photo.trim().length){
@@ -429,18 +458,11 @@
       ph.style.display = "flex";
     }
 
+    // rows
     const lines = document.getElementById("lines");
     data.rows.forEach(([k,v]) => {
       const row = document.createElement("div");
       row.className = "row";
-
-      // hide by access (only for controlled objects with min)
-      if (v && typeof v === "object" && v.min !== undefined){
-        const min = parseInt(v.min, 10);
-        const req = Number.isFinite(min) ? Math.max(0, Math.min(3, min)) : 0;
-        if (ACCESS_LEVEL < req) row.hidden = true;
-      }
-
       row.innerHTML = `
         <div class="k">${escapeHtml(k)}:</div>
         <div class="v">${renderValue(v)}</div>
