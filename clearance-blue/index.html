@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clearance Blue</title>
 
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    body{
+      margin:0;
+      background:#05070a;
+      color:var(--fg);
+      font-family:"JetBrains Mono", monospace;
+      overflow:hidden;
+    }
+
+    .wrap{
+      padding:40px;
+    }
+
+    .title{
+      font-size:20px;
+      margin-bottom:30px;
+      letter-spacing:0.08em;
+    }
+
+    .status{
+      font-size:13px;
+      color:var(--dim);
+      margin-bottom:20px;
+    }
+
+    .cmdline{
+      margin-top:10px;
+      font-size:14px;
+    }
+
+    input{
+      background:none;
+      border:none;
+      outline:none;
+      color:var(--fg);
+      font-family:inherit;
+      font-size:14px;
+      width:420px;
+    }
+
+    .output{
+      margin-top:25px;
+      font-size:14px;
+      color:var(--dim);
+      white-space:pre-line;
+      min-height:40px;
+    }
+
+    .docs{
+      margin-top:35px;
+      font-size:14px;
+      line-height:28px;
+    }
+
+    .doc{
+      display:block;
+      color:var(--fg);
+      text-decoration:none;
+    }
+
+    .doc:hover{
+      opacity:0.7;
+    }
+
+    .hint{
+      color:var(--dim);
+      opacity:0.5;
+      font-size:12px;
+      margin-top:6px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="title">CLEARANCE LEVEL: BLUE</div>
+
+  <div class="status">
+    ACCESS PROFILE: EXTENDED<br>
+    VISIBILITY: RESTRICTED DATASETS<br>
+    SESSION STATE: VERIFIED
+  </div>
+
+  <div class="cmdline">
+    &gt; <input id="cmd" autocomplete="off" autofocus>
+    <div class="hint">available: subjects, search, open, exit</div>
+  </div>
+
+  <div id="output" class="output"></div>
+
+  <div class="docs">
+    AVAILABLE DOCUMENTS:
+
+    <a class="doc" href="../subjects.html">SUBJECT INDEX (FILTERED)</a>
+    <a class="doc" href="../subject-alex.html">SUBJECT: ALEX (EXTENDED)</a>
+    <a class="doc" href="../subject-kiwi.html">SUBJECT: KIWI (EXTENDED)</a>
+    <a class="doc" href="../archive.html">ARCHIVE ENTRIES (LIMITED)</a>
+  </div>
+
+</div>
+
+<script>
+  const input = document.getElementById("cmd");
+  const output = document.getElementById("output");
+
+  function respond(text){
+    output.textContent = "> " + text;
+  }
+
+  input.addEventListener("keydown", (e) => {
+    if(e.key !== "Enter") return;
+
+    const cmd = input.value.trim().toLowerCase();
+    input.value = "";
+
+    if(!cmd){
+      respond("AWAITING INPUT");
+      return;
+    }
+
+    if(cmd === "subjects"){
+      respond("OPEN NODE: SUBJECT INDEX");
+      setTimeout(()=>location.href="../subjects.html", 300);
+      return;
+    }
+
+    if(cmd.startsWith("search")){
+      respond("SEARCH EXECUTED");
+      return;
+    }
+
+    if(cmd === "exit"){
+      respond("RETURNING TO SYSTEM INTERFACE");
+      setTimeout(()=>history.back(), 300);
+      return;
+    }
+
+    respond("COMMAND NOT AVAILABLE IN BLUE PROFILE");
+  });
+</script>
+
+</body>
+</html>
