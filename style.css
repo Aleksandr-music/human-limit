@@ -194,13 +194,13 @@ input, textarea{
 
 :root{
   /* Banner file map (do not rename files) */
-  --hl-bg-entry:     url("images/png/hl-entry-banner-01.png");
-  --hl-bg-access:    url("images/png/hl-access-banner-01.png");
-  --hl-bg-interface: url("images/png/hl-interface-banner-01.png");
-  --hl-bg-world:     url("images/png/hl-world-banner-01.png");
-  --hl-bg-system:    url("images/png/hl-system-banner-01.png");
-  --hl-bg-subjects:  url("images/png/hl-subjects-banner-01.png");
-  --hl-bg-archive:   url("images/png/hl-archive-banner-01.png");
+  --hl-bg-entry:     url("/human-limit/images/png/hl-entry-banner-01.png");
+--hl-bg-access:    url("/human-limit/images/png/hl-access-banner-01.png");
+--hl-bg-interface: url("/human-limit/images/png/hl-interface-banner-01.png");
+--hl-bg-world:     url("/human-limit/images/png/hl-world-banner-01.png");
+--hl-bg-system:    url("/human-limit/images/png/hl-system-banner-01.png");
+--hl-bg-subjects:  url("/human-limit/images/png/hl-subjects-banner-01.png");
+--hl-bg-archive:   url("/human-limit/images/png/hl-archive-banner-01.png");
 
   /* Global readability tuning */
   --hl-bg-dim: 0.22;          /* overlay darkness (0–1) */
