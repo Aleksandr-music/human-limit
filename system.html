@@ -26,7 +26,6 @@
       --ui-dim-mult: 1;
     }
 
-    /* Disable global banner layers from style.css on this page */
     body::before,
     body::after{
       display:none !important;
@@ -82,7 +81,6 @@
       transform: translateZ(0);
     }
 
-    /* Desktop/iPad depth */
     .bg-layer-1{ opacity:1;    transform: translateZ(-60px) scale(1.02); }
     .bg-layer-2{ opacity:0.45; transform: translateZ(-20px) scale(1.01); }
     .bg-layer-3{ opacity:0.22; transform: translateZ( 20px) scale(1.00); }
@@ -103,11 +101,7 @@
       transform: translateZ(80px);
       transition: opacity 220ms ease;
     }
-
-    /* subtle “event sync” pulse */
-    .bg-fx.pulse{
-      opacity:0.16;
-    }
+    .bg-fx.pulse{ opacity:0.16; }
 
     .bg-dim{
       position:absolute;
@@ -117,7 +111,6 @@
       transform: translateZ(90px);
     }
 
-    /* Tablet defaults */
     @media (max-width: 980px){
       :root{ --bg-dim-alpha: 0.06; }
       .bg-layer{ background-size:cover; background-position:center center; }
@@ -145,7 +138,6 @@
       backface-visibility: visible !important;
       -webkit-backface-visibility: visible !important;
 
-      /* drift without transforms */
       animation: driftBg 26s ease-in-out infinite alternate;
       background-position: 50% 50%;
     }
@@ -171,10 +163,10 @@
       .bg-scene{ transform:none !important; }
     }
 
-    /* --- page-specific (system.html only) --- */
+    /* --- page-specific --- */
     .title{
       font-size:18px;
-      margin-bottom:26px;
+      margin-bottom:18px;
     }
 
     .menu .node{
@@ -191,22 +183,6 @@
     .menu .node--service::before{ color:var(--dim); }
     .menu .node--service:hover{ color:var(--fg); }
 
-    /* BACK button styled like links */
-    .menu .node--back{
-      background:none;
-      border:none;
-      padding:0;
-      cursor:pointer;
-      text-align:left;
-      font-family:inherit;
-      font-size:14px;
-      line-height:30px;
-      color:var(--dim);
-    }
-    .menu .node--back:hover{
-      color:var(--fg);
-    }
-
     /* Lockdown: menu becomes non-interactive (command-only) */
     html.lock .menu{
       pointer-events:none;
@@ -215,12 +191,11 @@
     }
 
     .status{
-      margin-top:34px;
+      margin-top:26px;
       font-size:13px;
       user-select:none;
     }
 
-    /* “Heartbeat” cursor (irregular CRT-like) */
     .cursor{
       display:inline-block;
       margin-left:2px;
@@ -238,7 +213,7 @@
       100%{ opacity:1; }
     }
 
-    /* Packet marker without using '|' character */
+    /* Packet marker without using '|' */
     .pkt{
       display:inline-block;
       width:10px;
@@ -268,12 +243,12 @@
     }
 
     .cmdline{
-      margin-top:28px;
+      margin-top:18px;
       font-size:14px;
       position:relative;
     }
 
-    #cmd{
+    #cmd, #access{
       background:none;
       border:none;
       outline:none;
@@ -283,10 +258,9 @@
       width:min(520px, 84vw);
     }
 
-    /* Inline hint (no extra blocks) */
     .hint{
       position:absolute;
-      left:18px; /* after the prompt */
+      left:18px;
       top:0;
       color:var(--dim);
       opacity:0.55;
@@ -296,6 +270,26 @@
     }
     .hint.hidden{ display:none; }
 
+    .subline{
+      margin-top:10px;
+      font-size:14px;
+      position:relative;
+      opacity:0.92;
+    }
+
+    /* separate hint for access */
+    .hint2{
+      position:absolute;
+      left:18px;
+      top:0;
+      color:var(--dim);
+      opacity:0.55;
+      pointer-events:none;
+      white-space:nowrap;
+      font-size:14px;
+    }
+    .hint2.hidden{ display:none; }
+
     .output{
       margin-top:18px;
       font-size:14px;
@@ -304,7 +298,6 @@
       white-space:pre-line;
     }
 
-    /* grep-like highlight (subtle, monochrome) */
     .hl{
       color:var(--fg);
       opacity:0.92;
@@ -313,17 +306,29 @@
       text-underline-offset: 3px;
     }
 
-    /* Session line style */
     .status .meta{
       color:var(--dim);
       opacity: calc(0.85 * var(--ui-dim-mult));
+      margin-top:6px;
     }
+
+    /* Back button */
+    .backwrap{
+      margin-bottom:10px;
+    }
+    .backbtn{
+      font-size:14px;
+      color:var(--dim);
+      text-decoration:none;
+      display:inline-block;
+      padding:2px 0;
+    }
+    .backbtn:hover{ color:var(--fg); }
   </style>
 </head>
 
 <body>
 
-  <!-- layered background -->
   <div class="bg" aria-hidden="true">
     <div class="bg-scene" id="bgScene">
       <div class="bg-layer bg-layer-1"></div>
@@ -334,6 +339,10 @@
     </div>
   </div>
 
+  <div class="backwrap">
+    <a class="backbtn" href="#" id="backBtn">← BACK</a>
+  </div>
+
   <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
 
   <nav class="menu" aria-label="System nodes" id="menu">
@@ -341,11 +350,7 @@
     <a class="node" href="mechanics.html">SYSTEM</a>
     <a class="node" href="subjects.html">SUBJECTS</a>
     <a class="node" href="archive.html">ARCHIVE</a>
-
     <a class="node node--service" href="state.html">STATE MONITOR</a>
-
-    <!-- Back button (no | character used) -->
-    <button class="node node--service node--back" id="backBtn" type="button">BACK</button>
   </nav>
 
   <div class="status dim" id="status">
@@ -366,12 +371,23 @@
     <span id="hint" class="hint">type: world, subjects, search alex, map, trace world</span>
   </div>
 
+  <div class="subline">
+    &gt; <input
+        id="access"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Access code input"
+      >
+    <span id="hint2" class="hint2">enter access code (6 digits)</span>
+  </div>
+
   <div id="output" class="output"></div>
 
   <script>
     // =========================================================
-    // 0) Platform mode:
-    //    mobile => disable 3D (stable)
+    // 0) Platform mode: mobile => disable 3D (stable)
     // =========================================================
     (() => {
       const root = document.documentElement;
@@ -398,10 +414,9 @@
 
       const canHover = matchMedia("(hover: hover)").matches;
 
-      // Desktop: pointer-driven 3D
       if (canHover){
-        const MAX_ROT = 6;   // deg
-        const MAX_MOV = 14;  // px
+        const MAX_ROT = 6;
+        const MAX_MOV = 14;
 
         let tx=0, ty=0, rx=0, ry=0;
         let cx=0, cy=0, crx=0, cry=0;
@@ -450,15 +465,14 @@
         return;
       }
 
-      // Tablet/iPad: slow idle drift (3D allowed)
       let t0 = performance.now();
       function idle(now){
         const t = (now - t0) / 1000;
 
-        const ry = Math.sin(t * 0.14) * 2.2;   // deg
-        const rx = Math.cos(t * 0.11) * 1.6;   // deg
-        const tx = Math.sin(t * 0.12) * 6.0;   // px
-        const ty = Math.cos(t * 0.10) * 4.0;   // px
+        const ry = Math.sin(t * 0.14) * 2.2;
+        const rx = Math.cos(t * 0.11) * 1.6;
+        const tx = Math.sin(t * 0.12) * 6.0;
+        const ty = Math.cos(t * 0.10) * 4.0;
 
         root.style.setProperty("--ry", ry.toFixed(2) + "deg");
         root.style.setProperty("--rx", rx.toFixed(2) + "deg");
@@ -471,42 +485,46 @@
     })();
 
     // =========================================================
-    // 2) Command console + internal search + fuzzy + UX features
-    //    Included:
-    //    - Back button + "back" command
-    //    - No '|' character usage
-    //    - Hint in input line
-    //    - History (ArrowUp / ArrowDown)
-    //    - Tab autocomplete
-    //    - Parsing + route preview before navigation
-    //    - Lock / unlock (read-only lockdown)
-    //    - map (ASCII tree without vertical bars)
-    //    - trace <node>
-    //    - session flags (INIT/ACTIVE/DEGRADED) in sessionStorage
-    //    - fuzzy auto-redirect when confident (giwi -> kiwi)
+    // 2) Command console + internal search + fuzzy + UX + ACCESS
     // =========================================================
     const root = document.documentElement;
     const input = document.getElementById("cmd");
+    const access = document.getElementById("access");
     const output = document.getElementById("output");
     const hint = document.getElementById("hint");
+    const hint2 = document.getElementById("hint2");
     const bgFx = document.getElementById("bgFx");
     const sessionMeta = document.getElementById("sessionMeta");
     const backBtn = document.getElementById("backBtn");
 
-    // ----- back button behavior -----
-    function doBack(){
-      if (window.history.length > 1) window.history.back();
+    // ----- BACK button -----
+    backBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (history.length > 1) history.back();
       else window.location.href = "index.html";
-    }
-    if (backBtn){
-      backBtn.addEventListener("click", doBack, { passive:true });
-    }
+    });
 
-    // ----- session flags -----
-    const SESSION_KEY = "hl_session_state_v1";
-    const ERR_KEY = "hl_session_err_v1";
-    const CMD_COUNT_KEY = "hl_session_cmd_count_v1";
-    const LOCK_KEY = "hl_lock_v1";
+    // ----- session keys -----
+    const SESSION_KEY = "hl_session_state_v2";
+    const ERR_KEY = "hl_session_err_v2";
+    const CMD_COUNT_KEY = "hl_session_cmd_count_v2";
+    const LOCK_KEY = "hl_lock_v2";
+    const ACCESS_LEVEL_KEY = "hl_access_level_v1";
+
+    // access levels
+    const LEVELS = [
+      { n:0, name:"GREEN", label:"GREEN LINE" },
+      { n:1, name:"BLUE",  label:"BLUE LINE"  },
+      { n:2, name:"AMBER", label:"AMBER LINE" },
+      { n:3, name:"BLACK", label:"BLACK LINE" }
+    ];
+
+    // Variant A codes (exact match)
+    const ACCESS_CODES = {
+      "250201": 1, "298508": 1, "290713": 1,   // BLUE
+      "685869": 2, "676906": 2, "663209": 2,   // AMBER
+      "976114": 3, "974666": 3, "934679": 3    // BLACK
+    };
 
     function getNum(k, def=0){
       const v = parseInt(sessionStorage.getItem(k) || "", 10);
@@ -514,9 +532,7 @@
     }
     function setNum(k, v){ sessionStorage.setItem(k, String(v)); }
 
-    function getSessionState(){
-      return sessionStorage.getItem(SESSION_KEY) || "INIT";
-    }
+    function getSessionState(){ return sessionStorage.getItem(SESSION_KEY) || "INIT"; }
     function setSessionState(s){
       sessionStorage.setItem(SESSION_KEY, s);
       renderSessionMeta();
@@ -533,9 +549,7 @@
       return n;
     }
 
-    function isLocked(){
-      return sessionStorage.getItem(LOCK_KEY) === "1";
-    }
+    function isLocked(){ return sessionStorage.getItem(LOCK_KEY) === "1"; }
     function setLocked(on){
       sessionStorage.setItem(LOCK_KEY, on ? "1" : "0");
       root.classList.toggle("lock", on);
@@ -543,21 +557,42 @@
       renderSessionMeta();
     }
 
+    function getAccessLevel(){
+      const v = parseInt(sessionStorage.getItem(ACCESS_LEVEL_KEY) || "0", 10);
+      return Number.isFinite(v) ? Math.max(0, Math.min(3, v)) : 0;
+    }
+    function setAccessLevel(n){
+      const lvl = Math.max(0, Math.min(3, n));
+      sessionStorage.setItem(ACCESS_LEVEL_KEY, String(lvl));
+      renderSessionMeta();
+    }
+    function levelInfo(n){
+      return LEVELS.find(x => x.n === n) || LEVELS[0];
+    }
+
     function renderSessionMeta(){
       const s = getSessionState();
       const err = getNum(ERR_KEY, 0);
       const cmdc = getNum(CMD_COUNT_KEY, 0);
       const lock = isLocked() ? "LOCKED" : "OPEN";
-      sessionMeta.textContent = `SESSION: ${s}  MODE: ${lock}  COMMANDS: ${cmdc}  ERRORS: ${err}`;
+      const a = getAccessLevel();
+      const aInfo = levelInfo(a);
+      sessionMeta.textContent =
+        `SESSION: ${s}  MODE: ${lock}  CLEARANCE: ${aInfo.name}  COMMANDS: ${cmdc}  ERRORS: ${err}`;
     }
 
-    // init
     renderSessionMeta();
     setLocked(isLocked());
+    setAccessLevel(getAccessLevel());
 
-    // ----- helpers -----
     function focusCmd(){
       setTimeout(() => { try{ input.focus(); }catch(e){} }, 0);
+    }
+
+    function pulseFx(){
+      if (!bgFx) return;
+      bgFx.classList.add("pulse");
+      setTimeout(() => bgFx.classList.remove("pulse"), 900);
     }
 
     function escapeHtml(s){
@@ -569,12 +604,6 @@
         .replaceAll("'","&#039;");
     }
 
-    function pulseFx(){
-      if (!bgFx) return;
-      bgFx.classList.add("pulse");
-      setTimeout(() => bgFx.classList.remove("pulse"), 900);
-    }
-
     function escapeRegExp(s){
       return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
@@ -583,26 +612,61 @@
       const term = (highlightTerm || "").trim();
       const out = lines.map(line => {
         let safe = escapeHtml(line);
-
         if (term && term.length >= 2){
           const re = new RegExp(escapeRegExp(term), "i");
           safe = safe.replace(re, (m) => `<span class="hl">${escapeHtml(m)}</span>`);
         }
         return `&gt; ${safe}`;
       }).join("<br>");
-
       output.innerHTML = out;
       focusCmd();
     }
 
-    function respond(text){
-      renderLines([text], "");
+    function respond(text){ renderLines([text], ""); }
+    function respondMulti(lines, highlightTerm){ renderLines(lines, highlightTerm || ""); }
+
+    // ----- hint behavior -----
+    function updateHint(){
+      const hasText = (input.value || "").length > 0;
+      hint.classList.toggle("hidden", hasText || document.activeElement !== input);
+    }
+    function updateHint2(){
+      const hasText = (access.value || "").length > 0;
+      hint2.classList.toggle("hidden", hasText || document.activeElement !== access);
+    }
+    input.addEventListener("focus", updateHint);
+    input.addEventListener("blur", updateHint);
+    input.addEventListener("input", updateHint);
+    access.addEventListener("focus", updateHint2);
+    access.addEventListener("blur", updateHint2);
+    access.addEventListener("input", updateHint2);
+
+    // ----- command history -----
+    const history = [];
+    let histPos = -1;
+
+    function pushHistory(cmd){
+      const c = (cmd || "").trim();
+      if (!c) return;
+      if (history.length && history[history.length - 1] === c) return;
+      history.push(c);
+      if (history.length > 50) history.shift();
+      histPos = history.length;
+    }
+    function histUp(){
+      if (!history.length) return;
+      histPos = Math.max(0, histPos - 1);
+      input.value = history[histPos] || "";
+      updateHint();
+    }
+    function histDown(){
+      if (!history.length) return;
+      histPos = Math.min(history.length, histPos + 1);
+      input.value = history[histPos] || "";
+      updateHint();
     }
 
-    function respondMulti(lines, highlightTerm){
-      renderLines(lines, highlightTerm || "");
-    }
-
+    // ----- navigation + index (with access gating) -----
     function nav(node){
       const map = {
         world:     {msg:"ACCESSING WORLD NODE",      url:"world.html"},
@@ -618,64 +682,42 @@
       return map[node] || null;
     }
 
+    // minLevel: 0 GREEN, 1 BLUE, 2 AMBER, 3 BLACK
     const INDEX = [
-      { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"] },
-      { key:"system",    title:"SYSTEM",    url:"mechanics.html",      tags:["rules","protocol","mechanics","laws","core"] },
-      { key:"mechanics", title:"MECHANICS", url:"mechanics.html",      tags:["system","logic","structure"] },
+      { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"], minLevel:0 },
 
-      { key:"subjects",  title:"SUBJECTS",  url:"subjects.html",       tags:["profiles","entities","index","persons"] },
-      { key:"alex",      title:"ALEX",      url:"subject-alex.html",   tags:["subject","profile","s-001"] },
-      { key:"kiwi",      title:"KIWI",      url:"subject-kiwi.html",   tags:["subject","profile","s-003"] },
-      { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"] },
+      { key:"system",    title:"SYSTEM",    url:"mechanics.html",      tags:["rules","protocol","mechanics","laws","core"], minLevel:0 },
+      { key:"mechanics", title:"MECHANICS", url:"mechanics.html",      tags:["system","logic","structure"], minLevel:0 },
 
-      { key:"archive",   title:"ARCHIVE",   url:"archive.html",        tags:["logs","records","history","files"] },
-      { key:"state",     title:"STATE",     url:"state.html",          tags:["monitor","status","telemetry","system state"] },
+      { key:"subjects",  title:"SUBJECTS",  url:"subjects.html",       tags:["profiles","entities","index","persons"], minLevel:0 },
+      { key:"alex",      title:"ALEX",      url:"subject-alex.html",   tags:["subject","profile","s-001"], minLevel:0 },
+      { key:"kiwi",      title:"KIWI",      url:"subject-kiwi.html",   tags:["subject","profile","s-003"], minLevel:0 },
+      { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"], minLevel:1 }, /* gated at BLUE */
 
-      { key:"entry",     title:"ENTRY",     url:"index.html",          tags:["start","gateway","root"] },
-      { key:"interface", title:"INTERFACE", url:"interface.html",      tags:["ui","layer","transition"] }
+      { key:"archive",   title:"ARCHIVE",   url:"archive.html",        tags:["logs","records","history","files"], minLevel:0 },
+      { key:"state",     title:"STATE",     url:"state.html",          tags:["monitor","status","telemetry","system state"], minLevel:0 },
+
+      { key:"entry",     title:"ENTRY",     url:"index.html",          tags:["start","gateway","root"], minLevel:0 },
+      { key:"interface", title:"INTERFACE", url:"interface.html",      tags:["ui","layer","transition"], minLevel:0 }
     ];
 
-    // ----- Hint behavior -----
-    function updateHint(){
-      const hasText = (input.value || "").length > 0;
-      hint.classList.toggle("hidden", hasText || document.activeElement !== input);
-    }
-    input.addEventListener("focus", updateHint);
-    input.addEventListener("blur", updateHint);
-    input.addEventListener("input", updateHint);
-
-    // ----- command history -----
-    const history = [];
-    let histPos = -1;
-
-    function pushHistory(cmd){
-      const c = (cmd || "").trim();
-      if (!c) return;
-      if (history.length && history[history.length - 1] === c) return;
-      history.push(c);
-      if (history.length > 50) history.shift();
-      histPos = history.length;
+    function visibleIndex(){
+      const lvl = getAccessLevel();
+      return INDEX.filter(x => (x.minLevel || 0) <= lvl);
     }
 
-    function histUp(){
-      if (!history.length) return;
-      histPos = Math.max(0, histPos - 1);
-      input.value = history[histPos] || "";
-      updateHint();
+    // ----- tokens for autocomplete (dynamic by access) -----
+    function tokens(){
+      const lvl = getAccessLevel();
+      const base = [
+        "help","clear","search","open","map","trace","lock","unlock","drift",
+        "world","system","mechanics","subjects","archive","state","monitor","entry","interface",
+        "access","access:clear"
+      ];
+      const extra = ["alex","kiwi"];
+      if (lvl >= 1) extra.push("mentor");
+      return base.concat(extra);
     }
-    function histDown(){
-      if (!history.length) return;
-      histPos = Math.min(history.length, histPos + 1);
-      input.value = history[histPos] || "";
-      updateHint();
-    }
-
-    // ----- Tab autocomplete -----
-    const TOKENS = [
-      "help","clear","search","open","map","trace","lock","unlock","drift","back","return",
-      "world","system","mechanics","subjects","archive","state","monitor","entry","interface",
-      "alex","kiwi","mentor"
-    ];
 
     function completeToken(text){
       const raw = text || "";
@@ -685,14 +727,16 @@
 
       const q = last.toLowerCase();
       if (!q) return null;
-      const matches = TOKENS.filter(t => t.startsWith(q));
+
+      const tks = tokens();
+      const matches = tks.filter(t => t.startsWith(q));
       if (matches.length !== 1) return null;
 
       const completed = matches[0];
       return (head ? (head + " ") : "") + completed;
     }
 
-    // ----- Search scoring -----
+    // ----- search scoring -----
     let LAST_RESULTS = [];
 
     function scoreHit(q, item){
@@ -713,7 +757,8 @@
       const q = (query || "").trim();
       if (!q) return [];
 
-      return INDEX
+      const pool = visibleIndex();
+      return pool
         .map(it => ({ it, sc: scoreHit(q, it) }))
         .filter(x => x.sc > 0)
         .sort((a,b) => b.sc - a.sc)
@@ -721,7 +766,7 @@
         .slice(0, 6);
     }
 
-    // ----- fuzzy (Levenshtein) -----
+    // ----- fuzzy (Levenshtein) on VISIBLE items only -----
     function levenshtein(a, b, maxDist){
       a = (a || "").toLowerCase();
       b = (b || "").toLowerCase();
@@ -754,14 +799,14 @@
       return v0[bl];
     }
 
-    // Returns [{it, d}] sorted
     function fuzzySuggest(query){
       const q = (query || "").trim().toLowerCase();
       if (!q || q.length < 2) return [];
 
       const maxDist = q.length <= 4 ? 1 : 2;
+      const pool = visibleIndex();
 
-      return INDEX.map(it => {
+      return pool.map(it => {
         const k = it.key.toLowerCase();
         const t = it.title.toLowerCase();
         const dk = levenshtein(q, k, maxDist);
@@ -774,7 +819,6 @@
       .slice(0, 5);
     }
 
-    // Confidence: auto-redirect if one suggestion is clearly best
     function confidentSuggestion(sug){
       if (!sug || !sug.length) return null;
       if (sug.length === 1) return sug[0];
@@ -783,9 +827,10 @@
       return null;
     }
 
-    // ----- Site map (ASCII tree without '|') -----
+    // ----- map / trace (no vertical bars) -----
     function siteMapLines(){
-      return [
+      const lvl = getAccessLevel();
+      const base = [
         "ROOT",
         "  WORLD",
         "  SYSTEM",
@@ -793,23 +838,27 @@
         "  SUBJECTS",
         "    ALEX",
         "    KIWI",
-        "    MENTOR",
         "  ARCHIVE",
         "  STATE",
         "  INTERFACE",
         "  ENTRY"
       ];
+      if (lvl >= 1) base.splice(7, 0, "    MENTOR");
+      return base;
     }
 
     function traceLines(targetKey){
       const key = (targetKey || "").toLowerCase().trim();
-      const n = nav(key) || INDEX.find(x => x.key === key);
+      const pool = visibleIndex();
+      const hit = pool.find(x => x.key === key) || null;
+      const n = nav(key) || hit;
+
       if (!n) return [
         "TRACE: NO TARGET FOUND",
         "FORMAT: trace <node>"
       ];
 
-      const url = n.url;
+      const url = n.url || n.url;
       return [
         "TRACE ROUTE",
         "SYSTEM -> ROUTER",
@@ -817,6 +866,58 @@
         "TARGET URL -> " + url,
         "STATUS -> OK"
       ];
+    }
+
+    // ----- subject lookup with access-based disclosure -----
+    function subjectLookup(key){
+      const k = (key || "").toLowerCase().trim();
+      const lvl = getAccessLevel();
+
+      const known = ["alex","kiwi","mentor"];
+      if (!known.includes(k)) return null;
+
+      if (k === "mentor" && lvl < 1){
+        return [
+          "RECORD FOUND",
+          "SUBJECT: MENTOR",
+          "ACCESS: DENIED",
+          "CLEARANCE REQUIRED: BLUE"
+        ];
+      }
+
+      const base = [
+        "RECORD FOUND",
+        "SUBJECT: " + k.toUpperCase()
+      ];
+
+      if (k === "alex"){
+        base.push("ID: S-001");
+        base.push("STATUS: ACTIVE");
+        base.push("ACCESS: " + (lvl >= 2 ? "CONTROLLED" : "LIMITED"));
+        if (lvl >= 1) base.push("DISCLOSURE: PARTIAL");
+        if (lvl >= 2) base.push("NOTES: [CLASSIFIED SEGMENT UNLOCKED]");
+        if (lvl >= 3) base.push("FULL RECORD: [COMPLETE]");
+        return base;
+      }
+
+      if (k === "kiwi"){
+        base.push("ID: S-003");
+        base.push("STATUS: ACTIVE");
+        base.push("ACCESS: " + (lvl >= 1 ? "LIMITED" : "BASIC"));
+        if (lvl >= 1) base.push("DISCLOSURE: EXPANDED");
+        if (lvl >= 2) base.push("NOTES: [CLASSIFIED SEGMENT UNLOCKED]");
+        if (lvl >= 3) base.push("FULL RECORD: [COMPLETE]");
+        return base;
+      }
+
+      // mentor
+      base.push("ID: S-002");
+      base.push("STATUS: REDACTED");
+      base.push("ACCESS: " + (lvl >= 3 ? "GRANTED" : (lvl >= 2 ? "CONTROLLED" : "LIMITED")));
+      if (lvl === 1) base.push("DETAILS: [REDACTED]");
+      if (lvl === 2) base.push("DETAILS: [PARTIAL REVEAL]");
+      if (lvl >= 3) base.push("DETAILS: [FULL REVEAL]");
+      return base;
     }
 
     // ----- restricted / special behavior -----
@@ -827,10 +928,11 @@
           "NAV: world, system, subjects, archive, state, entry",
           "SEARCH: search <term>  OR  <term>",
           "OPEN: open <n>  (from last results)",
+          "SUBJECT: subject <key>",
           "MAP: map",
           "TRACE: trace <node>",
           "MODE: lock, unlock",
-          "BACK: back",
+          "ACCESS: access  OR  access:clear",
           "UTILITY: clear",
           "INPUT: ArrowUp, ArrowDown history; Tab autocomplete"
         ]);
@@ -863,8 +965,24 @@
         return "__handled__";
       }
 
-      if(cmd === "back" || cmd === "return"){
-        doBack();
+      if(cmd === "access"){
+        const lvl = getAccessLevel();
+        const info = levelInfo(lvl);
+        respondMulti([
+          "CLEARANCE STATUS",
+          "LEVEL: " + info.name,
+          "LINE: " + info.label
+        ]);
+        return "__handled__";
+      }
+
+      if(cmd === "access:clear"){
+        setAccessLevel(0);
+        respondMulti([
+          "CLEARANCE RESET",
+          "LEVEL: GREEN",
+          "LINE: GREEN LINE"
+        ]);
         return "__handled__";
       }
 
@@ -872,7 +990,7 @@
       return null;
     }
 
-    // Parsing + route preview (semantics)
+    // parsing + route preview
     function go(url, msg, meta){
       pulseFx();
 
@@ -893,9 +1011,50 @@
       }, 280);
     }
 
-    // ----- core key handler -----
+    // ----- ACCESS CODE input handler -----
+    function handleAccessSubmit(){
+      const raw = (access.value || "").trim();
+      access.value = "";
+      updateHint2();
+
+      if (!raw){
+        respond("ACCESS CODE: REQUIRED");
+        return;
+      }
+
+      // keep digits only
+      const code = raw.replace(/\D/g, "");
+      if (code.length !== 6){
+        incErr();
+        respond("ACCESS CODE: INVALID FORMAT");
+        return;
+      }
+
+      const lvl = ACCESS_CODES[code];
+      if (typeof lvl !== "number"){
+        const err = incErr();
+        respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "ACCESS CODE: REJECTED");
+        return;
+      }
+
+      setAccessLevel(lvl);
+
+      const info = levelInfo(lvl);
+      respondMulti([
+        "ACCESS GRANTED",
+        "CLEARANCE: " + info.name,
+        "LINE: " + info.label
+      ]);
+    }
+
+    access.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      handleAccessSubmit();
+    });
+
+    // ----- core key handler (command line) -----
     input.addEventListener("keydown", (e) => {
-      // history
       if (e.key === "ArrowUp"){
         e.preventDefault();
         histUp();
@@ -907,7 +1066,6 @@
         return;
       }
 
-      // Tab autocomplete
       if (e.key === "Tab"){
         const next = completeToken(input.value);
         if (next){
@@ -945,7 +1103,6 @@
         return;
       }
 
-      // drift (status only)
       if(value === "drift"){
         respondMulti([
           "DRIFT STATUS",
@@ -956,14 +1113,27 @@
         return;
       }
 
-      // trace <node>
       if (value.startsWith("trace ")){
         const key = value.slice(6).trim();
         respondMulti(traceLines(key));
         return;
       }
 
-      // OPEN <n>
+      if (value.startsWith("subject ")){
+        const key = value.slice(8).trim();
+        if(!key){
+          respond("SUBJECT KEY REQUIRED");
+          return;
+        }
+        const lines = subjectLookup(key);
+        if(lines) respondMulti(lines);
+        else {
+          const err = incErr();
+          respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "NO RECORD FOUND");
+        }
+        return;
+      }
+
       if (value.startsWith("open ")){
         const n = parseInt(value.slice(5).trim(), 10);
         if (!Number.isFinite(n) || n < 1 || n > LAST_RESULTS.length){
@@ -979,7 +1149,6 @@
         return;
       }
 
-      // SEARCH <term>
       if (value.startsWith("search ")){
         const q = raw.slice(7).trim();
         const hits = doSearch(q);
@@ -995,7 +1164,6 @@
             return;
           }
 
-          // AUTO-REDIRECT if confident (giwi -> kiwi)
           if (best){
             LAST_RESULTS = [best.it];
             go(best.it.url, "CORRECTED: " + best.it.title, [
@@ -1030,9 +1198,19 @@
         return;
       }
 
-      // direct NAV by key
       const res = nav(value);
       if(res){
+        // if node exists but is gated in INDEX, enforce gating
+        const idx = INDEX.find(x => x.key === value);
+        if (idx && (idx.minLevel || 0) > getAccessLevel()){
+          incErr();
+          respondMulti([
+            "ACCESS DENIED",
+            "CLEARANCE REQUIRED: " + levelInfo(idx.minLevel || 0).name
+          ]);
+          return;
+        }
+
         go(res.url, res.msg, [
           "MATCH: " + value.toUpperCase(),
           "ROUTE: " + res.url
@@ -1040,7 +1218,7 @@
         return;
       }
 
-      // implicit search (typing any term)
+      // implicit search
       {
         const hits = doSearch(raw);
         LAST_RESULTS = hits;
@@ -1062,7 +1240,6 @@
           return;
         }
 
-        // fuzzy fallback
         const sug = fuzzySuggest(raw);
         const best = confidentSuggestion(sug);
 
@@ -1090,13 +1267,13 @@
       respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "COMMAND NOT RECOGNIZED");
     });
 
-    // Keep input focused (terminal feel)
+    // focus + hints
     window.addEventListener("load", () => {
       focusCmd();
       updateHint();
+      updateHint2();
     });
 
-    // Lockdown also blocks accidental clicks by re-focusing input
     document.addEventListener("click", () => {
       focusCmd();
     }, { passive:true });
