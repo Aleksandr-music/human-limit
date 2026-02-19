@@ -233,7 +233,7 @@ body[data-bg]::after{
   inset: 0;
   z-index: -1;
   pointer-events: none;
-
+opacity: calc(var(--hl-bg-dim));
   /* universal readability layer */
   background:
     radial-gradient(1200px 760px at 55% 42%,
