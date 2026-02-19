@@ -263,3 +263,13 @@ body[data-bg="interface"]{
 body[data-bg="access"]{
   --hl-bg-dim: 0.24;
 }
+/* HL — Panel transparency (let banners show through) */
+.panel{
+  background: rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08) inset,
+    0 18px 60px rgba(0,0,0,.55) !important;
+}
