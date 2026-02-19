@@ -273,3 +273,12 @@ body[data-bg="access"]{
     0 0 0 1px rgba(255,255,255,.08) inset,
     0 18px 60px rgba(0,0,0,.55) !important;
 }
+/* HL — kill legacy full-screen backgrounds when Banner Protocol is active */
+body[data-bg] .bg,
+body[data-bg] .veil{
+  display:none !important;
+}
+/* HL — boost banner visibility a bit */
+body[data-bg]::before{
+  filter: contrast(1.08) saturate(0.95) !important;
+}
