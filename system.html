@@ -305,11 +305,7 @@
       text-transform:uppercase;
     }
 
-    /* IMPORTANT MOBILE CLICK FIX:
-       - guarantee pointer events on the input
-       - guarantee visible caret
-       - remove mobile tap highlight on surrounding area
-    */
+    /* IMPORTANT MOBILE CLICK FIX */
     #access{
       background:none;
       border:none;
@@ -433,6 +429,9 @@
 
     // =========================================================
     // 1) Background motion:
+    //    - MOBILE: CSS drift only (no JS)
+    //    - DESKTOP: pointer 3D parallax
+    //    - iPad/tablet (not mobile class): slow idle 3D drift
     // =========================================================
     (() => {
       const root = document.documentElement;
@@ -516,7 +515,7 @@
     })();
 
     // =========================================================
-    // 2) Command console + ACCESS redirect
+    // 2) Command console + internal search + fuzzy + UX + ACCESS
     // =========================================================
     const root = document.documentElement;
     const input = document.getElementById("cmd");
@@ -660,6 +659,7 @@
         return `&gt; ${safe}`;
       }).join("<br>");
       output.innerHTML = out;
+      focusCmd();
     }
 
     function respond(text){ renderLines([text], ""); }
@@ -674,83 +674,7 @@
     input.addEventListener("blur", updateHint);
     input.addEventListener("input", updateHint);
 
-    // ----- ACCESS CODE input handler (redirect) -----
-    function goToClearance(level){
-      const dest = CLEARANCE_ROUTE[level];
-      if (!dest) return;
-
-      pulseFx();
-      const info = levelInfo(level);
-
-      respondMulti([
-        "ACCESS GRANTED",
-        "CLEARANCE: " + info.name,
-        "ROUTE: /" + dest
-      ]);
-
-      // Small delay keeps the terminal feel
-      setTimeout(() => { window.location.href = dest; }, 420);
-    }
-
-    function handleAccessSubmit(){
-      const raw = (access.value || "").trim();
-      access.value = "";
-
-      if (!raw){
-        respond("ACCESS CODE: REQUIRED");
-        focusAccess();
-        return;
-      }
-
-      // digits only
-      const code = raw.replace(/\D/g, "");
-      if (code.length !== 6){
-        incErr();
-        respond("ACCESS CODE: INVALID FORMAT");
-        focusAccess();
-        return;
-      }
-
-      const lvl = ACCESS_CODES[code];
-      if (typeof lvl !== "number"){
-        const err = incErr();
-        respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "ACCESS CODE: REJECTED");
-        focusAccess();
-        return;
-      }
-
-      setAccessLevel(lvl);
-      goToClearance(lvl);
-    }
-
-    // Enter submits
-    access.addEventListener("keydown", (e) => {
-      if (e.key !== "Enter") return;
-      e.preventDefault();
-      handleAccessSubmit();
-    });
-
-    // Make it reliably clickable on mobile:
-    // tap the access line => focus input
-    document.querySelector(".subline")?.addEventListener("click", (e) => {
-      // if user taps label area, still focus input
-      if (e.target && e.target.id === "access") return;
-      focusAccess();
-    }, { passive:true });
-
-    // Also, stop global click handler from stealing focus back to cmd
-    access.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-    access.addEventListener("focus", (e) => {
-      // keep hint state correct; and avoid cmd focus bounce
-      updateHint();
-    });
-
-    // ----- minimal command line (kept) -----
-    // This part stays as-is, but we remove the "force focus cmd" click behavior
-    // because it kills mobile tapping on access input.
-    // We keep a safe version: only refocus cmd if click is NOT on an input.
+    // ----- command history -----
     const history = [];
     let histPos = -1;
 
@@ -775,6 +699,7 @@
       updateHint();
     }
 
+    // ----- navigation + index (with access gating) -----
     function nav(node){
       const map = {
         world:     {msg:"ACCESSING WORLD NODE",      url:"world.html"},
@@ -790,8 +715,257 @@
       return map[node] || null;
     }
 
+    // minLevel: 0 GREEN, 1 BLUE, 2 AMBER, 3 BLACK
+    const INDEX = [
+      { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"], minLevel:0 },
+
+      { key:"system",    title:"SYSTEM",    url:"mechanics.html",      tags:["rules","protocol","mechanics","laws","core"], minLevel:0 },
+      { key:"mechanics", title:"MECHANICS", url:"mechanics.html",      tags:["system","logic","structure"], minLevel:0 },
+
+      { key:"subjects",  title:"SUBJECTS",  url:"subjects.html",       tags:["profiles","entities","index","persons"], minLevel:0 },
+      { key:"alex",      title:"ALEX",      url:"subject-alex.html",   tags:["subject","profile","s-001"], minLevel:0 },
+      { key:"kiwi",      title:"KIWI",      url:"subject-kiwi.html",   tags:["subject","profile","s-003"], minLevel:0 },
+      { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"], minLevel:1 }, /* gated at BLUE */
+
+      { key:"archive",   title:"ARCHIVE",   url:"archive.html",        tags:["logs","records","history","files"], minLevel:0 },
+      { key:"state",     title:"STATE",     url:"state.html",          tags:["monitor","status","telemetry","system state"], minLevel:0 },
+
+      { key:"entry",     title:"ENTRY",     url:"index.html",          tags:["start","gateway","root"], minLevel:0 },
+      { key:"interface", title:"INTERFACE", url:"interface.html",      tags:["ui","layer","transition"], minLevel:0 }
+    ];
+
+    function visibleIndex(){
+      const lvl = getAccessLevel();
+      return INDEX.filter(x => (x.minLevel || 0) <= lvl);
+    }
+
+    // ----- tokens for autocomplete (dynamic by access) -----
+    function tokens(){
+      const lvl = getAccessLevel();
+      const base = [
+        "help","clear","search","open","map","trace","lock","unlock","drift",
+        "world","system","mechanics","subjects","archive","state","monitor","entry","interface",
+        "access","access:clear","back","return","subject"
+      ];
+      const extra = ["alex","kiwi"];
+      if (lvl >= 1) extra.push("mentor");
+      return base.concat(extra);
+    }
+
+    function completeToken(text){
+      const raw = text || "";
+      const parts = raw.split(/\s+/);
+      const last = parts[parts.length - 1] || "";
+      const head = parts.slice(0, -1).join(" ");
+
+      // Special: "subject <key>"
+      if (parts[0] === "subject" && parts.length === 2){
+        const k = (last || "").toLowerCase();
+        const keys = ["alex","kiwi"];
+        if (getAccessLevel() >= 1) keys.push("mentor");
+        const matches = keys.filter(x => x.startsWith(k));
+        if (matches.length === 1) return "subject " + matches[0];
+      }
+
+      const q = last.toLowerCase();
+      if (!q) return null;
+
+      const tks = tokens();
+      const matches = tks.filter(t => t.startsWith(q));
+      if (matches.length !== 1) return null;
+
+      const completed = matches[0];
+      return (head ? (head + " ") : "") + completed;
+    }
+
+    // ----- search scoring -----
+    let LAST_RESULTS = [];
+
+    function scoreHit(q, item){
+      const s = q.toLowerCase();
+      const key = item.key.toLowerCase();
+      const title = item.title.toLowerCase();
+      const tags = (item.tags || []).join(" ").toLowerCase();
+
+      if (key === s) return 100;
+      if (title === s) return 90;
+      if (key.startsWith(s)) return 70;
+      if (title.includes(s)) return 55;
+      if (tags.includes(s)) return 35;
+      return 0;
+    }
+
+    function doSearch(query){
+      const q = (query || "").trim();
+      if (!q) return [];
+
+      const pool = visibleIndex();
+      return pool
+        .map(it => ({ it, sc: scoreHit(q, it) }))
+        .filter(x => x.sc > 0)
+        .sort((a,b) => b.sc - a.sc)
+        .map(x => x.it)
+        .slice(0, 6);
+    }
+
+    // ----- fuzzy (Levenshtein) on VISIBLE items only -----
+    function levenshtein(a, b, maxDist){
+      a = (a || "").toLowerCase();
+      b = (b || "").toLowerCase();
+      const al = a.length, bl = b.length;
+
+      if (Math.abs(al - bl) > maxDist) return maxDist + 1;
+      if (al === 0) return bl;
+      if (bl === 0) return al;
+
+      const v0 = new Array(bl + 1);
+      const v1 = new Array(bl + 1);
+      for (let j = 0; j <= bl; j++) v0[j] = j;
+
+      for (let i = 0; i < al; i++){
+        v1[0] = i + 1;
+        let rowMin = v1[0];
+
+        for (let j = 0; j < bl; j++){
+          const cost = a[i] === b[j] ? 0 : 1;
+          const del = v0[j + 1] + 1;
+          const ins = v1[j] + 1;
+          const sub = v0[j] + cost;
+          const val = Math.min(del, ins, sub);
+          v1[j + 1] = val;
+          if (val < rowMin) rowMin = val;
+        }
+        if (rowMin > maxDist) return maxDist + 1;
+        for (let j = 0; j <= bl; j++) v0[j] = v1[j];
+      }
+      return v0[bl];
+    }
+
+    function fuzzySuggest(query){
+      const q = (query || "").trim().toLowerCase();
+      if (!q || q.length < 2) return [];
+
+      const maxDist = q.length <= 4 ? 1 : 2;
+      const pool = visibleIndex();
+
+      return pool.map(it => {
+        const k = it.key.toLowerCase();
+        const t = it.title.toLowerCase();
+        const dk = levenshtein(q, k, maxDist);
+        const dt = levenshtein(q, t, maxDist);
+        const d = Math.min(dk, dt);
+        return { it, d };
+      })
+      .filter(x => x.d <= maxDist)
+      .sort((a,b) => a.d - b.d)
+      .slice(0, 5);
+    }
+
+    function confidentSuggestion(sug){
+      if (!sug || !sug.length) return null;
+      if (sug.length === 1) return sug[0];
+      if (sug[0].d === 0) return sug[0];
+      if (sug[0].d <= 1 && sug[1].d >= 3) return sug[0];
+      return null;
+    }
+
+    // ----- map / trace (no vertical bars) -----
+    function siteMapLines(){
+      const lvl = getAccessLevel();
+      const base = [
+        "ROOT",
+        "  WORLD",
+        "  SYSTEM",
+        "    MECHANICS",
+        "  SUBJECTS",
+        "    ALEX",
+        "    KIWI",
+        "  ARCHIVE",
+        "  STATE",
+        "  INTERFACE",
+        "  ENTRY"
+      ];
+      if (lvl >= 1) base.splice(7, 0, "    MENTOR");
+      return base;
+    }
+
+    function traceLines(targetKey){
+      const key = (targetKey || "").toLowerCase().trim();
+      const pool = visibleIndex();
+      const hit = pool.find(x => x.key === key) || null;
+      const n = nav(key) || hit;
+
+      if (!n) return [
+        "TRACE: NO TARGET FOUND",
+        "FORMAT: trace <node>"
+      ];
+
+      const url = n.url || n.url;
+      return [
+        "TRACE ROUTE",
+        "SYSTEM -> ROUTER",
+        "ROUTE MATCH -> " + key.toUpperCase(),
+        "TARGET URL -> " + url,
+        "STATUS -> OK"
+      ];
+    }
+
+    // ----- subject lookup with access-based disclosure -----
+    function subjectLookup(key){
+      const k = (key || "").toLowerCase().trim();
+      const lvl = getAccessLevel();
+
+      const known = ["alex","kiwi","mentor"];
+      if (!known.includes(k)) return null;
+
+      if (k === "mentor" && lvl < 1){
+        return [
+          "RECORD FOUND",
+          "SUBJECT: MENTOR",
+          "ACCESS: DENIED",
+          "CLEARANCE REQUIRED: BLUE"
+        ];
+      }
+
+      const base = [
+        "RECORD FOUND",
+        "SUBJECT: " + k.toUpperCase()
+      ];
+
+      if (k === "alex"){
+        base.push("ID: S-001");
+        base.push("STATUS: ACTIVE");
+        base.push("ACCESS: " + (lvl >= 2 ? "CONTROLLED" : "LIMITED"));
+        if (lvl >= 1) base.push("DISCLOSURE: PARTIAL");
+        if (lvl >= 2) base.push("NOTES: [CLASSIFIED SEGMENT UNLOCKED]");
+        if (lvl >= 3) base.push("FULL RECORD: [COMPLETE]");
+        return base;
+      }
+
+      if (k === "kiwi"){
+        base.push("ID: S-003");
+        base.push("STATUS: ACTIVE");
+        base.push("ACCESS: " + (lvl >= 1 ? "LIMITED" : "BASIC"));
+        if (lvl >= 1) base.push("DISCLOSURE: EXPANDED");
+        if (lvl >= 2) base.push("NOTES: [CLASSIFIED SEGMENT UNLOCKED]");
+        if (lvl >= 3) base.push("FULL RECORD: [COMPLETE]");
+        return base;
+      }
+
+      // mentor
+      base.push("ID: S-002");
+      base.push("STATUS: REDACTED");
+      base.push("ACCESS: " + (lvl >= 3 ? "GRANTED" : (lvl >= 2 ? "CONTROLLED" : "LIMITED")));
+      if (lvl === 1) base.push("DETAILS: [REDACTED]");
+      if (lvl === 2) base.push("DETAILS: [PARTIAL REVEAL]");
+      if (lvl >= 3) base.push("DETAILS: [FULL REVEAL]");
+      return base;
+    }
+
+    // parsing + route preview
     function go(url, msg, meta){
       pulseFx();
+
       const lines = [];
       if (msg) lines.push(msg);
       if (meta && meta.length) lines.push(...meta);
@@ -809,46 +983,184 @@
       }, 280);
     }
 
+    // =========================================================
+    // ACCESS CODE (redirect to folders)
+    // =========================================================
+    function goToClearance(level){
+      const dest = CLEARANCE_ROUTE[level];
+      if (!dest) return;
+
+      pulseFx();
+      const info = levelInfo(level);
+
+      respondMulti([
+        "ACCESS GRANTED",
+        "CLEARANCE: " + info.name,
+        "ROUTE: /" + dest
+      ]);
+
+      // Small delay keeps terminal feel
+      setTimeout(() => { window.location.href = dest; }, 420);
+    }
+
+    function handleAccessSubmit(){
+      const raw = (access.value || "").trim();
+      access.value = "";
+
+      if (!raw){
+        respond("ACCESS CODE: REQUIRED");
+        focusAccess();
+        return;
+      }
+
+      // keep digits only
+      const code = raw.replace(/\D/g, "");
+      if (code.length !== 6){
+        incErr();
+        respond("ACCESS CODE: INVALID FORMAT");
+        focusAccess();
+        return;
+      }
+
+      const lvl = ACCESS_CODES[code];
+      if (typeof lvl !== "number"){
+        const err = incErr();
+        respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "ACCESS CODE: REJECTED");
+        focusAccess();
+        return;
+      }
+
+      setAccessLevel(lvl);
+      goToClearance(lvl);
+    }
+
+    access.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      handleAccessSubmit();
+    });
+
+    // Mobile reliability: tap the access line => focus input
+    document.querySelector(".subline")?.addEventListener("click", (e) => {
+      if (e.target && e.target.id === "access") return;
+      focusAccess();
+    }, { passive:true });
+
+    // stop global click focus from stealing
+    access.addEventListener("click", (e) => { e.stopPropagation(); });
+    access.addEventListener("focus", () => { updateHint(); });
+
+    // =========================================================
+    // RESTRICTED / SPECIAL COMMANDS
+    // =========================================================
     function restricted(cmd){
-      if(cmd === "back" || cmd === "return"){
-        window.location.href = "index.html";
+      if(cmd === "help"){
+        respondMulti([
+          "LIMITED PROTOCOL AVAILABLE",
+          "NAV: world, system, subjects, archive, state, entry",
+          "SEARCH: search <term>  OR  <term>",
+          "OPEN: open <n>  (from last results)",
+          "SUBJECT: subject <key>",
+          "MAP: map",
+          "TRACE: trace <node>",
+          "MODE: lock, unlock",
+          "ACCESS: access  OR  access:clear",
+          "BACK: back",
+          "UTILITY: clear",
+          "INPUT: ArrowUp, ArrowDown history; Tab autocomplete"
+        ]);
         return "__handled__";
       }
-      if(cmd === "clear"){
-        output.textContent = "";
+
+      if(cmd === "override"){
+        respondMulti([
+          "OVERRIDE REJECTED",
+          "AUDIT LOG ENTRY CREATED",
+          "DEVIATION FLAGGED"
+        ]);
         return "__handled__";
       }
+
       if(cmd === "lock"){
         setLocked(true);
         respond("MODE: LOCKDOWN ENABLED");
         return "__handled__";
       }
+
       if(cmd === "unlock"){
         setLocked(false);
         respond("MODE: LOCKDOWN DISABLED");
         return "__handled__";
       }
+
+      if(cmd === "map"){
+        respondMulti(siteMapLines());
+        return "__handled__";
+      }
+
       if(cmd === "access"){
         const lvl = getAccessLevel();
         const info = levelInfo(lvl);
-        respondMulti(["CLEARANCE STATUS","LEVEL: " + info.name,"LINE: " + info.label]);
+        respondMulti([
+          "CLEARANCE STATUS",
+          "LEVEL: " + info.name,
+          "LINE: " + info.label
+        ]);
         return "__handled__";
       }
+
       if(cmd === "access:clear"){
         setAccessLevel(0);
-        respondMulti(["CLEARANCE RESET","LEVEL: GREEN","LINE: GREEN LINE"]);
+        respondMulti([
+          "CLEARANCE RESET",
+          "LEVEL: GREEN",
+          "LINE: GREEN LINE"
+        ]);
         return "__handled__";
       }
+
+      if(cmd === "back" || cmd === "return"){
+        window.location.href = "index.html";
+        return "__handled__";
+      }
+
+      if(cmd === "clear"){
+        output.textContent = "";
+        focusCmd();
+        return "__handled__";
+      }
+
+      if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
       return null;
     }
 
+    // =========================================================
+    // COMMAND LINE CORE
+    // =========================================================
     input.addEventListener("keydown", (e) => {
+      // history
       if (e.key === "ArrowUp"){
-        e.preventDefault(); histUp(); return;
+        e.preventDefault();
+        histUp();
+        return;
       }
       if (e.key === "ArrowDown"){
-        e.preventDefault(); histDown(); return;
+        e.preventDefault();
+        histDown();
+        return;
       }
+
+      // Tab autocomplete
+      if (e.key === "Tab"){
+        const next = completeToken(input.value);
+        if (next){
+          e.preventDefault();
+          input.value = next;
+          updateHint();
+        }
+        return;
+      }
+
       if (e.key !== "Enter") return;
 
       const raw = input.value.trim();
@@ -866,11 +1178,118 @@
 
       const r = restricted(value);
       if(r){
+        if(r !== "__handled__") respond(r);
+        return;
+      }
+
+      if(value === "drift"){
+        respondMulti([
+          "DRIFT STATUS",
+          "LEVEL: WITHIN TOLERANCE",
+          "OBSERVABILITY: LIMITED",
+          "DISCLOSURE: NOT REQUIRED"
+        ]);
+        return;
+      }
+
+      if (value.startsWith("trace ")){
+        const key = value.slice(6).trim();
+        respondMulti(traceLines(key));
+        return;
+      }
+
+      if (value.startsWith("subject ")){
+        const key = value.slice(8).trim();
+        if(!key){
+          respond("SUBJECT KEY REQUIRED");
+          return;
+        }
+        const lines = subjectLookup(key);
+        if(lines) respondMulti(lines);
+        else {
+          const err = incErr();
+          respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "NO RECORD FOUND");
+        }
+        return;
+      }
+
+      if (value.startsWith("open ")){
+        const n = parseInt(value.slice(5).trim(), 10);
+        if (!Number.isFinite(n) || n < 1 || n > LAST_RESULTS.length){
+          const err = incErr();
+          respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "OPEN: INVALID INDEX");
+          return;
+        }
+        const hit = LAST_RESULTS[n-1];
+        go(hit.url, "OPENING: " + hit.title, [
+          "MATCH: " + hit.title + "  KEY: " + hit.key,
+          "ROUTE: " + hit.url
+        ]);
+        return;
+      }
+
+      if (value.startsWith("search ")){
+        const q = raw.slice(7).trim();
+        const hits = doSearch(q);
+        LAST_RESULTS = hits;
+
+        if (!hits.length){
+          const sug = fuzzySuggest(q);
+          const best = confidentSuggestion(sug);
+
+          if (!sug.length){
+            const err = incErr();
+            respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "SEARCH: NO RESULTS");
+            return;
+          }
+
+          if (best){
+            LAST_RESULTS = [best.it];
+            go(best.it.url, "CORRECTED: " + best.it.title, [
+              "MATCH: " + best.it.title + "  KEY: " + best.it.key,
+              "ROUTE: " + best.it.url
+            ]);
+            return;
+          }
+
+          LAST_RESULTS = sug.map(x => x.it);
+          respondMulti([
+            "DID YOU MEAN:",
+            ...sug.map((x,i) => `${i+1}) ${x.it.title}  [${x.it.key}]`),
+            "TYPE: open <n>"
+          ], q);
+          return;
+        }
+
+        if (hits.length === 1){
+          go(hits[0].url, "SEARCH HIT: " + hits[0].title, [
+            "MATCH: " + hits[0].title + "  KEY: " + hits[0].key,
+            "ROUTE: " + hits[0].url
+          ]);
+          return;
+        }
+
+        respondMulti([
+          "SEARCH RESULTS:",
+          ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+          "TYPE: open <n>"
+        ], q);
         return;
       }
 
       const res = nav(value);
       if(res){
+        // if node exists but is gated in INDEX, enforce gating
+        const idx = INDEX.find(x => x.key === value);
+        if (idx && (idx.minLevel || 0) > getAccessLevel()){
+          incErr();
+          respondMulti([
+            "ACCESS DENIED",
+            "CLEARANCE REQUIRED: " + levelInfo(idx.minLevel || 0).name
+          ]);
+          return;
+        }
+
         go(res.url, res.msg, [
           "MATCH: " + value.toUpperCase(),
           "ROUTE: " + res.url
@@ -878,22 +1297,65 @@
         return;
       }
 
-      incErr();
-      respond("COMMAND NOT RECOGNIZED");
+      // implicit search
+      {
+        const hits = doSearch(raw);
+        LAST_RESULTS = hits;
+
+        if (hits.length === 1){
+          go(hits[0].url, "SEARCH HIT: " + hits[0].title, [
+            "MATCH: " + hits[0].title + "  KEY: " + hits[0].key,
+            "ROUTE: " + hits[0].url
+          ]);
+          return;
+        }
+
+        if (hits.length > 1){
+          respondMulti([
+            "SEARCH RESULTS:",
+            ...hits.map((h,i) => `${i+1}) ${h.title}  [${h.key}]`),
+            "TYPE: open <n>"
+          ], raw);
+          return;
+        }
+
+        const sug = fuzzySuggest(raw);
+        const best = confidentSuggestion(sug);
+
+        if (sug.length){
+          if (best){
+            LAST_RESULTS = [best.it];
+            go(best.it.url, "CORRECTED: " + best.it.title, [
+              "MATCH: " + best.it.title + "  KEY: " + best.it.key,
+              "ROUTE: " + best.it.url
+            ]);
+            return;
+          }
+
+          LAST_RESULTS = sug.map(x => x.it);
+          respondMulti([
+            "DID YOU MEAN:",
+            ...sug.map((x,i) => `${i+1}) ${x.it.title}  [${x.it.key}]`),
+            "TYPE: open <n>"
+          ], raw);
+          return;
+        }
+      }
+
+      const err = incErr();
+      respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "COMMAND NOT RECOGNIZED");
     });
 
-    // On load: prefer command input focus (as before)
+    // focus + hint
     window.addEventListener("load", () => {
-      try{ input.focus(); }catch(e){}
+      focusCmd();
       updateHint();
     });
 
-    // IMPORTANT: no global "always focus cmd" anymore.
-    // Only focus cmd if user clicks NOT on inputs.
+    // Keep terminal feel, but DO NOT steal focus from ACCESS input
     document.addEventListener("click", (e) => {
       const t = e.target;
       if (t && (t.id === "cmd" || t.id === "access")) return;
-      // do not steal focus from mobile keyboard if access is active
       if (document.activeElement === access) return;
       focusCmd();
     }, { passive:true });
