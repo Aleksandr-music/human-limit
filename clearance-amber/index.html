@@ -1,1 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clearance Amber</title>
 
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    body{
+      margin:0;
+      background:#05070a;
+      color:var(--fg);
+      font-family:"JetBrains Mono", monospace;
+      overflow:hidden;
+    }
+    .wrap{ padding:40px; }
+    .title{
+      font-size:20px;
+      margin-bottom:24px;
+      letter-spacing:0.08em;
+    }
+    .status{
+      font-size:13px;
+      color:var(--dim);
+      margin-bottom:18px;
+      line-height:18px;
+    }
+    .cmdline{
+      margin-top:10px;
+      font-size:14px;
+    }
+    input{
+      background:none;
+      border:none;
+      outline:none;
+      color:var(--fg);
+      font-family:inherit;
+      font-size:14px;
+      width:520px;
+      max-width:84vw;
+    }
+    .hint{
+      color:var(--dim);
+      opacity:0.45;
+      font-size:12px;
+      margin-top:6px;
+    }
+    .output{
+      margin-top:22px;
+      font-size:14px;
+      color:var(--dim);
+      white-space:pre-line;
+      min-height:48px;
+    }
+    .docs{
+      margin-top:30px;
+      font-size:14px;
+      line-height:28px;
+    }
+    .docs .cap{
+      color:var(--dim);
+      margin-bottom:6px;
+      font-size:13px;
+      letter-spacing:0.04em;
+    }
+    .doc{
+      display:block;
+      color:var(--fg);
+      text-decoration:none;
+      opacity:0.92;
+    }
+    .doc:hover{ opacity:0.68; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="title">CLEARANCE LEVEL: AMBER</div>
+
+    <div class="status">
+      ACCESS PROFILE: CONTROLLED<br>
+      DISCLOSURE: PARTIAL REVEAL<br>
+      AUDIT: ENABLED
+    </div>
+
+    <div class="cmdline">
+      &gt; <input id="cmd" autocomplete="off" autofocus>
+      <div class="hint">available: map, trace, subject alex, subject kiwi, subject mentor, exit</div>
+    </div>
+
+    <div id="output" class="output"></div>
+
+    <div class="docs">
+      <div class="cap">AVAILABLE DOCUMENTS:</div>
+
+      <a class="doc" href="../subjects.html">SUBJECT INDEX (CONTROLLED)</a>
+      <a class="doc" href="../subject-alex.html">SUBJECT: ALEX (CLASSIFIED SEGMENTS)</a>
+      <a class="doc" href="../subject-kiwi.html">SUBJECT: KIWI (CLASSIFIED SEGMENTS)</a>
+      <a class="doc" href="../subject-mentor.html">SUBJECT: MENTOR (PARTIAL)</a>
+      <a class="doc" href="../archive.html">ARCHIVE ENTRIES (CONTROLLED)</a>
+      <a class="doc" href="../state.html">STATE MONITOR (LIMITED)</a>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById("cmd");
+    const output = document.getElementById("output");
+
+    function respondLines(lines){
+      output.textContent = lines.map(x => "> " + x).join("\n");
+    }
+
+    function siteMapLines(){
+      return [
+        "ROOT",
+        "  WORLD",
+        "  SYSTEM",
+        "    MECHANICS",
+        "  SUBJECTS",
+        "    ALEX",
+        "    KIWI",
+        "    MENTOR",
+        "  ARCHIVE",
+        "  STATE",
+        "  INTERFACE",
+        "  ENTRY"
+      ];
+    }
+
+    function traceLines(key){
+      const k = (key || "").trim().toLowerCase();
+      const map = {
+        world:"../world.html",
+        system:"../mechanics.html",
+        mechanics:"../mechanics.html",
+        subjects:"../subjects.html",
+        alex:"../subject-alex.html",
+        kiwi:"../subject-kiwi.html",
+        mentor:"../subject-mentor.html",
+        archive:"../archive.html",
+        state:"../state.html",
+        interface:"../interface.html",
+        entry:"../index.html"
+      };
+      if(!map[k]){
+        return ["TRACE: NO TARGET FOUND", "FORMAT: trace <node>"];
+      }
+      return [
+        "TRACE ROUTE",
+        "SYSTEM -> ROUTER",
+        "ROUTE MATCH -> " + k.toUpperCase(),
+        "TARGET URL -> " + map[k],
+        "STATUS -> OK"
+      ];
+    }
+
+    function subjectLines(key){
+      const k = (key || "").trim().toLowerCase();
+      if(!k) return ["SUBJECT KEY REQUIRED"];
+
+      if(k === "alex"){
+        return [
+          "RECORD FOUND",
+          "SUBJECT: ALEX",
+          "ID: S-001",
+          "STATUS: ACTIVE",
+          "ACCESS: CONTROLLED",
+          "NOTES: [CLASSIFIED SEGMENT UNLOCKED]"
+        ];
+      }
+      if(k === "kiwi"){
+        return [
+          "RECORD FOUND",
+          "SUBJECT: KIWI",
+          "ID: S-003",
+          "STATUS: ACTIVE",
+          "ACCESS: CONTROLLED",
+          "NOTES: [CLASSIFIED SEGMENT UNLOCKED]"
+        ];
+      }
+      if(k === "mentor"){
+        return [
+          "RECORD FOUND",
+          "SUBJECT: MENTOR",
+          "ID: S-002",
+          "STATUS: REDACTED",
+          "ACCESS: CONTROLLED",
+          "DETAILS: [PARTIAL REVEAL]"
+        ];
+      }
+      return ["NO RECORD FOUND"];
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if(e.key !== "Enter") return;
+
+      const raw = input.value.trim();
+      const cmd = raw.toLowerCase();
+      input.value = "";
+
+      if(!cmd){
+        respondLines(["AWAITING INPUT"]);
+        return;
+      }
+
+      if(cmd === "map"){
+        respondLines(siteMapLines());
+        return;
+      }
+
+      if(cmd.startsWith("trace ")){
+        respondLines(traceLines(cmd.slice(6)));
+        return;
+      }
+
+      if(cmd.startsWith("subject ")){
+        respondLines(subjectLines(cmd.slice(8)));
+        return;
+      }
+
+      if(cmd === "exit"){
+        respondLines(["RETURNING TO SYSTEM INTERFACE"]);
+        setTimeout(()=>history.back(), 300);
+        return;
+      }
+
+      respondLines(["COMMAND NOT AVAILABLE IN AMBER PROFILE"]);
+    });
+  </script>
+</body>
+</html>
