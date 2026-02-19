@@ -1,1 +1,134 @@
+<!-- access.html | Human Limit — Initialization -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>INITIALIZING — Human Limit</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    :root{
+      --bg: url("images/png/hl-access-corridor.png?v=1");
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 980px;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1100px 680px at 50% 45%, rgba(255,255,255,.10), rgba(0,0,0,.88)),
+        linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.92)),
+        var(--bg);
+      background-size:cover;
+      background-position:center;
+      filter:saturate(.9);
+    }
+    .wrap{
+      position:relative;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:70px var(--pad);
+    }
+    .panel{
+      width:min(var(--max), 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:26px 22px;
+      backdrop-filter: blur(6px);
+      background:rgba(0,0,0,.32);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .status{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:13px;
+      letter-spacing:.02em;
+    }
+    .line{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .log{
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:14px;
+      color:rgba(255,255,255,.62);
+      font-size:12px;
+      line-height:1.6;
+    }
+    .cta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.35);
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      min-width:220px;
+    }
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
+    .muted{ color:var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="panel">
+      <p class="status">Initializing session…</p>
+      <p class="line">Resolving parameters…</p>
+
+      <div class="log" aria-live="polite">
+        <div><span class="muted">Step 01:</span> Establishing channel</div>
+        <div><span class="muted">Step 02:</span> Synchronizing layers</div>
+        <div><span class="muted">Step 03:</span> Setting visibility constraints</div>
+        <div><span class="muted">Step 04:</span> Loading interface node</div>
+      </div>
+
+      <div class="cta">
+        <a class="btn" href="interface.html">Continue</a>
+        <a class="btn" href="index.html">Return to Entry Point</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Auto-proceed to interface (keeps the “system” feel).
+    // If user interacts, we don't block; "Continue" is always available.
+    setTimeout(() => {
+      if (!document.hidden) window.location.href = "interface.html";
+    }, 2200);
+  </script>
+</body>
+</html>
