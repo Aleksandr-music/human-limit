@@ -336,14 +336,14 @@
     const ACCESS_LEVEL = getAccessLevel();
 
     function levelName(n){
-      if (n === 1) return "Blue";
-      if (n === 2) return "Amber";
-      if (n === 3) return "Black";
-      return "Green";
+      if (n === 1) return "BLUE";
+      if (n === 2) return "AMBER";
+      if (n === 3) return "BLACK";
+      return "GREEN";
     }
 
     function accessPlaceholder(minLevel){
-      return `уровень доступа ${levelName(minLevel)}`;
+      return `ACCESS LEVEL REQUIRED: ${levelName(minLevel)}`;
     }
 
     const data = {
