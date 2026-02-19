@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 
   <style>
@@ -37,10 +38,7 @@
     body{
       margin:0;
       min-height:100svh;
-
-      /* ВАЖНО: фон фиксированный, но UI должен иметь скролл */
       overflow:hidden;
-      background:#0b0b0b;
     }
 
     /* --- background stage (DESKTOP/TABLET) --- */
@@ -84,6 +82,7 @@
       transform: translateZ(0);
     }
 
+    /* Desktop/iPad depth */
     .bg-layer-1{ opacity:1;    transform: translateZ(-60px) scale(1.02); }
     .bg-layer-2{ opacity:0.45; transform: translateZ(-20px) scale(1.01); }
     .bg-layer-3{ opacity:0.22; transform: translateZ( 20px) scale(1.00); }
@@ -114,6 +113,7 @@
       transform: translateZ(90px);
     }
 
+    /* Tablet defaults */
     @media (max-width: 980px){
       :root{ --bg-dim-alpha: 0.06; }
       .bg-layer{ background-size:cover; background-position:center center; }
@@ -123,7 +123,7 @@
        MOBILE FIX (ALL smartphones):
        - disable 3D completely
        - single background layer only
-       - slow drift via background-position
+       - slow drift via background-position (NO transforms, NO rAF)
        ========================================================= */
     html.mobile .bg{
       perspective:none !important;
@@ -141,6 +141,7 @@
       backface-visibility: visible !important;
       -webkit-backface-visibility: visible !important;
 
+      /* drift without transforms */
       animation: driftBg 26s ease-in-out infinite alternate;
       background-position: 50% 50%;
     }
@@ -166,32 +167,20 @@
       .bg-scene{ transform:none !important; }
     }
 
-    /* =========================================================
-       UI WRAPPER (СКРОЛЛ ТОЛЬКО ЗДЕСЬ)
-       ========================================================= */
-    .ui{
-      position:relative;
-      z-index:1;
-      height:100svh;
-      overflow-y:auto;
-      overflow-x:hidden;
-      -webkit-overflow-scrolling: touch;
-
-      padding: 18px 18px 40px 18px;
+    /* --- page-specific --- */
+    .backwrap{
+      margin-bottom:10px;
     }
-
-    /* Back button */
-    .backwrap{ margin-bottom:10px; }
     .backbtn{
       font-size:14px;
       color:var(--dim);
       text-decoration:none;
       display:inline-block;
       padding:2px 0;
+      cursor:pointer;
     }
     .backbtn:hover{ color:var(--fg); }
 
-    /* page-specific */
     .title{
       font-size:18px;
       margin-bottom:18px;
@@ -217,11 +206,6 @@
       opacity:0.65;
       filter: saturate(0.9);
     }
-    /* при lock: BACK тоже не кликается (как было в v1) */
-    html.lock .backwrap{
-      pointer-events:none;
-      opacity:0.65;
-    }
 
     .status{
       margin-top:26px;
@@ -229,6 +213,7 @@
       user-select:none;
     }
 
+    /* “Heartbeat” cursor (irregular CRT-like) */
     .cursor{
       display:inline-block;
       margin-left:2px;
@@ -281,7 +266,7 @@
       position:relative;
     }
 
-    #cmd, #access{
+    #cmd{
       background:none;
       border:none;
       outline:none;
@@ -291,6 +276,7 @@
       width:min(520px, 84vw);
     }
 
+    /* Inline hint (no extra blocks) */
     .hint{
       position:absolute;
       left:18px;
@@ -303,24 +289,34 @@
     }
     .hint.hidden{ display:none; }
 
+    /* ACCESS line (always visible label) */
     .subline{
-      margin-top:10px;
+      margin-top:14px;
       font-size:14px;
       position:relative;
       opacity:0.92;
     }
-
-    .hint2{
-      position:absolute;
-      left:18px;
-      top:0;
+    .sublabel{
+      font-size:12px;
+      letter-spacing:0.08em;
       color:var(--dim);
-      opacity:0.55;
-      pointer-events:none;
-      white-space:nowrap;
-      font-size:14px;
+      opacity:0.85;
+      margin-bottom:6px;
+      text-transform:uppercase;
     }
-    .hint2.hidden{ display:none; }
+    #access{
+      background:none;
+      border:none;
+      outline:none;
+      color:var(--fg);
+      font-family:"JetBrains Mono", monospace;
+      font-size:14px;
+      width:min(520px, 84vw);
+    }
+    #access::placeholder{
+      color:var(--dim);
+      opacity:0.65;
+    }
 
     .output{
       margin-top:18px;
@@ -328,9 +324,9 @@
       color:var(--dim);
       min-height:18px;
       white-space:pre-line;
-      padding-bottom: 24px;
     }
 
+    /* grep-like highlight (subtle, monochrome) */
     .hl{
       color:var(--fg);
       opacity:0.92;
@@ -360,56 +356,54 @@
     </div>
   </div>
 
-  <!-- SCROLLABLE UI -->
-  <div class="ui" id="ui">
-
-    <div class="backwrap">
-      <a class="backbtn" href="#" id="backBtn">← BACK</a>
-    </div>
-
-    <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
-
-    <nav class="menu" aria-label="System nodes" id="menu">
-      <a class="node" href="world.html">WORLD</a>
-      <a class="node" href="mechanics.html">SYSTEM</a>
-      <a class="node" href="subjects.html">SUBJECTS</a>
-      <a class="node" href="archive.html">ARCHIVE</a>
-      <a class="node node--service" href="state.html">STATE MONITOR</a>
-    </nav>
-
-    <div class="status dim" id="status">
-      ACCESS STATUS: ACTIVE<span class="cursor">_</span><span class="pkt" aria-hidden="true"></span>
-      <div class="meta" id="sessionMeta"></div>
-    </div>
-
-    <div class="cmdline">
-      &gt; <input
-          id="cmd"
-          autofocus
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-          aria-label="Command input"
-        >
-      <span id="hint" class="hint">type: world, subjects, search alex, map, trace world</span>
-    </div>
-
-    <div class="subline">
-      &gt; <input
-          id="access"
-          inputmode="numeric"
-          autocomplete="one-time-code"
-          autocapitalize="off"
-          spellcheck="false"
-          aria-label="Access code input"
-        >
-      <span id="hint2" class="hint2">enter access code (6 digits)</span>
-    </div>
-
-    <div id="output" class="output"></div>
-
+  <!-- BACK (top) -->
+  <div class="backwrap">
+    <a class="backbtn" href="#" id="backBtn">← BACK</a>
   </div>
+
+  <div class="title">HUMAN LIMIT — SYSTEM INTERFACE</div>
+
+  <nav class="menu" aria-label="System nodes" id="menu">
+    <a class="node" href="world.html">WORLD</a>
+    <a class="node" href="mechanics.html">SYSTEM</a>
+    <a class="node" href="subjects.html">SUBJECTS</a>
+    <a class="node" href="archive.html">ARCHIVE</a>
+    <a class="node node--service" href="state.html">STATE MONITOR</a>
+  </nav>
+
+  <div class="status dim" id="status">
+    ACCESS STATUS: ACTIVE<span class="cursor">_</span><span class="pkt" aria-hidden="true"></span>
+    <div class="meta" id="sessionMeta"></div>
+  </div>
+
+  <div class="cmdline">
+    &gt; <input
+        id="cmd"
+        autofocus
+        inputmode="text"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="Command input"
+      >
+    <span id="hint" class="hint">type: world, subjects, search alex, map, trace world</span>
+  </div>
+
+  <div class="subline" aria-label="Access line">
+    <div class="sublabel">ENTER YOUR ACCESS CODE</div>
+    &gt; <input
+        id="access"
+        inputmode="numeric"
+        autocomplete="one-time-code"
+        autocapitalize="off"
+        spellcheck="false"
+        maxlength="6"
+        placeholder="6 digits"
+        aria-label="Access code input"
+      >
+  </div>
+
+  <div id="output" class="output"></div>
 
   <script>
     // =========================================================
@@ -440,9 +434,10 @@
 
       const canHover = matchMedia("(hover: hover)").matches;
 
+      // Desktop: pointer-driven 3D
       if (canHover){
-        const MAX_ROT = 6;
-        const MAX_MOV = 14;
+        const MAX_ROT = 6;   // deg
+        const MAX_MOV = 14;  // px
 
         let tx=0, ty=0, rx=0, ry=0;
         let cx=0, cy=0, crx=0, cry=0;
@@ -491,14 +486,15 @@
         return;
       }
 
+      // Tablet/iPad: slow idle drift (3D allowed)
       let t0 = performance.now();
       function idle(now){
         const t = (now - t0) / 1000;
 
-        const ry = Math.sin(t * 0.14) * 2.2;
-        const rx = Math.cos(t * 0.11) * 1.6;
-        const tx = Math.sin(t * 0.12) * 6.0;
-        const ty = Math.cos(t * 0.10) * 4.0;
+        const ry = Math.sin(t * 0.14) * 2.2;   // deg
+        const rx = Math.cos(t * 0.11) * 1.6;   // deg
+        const tx = Math.sin(t * 0.12) * 6.0;   // px
+        const ty = Math.cos(t * 0.10) * 4.0;   // px
 
         root.style.setProperty("--ry", ry.toFixed(2) + "deg");
         root.style.setProperty("--rx", rx.toFixed(2) + "deg");
@@ -518,19 +514,15 @@
     const access = document.getElementById("access");
     const output = document.getElementById("output");
     const hint = document.getElementById("hint");
-    const hint2 = document.getElementById("hint2");
     const bgFx = document.getElementById("bgFx");
     const sessionMeta = document.getElementById("sessionMeta");
     const backBtn = document.getElementById("backBtn");
 
-    // ----- BACK button (FIXED) -----
-    function doBack(){
-      if (window.history.length > 1) window.history.back();
-      else window.location.href = "index.html";
-    }
+    // ----- BACK button -----
+    // Always go to ENTRY (index.html). No history.
     backBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      doBack();
+      window.location.href = "index.html";
     });
 
     // ----- session keys -----
@@ -540,6 +532,7 @@
     const LOCK_KEY = "hl_lock_v2";
     const ACCESS_LEVEL_KEY = "hl_access_level_v1";
 
+    // access levels
     const LEVELS = [
       { n:0, name:"GREEN", label:"GREEN LINE" },
       { n:1, name:"BLUE",  label:"BLUE LINE"  },
@@ -613,6 +606,7 @@
     setLocked(isLocked());
     setAccessLevel(getAccessLevel());
 
+    // ----- helpers -----
     function focusCmd(){
       setTimeout(() => { try{ input.focus(); }catch(e){} }, 0);
     }
@@ -653,44 +647,37 @@
     function respond(text){ renderLines([text], ""); }
     function respondMulti(lines, highlightTerm){ renderLines(lines, highlightTerm || ""); }
 
-    // ----- hint behavior -----
+    // ----- Hint behavior (cmd only) -----
     function updateHint(){
       const hasText = (input.value || "").length > 0;
       hint.classList.toggle("hidden", hasText || document.activeElement !== input);
     }
-    function updateHint2(){
-      const hasText = (access.value || "").length > 0;
-      hint2.classList.toggle("hidden", hasText || document.activeElement !== access);
-    }
     input.addEventListener("focus", updateHint);
     input.addEventListener("blur", updateHint);
     input.addEventListener("input", updateHint);
-    access.addEventListener("focus", updateHint2);
-    access.addEventListener("blur", updateHint2);
-    access.addEventListener("input", updateHint2);
 
-    // ----- command history (FIX: do not shadow window.history) -----
-    const cmdHistory = [];
+    // ----- command history -----
+    const history = [];
     let histPos = -1;
 
     function pushHistory(cmd){
       const c = (cmd || "").trim();
       if (!c) return;
-      if (cmdHistory.length && cmdHistory[cmdHistory.length - 1] === c) return;
-      cmdHistory.push(c);
-      if (cmdHistory.length > 50) cmdHistory.shift();
-      histPos = cmdHistory.length;
+      if (history.length && history[history.length - 1] === c) return;
+      history.push(c);
+      if (history.length > 50) history.shift();
+      histPos = history.length;
     }
     function histUp(){
-      if (!cmdHistory.length) return;
+      if (!history.length) return;
       histPos = Math.max(0, histPos - 1);
-      input.value = cmdHistory[histPos] || "";
+      input.value = history[histPos] || "";
       updateHint();
     }
     function histDown(){
-      if (!cmdHistory.length) return;
-      histPos = Math.min(cmdHistory.length, histPos + 1);
-      input.value = cmdHistory[histPos] || "";
+      if (!history.length) return;
+      histPos = Math.min(history.length, histPos + 1);
+      input.value = history[histPos] || "";
       updateHint();
     }
 
@@ -710,15 +697,17 @@
       return map[node] || null;
     }
 
+    // minLevel: 0 GREEN, 1 BLUE, 2 AMBER, 3 BLACK
     const INDEX = [
       { key:"world",     title:"WORLD",     url:"world.html",          tags:["map","regions","grid","tension","global"], minLevel:0 },
+
       { key:"system",    title:"SYSTEM",    url:"mechanics.html",      tags:["rules","protocol","mechanics","laws","core"], minLevel:0 },
       { key:"mechanics", title:"MECHANICS", url:"mechanics.html",      tags:["system","logic","structure"], minLevel:0 },
 
       { key:"subjects",  title:"SUBJECTS",  url:"subjects.html",       tags:["profiles","entities","index","persons"], minLevel:0 },
       { key:"alex",      title:"ALEX",      url:"subject-alex.html",   tags:["subject","profile","s-001"], minLevel:0 },
       { key:"kiwi",      title:"KIWI",      url:"subject-kiwi.html",   tags:["subject","profile","s-003"], minLevel:0 },
-      { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"], minLevel:1 }, /* BLUE */
+      { key:"mentor",    title:"MENTOR",    url:"subject-mentor.html", tags:["subject","profile","redacted"], minLevel:1 }, /* gated at BLUE */
 
       { key:"archive",   title:"ARCHIVE",   url:"archive.html",        tags:["logs","records","history","files"], minLevel:0 },
       { key:"state",     title:"STATE",     url:"state.html",          tags:["monitor","status","telemetry","system state"], minLevel:0 },
@@ -732,14 +721,13 @@
       return INDEX.filter(x => (x.minLevel || 0) <= lvl);
     }
 
+    // ----- tokens for autocomplete (dynamic by access) -----
     function tokens(){
       const lvl = getAccessLevel();
       const base = [
         "help","clear","search","open","map","trace","lock","unlock","drift",
-        "back","return",
         "world","system","mechanics","subjects","archive","state","monitor","entry","interface",
-        "access","access:clear",
-        "subject"
+        "access","access:clear","back","return","subject"
       ];
       const extra = ["alex","kiwi"];
       if (lvl >= 1) extra.push("mentor");
@@ -751,6 +739,15 @@
       const parts = raw.split(/\s+/);
       const last = parts[parts.length - 1] || "";
       const head = parts.slice(0, -1).join(" ");
+
+      // Special: "subject <key>"
+      if (parts[0] === "subject" && parts.length === 2){
+        const k = (last || "").toLowerCase();
+        const keys = ["alex","kiwi"];
+        if (getAccessLevel() >= 1) keys.push("mentor");
+        const matches = keys.filter(x => x.startsWith(k));
+        if (matches.length === 1) return "subject " + matches[0];
+      }
 
       const q = last.toLowerCase();
       if (!q) return null;
@@ -854,6 +851,7 @@
       return null;
     }
 
+    // ----- map / trace (no vertical bars) -----
     function siteMapLines(){
       const lvl = getAccessLevel();
       const base = [
@@ -884,7 +882,7 @@
         "FORMAT: trace <node>"
       ];
 
-      const url = n.url;
+      const url = n.url || n.url;
       return [
         "TRACE ROUTE",
         "SYSTEM -> ROUTER",
@@ -894,6 +892,7 @@
       ];
     }
 
+    // ----- subject lookup with access-based disclosure -----
     function subjectLookup(key){
       const k = (key || "").toLowerCase().trim();
       const lvl = getAccessLevel();
@@ -935,6 +934,7 @@
         return base;
       }
 
+      // mentor
       base.push("ID: S-002");
       base.push("STATUS: REDACTED");
       base.push("ACCESS: " + (lvl >= 3 ? "GRANTED" : (lvl >= 2 ? "CONTROLLED" : "LIMITED")));
@@ -944,6 +944,7 @@
       return base;
     }
 
+    // ----- restricted / special behavior -----
     function restricted(cmd){
       if(cmd === "help"){
         respondMulti([
@@ -955,8 +956,8 @@
           "MAP: map",
           "TRACE: trace <node>",
           "MODE: lock, unlock",
-          "BACK: back / return",
           "ACCESS: access  OR  access:clear",
+          "BACK: back",
           "UTILITY: clear",
           "INPUT: ArrowUp, ArrowDown history; Tab autocomplete"
         ]);
@@ -989,11 +990,6 @@
         return "__handled__";
       }
 
-      if(cmd === "back" || cmd === "return"){
-        doBack();
-        return "__handled__";
-      }
-
       if(cmd === "access"){
         const lvl = getAccessLevel();
         const info = levelInfo(lvl);
@@ -1015,10 +1011,16 @@
         return "__handled__";
       }
 
+      if(cmd === "back" || cmd === "return"){
+        window.location.href = "index.html";
+        return "__handled__";
+      }
+
       if(cmd === "exit") return "NO EXIT PARAMETERS FOUND";
       return null;
     }
 
+    // parsing + route preview
     function go(url, msg, meta){
       pulseFx();
 
@@ -1039,17 +1041,17 @@
       }, 280);
     }
 
-    // ----- ACCESS CODE submit -----
+    // ----- ACCESS CODE input handler -----
     function handleAccessSubmit(){
       const raw = (access.value || "").trim();
       access.value = "";
-      updateHint2();
 
       if (!raw){
         respond("ACCESS CODE: REQUIRED");
         return;
       }
 
+      // keep digits only
       const code = raw.replace(/\D/g, "");
       if (code.length !== 6){
         incErr();
@@ -1065,8 +1067,8 @@
       }
 
       setAccessLevel(lvl);
-      const info = levelInfo(lvl);
 
+      const info = levelInfo(lvl);
       respondMulti([
         "ACCESS GRANTED",
         "CLEARANCE: " + info.name,
@@ -1080,8 +1082,9 @@
       handleAccessSubmit();
     });
 
-    // ----- command line -----
+    // ----- core key handler (command line) -----
     input.addEventListener("keydown", (e) => {
+      // history
       if (e.key === "ArrowUp"){
         e.preventDefault();
         histUp();
@@ -1093,6 +1096,7 @@
         return;
       }
 
+      // Tab autocomplete
       if (e.key === "Tab"){
         const next = completeToken(input.value);
         if (next){
@@ -1227,6 +1231,7 @@
 
       const res = nav(value);
       if(res){
+        // if node exists but is gated in INDEX, enforce gating
         const idx = INDEX.find(x => x.key === value);
         if (idx && (idx.minLevel || 0) > getAccessLevel()){
           incErr();
@@ -1293,13 +1298,13 @@
       respond(err >= 3 ? "REDUNDANT INPUT DETECTED" : "COMMAND NOT RECOGNIZED");
     });
 
+    // focus + hint
     window.addEventListener("load", () => {
       focusCmd();
       updateHint();
-      updateHint2();
     });
 
-    // terminal feel
+    // Keep terminal feel
     document.addEventListener("click", () => {
       focusCmd();
     }, { passive:true });
