@@ -203,8 +203,8 @@ input, textarea{
 --hl-bg-archive:   url("/human-limit/images/png/hl-archive-banner-01.png");
 
   /* Global readability tuning */
-  --hl-bg-dim: 0.22;          /* overlay darkness (0–1) */
-  --hl-bg-vignette: 0.55;     /* vignette strength */
+  --hl-bg-dim: 0.10;          /* overlay darkness (0–1) */
+  --hl-bg-vignette: 0.28;     /* vignette strength */
   --hl-bg-contrast: 1.00;     /* image contrast */
   --hl-bg-saturate: 0.90;     /* keep near-monochrome */
 }
