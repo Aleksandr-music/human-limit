@@ -1,4 +1,4 @@
-<!-- interface.html | Human Limit — System Interface -->
+<!-- interface.html | Human Limit — System Interface (canonical, Banner Protocol compatible) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,11 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
+  <!-- Single source of truth for backgrounds + global UI -->
   <link rel="stylesheet" href="style.css">
 
   <style>
     :root{
-      --bg: url("images/png/hl-interface-noise.png?v=1");
       --line: rgba(255,255,255,.14);
       --muted: rgba(255,255,255,.68);
       --faint: rgba(255,255,255,.48);
@@ -22,6 +22,7 @@
       --pad: 22px;
       --max: 1080px;
     }
+
     html,body{height:100%}
     body{
       margin:0;
@@ -30,22 +31,14 @@
       background:#000;
       overflow-x:hidden;
     }
-    .bg{
-      position:fixed; inset:0;
-      background:
-        radial-gradient(1200px 760px at 70% 45%, rgba(255,255,255,.12), rgba(0,0,0,.90)),
-        linear-gradient(180deg, rgba(0,0,0,.70), rgba(0,0,0,.92)),
-        var(--bg);
-      background-size:cover;
-      background-position:center;
-      filter:saturate(.9);
-    }
+
     .wrap{
       position:relative;
       max-width:var(--max);
       margin:0 auto;
       padding:58px var(--pad) 64px;
     }
+
     .top{
       display:flex;
       align-items:flex-start;
@@ -55,6 +48,7 @@
       border-bottom:1px solid rgba(255,255,255,.10);
       margin-bottom:18px;
     }
+
     .back{
       color:var(--muted);
       text-decoration:none;
@@ -62,28 +56,34 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       border-bottom:1px solid transparent;
+      padding-bottom:2px;
+      white-space:nowrap;
     }
     .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
+
     h1{
       margin:0;
       font-size:16px;
       letter-spacing:.14em;
       text-transform:uppercase;
       line-height:1.2;
+      text-align:center;
+      flex:1;
     }
+
     .grid{
       display:grid;
       grid-template-columns: 1fr;
       gap:14px;
     }
+
+    /* NOTE: .panel visuals can also be tuned globally in style.css; keep lightweight here */
     .panel{
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px 16px;
-      background:rgba(0,0,0,.30);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
     }
+
     .nav a{
       display:block;
       padding:10px 10px;
@@ -100,6 +100,7 @@
       background: rgba(0,0,0,.18);
     }
     .nav a .arrow{ color:var(--faint); margin-right:10px; }
+
     .status{
       margin-top:12px;
       border-top:1px solid rgba(255,255,255,.10);
@@ -115,12 +116,14 @@
     }
     .k{ color:var(--faint); }
     .v{ color:var(--hard); letter-spacing:.06em; text-transform:uppercase; }
+
     .tools{
       display:flex;
       gap:12px;
       flex-wrap:wrap;
       margin-top:14px;
     }
+
     .btn{
       display:inline-flex;
       align-items:center;
@@ -147,16 +150,15 @@
       padding:24px;
       background: rgba(0,0,0,.72);
       backdrop-filter: blur(6px);
-      z-index: 20;
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 50;
     }
     .overlay.is-open{ display:flex; }
     .overlay .box{
       width:min(980px, 100%);
       border:1px solid var(--line);
       border-radius:18px;
-      background: rgba(0,0,0,.40);
       padding:18px 16px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
     }
     .overlay .head{
       display:flex;
@@ -182,14 +184,16 @@
     .mon .dim{ color:rgba(255,255,255,.46); }
   </style>
 </head>
-<body data-bg="interface"> 
-  <div class="bg" aria-hidden="true"></div>
 
+<!-- IMPORTANT:
+     data-bg="interface" is the ONLY background selector.
+     Do NOT add .bg / .veil divs here. -->
+<body data-bg="interface">
   <main class="wrap">
     <div class="top">
       <a class="back" href="index.html">← Back</a>
       <h1>HUMAN LIMIT — SYSTEM INTERFACE</h1>
-      <span></span>
+      <span aria-hidden="true" style="width:60px"></span>
     </div>
 
     <div class="grid">
@@ -231,25 +235,40 @@
   </div>
 
   <script>
-    const monitor = document.getElementById('monitor');
-    const openBtn = document.getElementById('openMonitor');
-    const closeBtn = document.getElementById('closeMonitor');
+    (function(){
+      const monitor = document.getElementById('monitor');
+      const openBtn = document.getElementById('openMonitor');
+      const closeBtn = document.getElementById('closeMonitor');
 
-    function openMonitor(){
-      monitor.classList.add('is-open');
-    }
-    function closeMonitor(){
-      monitor.classList.remove('is-open');
-    }
+      function openMonitor(){
+        monitor.classList.add('is-open');
+      }
+      function closeMonitor(){
+        monitor.classList.remove('is-open');
+      }
 
-    openBtn.addEventListener('click', openMonitor);
-    closeBtn.addEventListener('click', closeMonitor);
-    monitor.addEventListener('click', (e) => {
-      if (e.target === monitor) closeMonitor();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeMonitor();
-    });
+      openBtn.addEventListener('click', openMonitor);
+      closeBtn.addEventListener('click', closeMonitor);
+      monitor.addEventListener('click', (e) => {
+        if (e.target === monitor) closeMonitor();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMonitor();
+      });
+
+      /*
+        Critical fix for “back navigation shows old look / no banner”:
+        Some browsers restore the page from BFCache with stale computed styles.
+        We force Banner Protocol re-application on pageshow (including persisted).
+      */
+      window.addEventListener('pageshow', function(){
+        const body = document.body;
+        const v = body.getAttribute('data-bg') || 'interface';
+        body.setAttribute('data-bg', '');        // drop
+        void body.offsetHeight;                  // reflow
+        body.setAttribute('data-bg', v);         // re-apply
+      });
+    })();
   </script>
 </body>
 </html>
