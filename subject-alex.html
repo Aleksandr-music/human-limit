@@ -1,11 +1,13 @@
-<!-- subject-alex.html | Human Limit — Subject File (standalone page) -->
+<!-- subject-alex.html | Human Limit — Subject File (ALEX) | canonical + aggregated dossier -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="hl-requires" content="BLACK">
   <title>SUBJECT: ALEX — Internal Registry</title>
+
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,6 +98,13 @@
       margin:0 0 10px;
     }
 
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
     .meta{
       border:1px solid var(--line);
       border-radius:14px;
@@ -120,6 +129,14 @@
       border-radius:14px;
       padding:12px;
       overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
     }
     .portrait .ph{
       width:100%;
@@ -245,7 +262,8 @@
   </style>
 </head>
 
-<body>
+<!-- IMPORTANT: keep banner protocol consistent -->
+<body data-bg="subjects">
   <div class="wrap">
 
     <div class="topbar">
@@ -263,28 +281,125 @@
       <div>
         <h1 class="h1">SUBJECT: ALEX</h1>
 
+        <p class="tagline">
+          Primary subject. High operational value. Nonstandard behavioral signatures observed under constraint.
+        </p>
+
         <div class="meta">
           <dl>
             <dt>System ID</dt><dd>S-AT-C-003481</dd>
             <dt>Classification Tier</dt><dd>Primary Subject</dd>
             <dt>Current Status</dt><dd>Active</dd>
             <dt>System Visibility</dt><dd>Partial</dd>
-            <dt>Clearance Requirement</dt><dd>Blue</dd>
+            <dt>Clearance Requirement</dt><dd>Black</dd>
           </dl>
         </div>
       </div>
 
       <div class="portrait">
-        <!-- Replace placeholder with your canonical portrait file if/when you add it to /images/ -->
-        <!-- Example: <img src="images/subjects/hl-subject-alex-01.jpg" alt="SUBJECT: ALEX" style="width:100%;border-radius:12px;display:block;"> -->
+        <!-- When ready, replace the placeholder with your canonical portrait -->
+        <!-- Example:
+          <img src="images/png/hl-subject-alex-01.png" alt="SUBJECT: ALEX">
+        -->
         <div class="ph">Portrait Placeholder</div>
+
         <div class="note">
-          <span class="muted">Note:</span> Canonical portrait only. Maintain original facial geometry and eye clarity. No stylization drift. No composite images.
+          <span class="muted">Note:</span>
+          Canonical portrait only. Maintain original facial geometry and eye clarity. No insignia. No stylization drift. No composite images.
         </div>
       </div>
     </div>
 
-    <!-- 1. Registry Status -->
+    <!-- 0. Canonical Aggregated Dossier (fixed data; no loss of meaning) -->
+    <section class="section" id="aggregated-dossier">
+      <h2>0. Canonical Aggregated Dossier</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational State</dt><dd>Stable</dd>
+            <dt>Observation Flag</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
+            <dt>Containment Condition</dt><dd>Situational</dd>
+            <dt>External Influence</dt><dd>Limited</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identification Certainty</dt><dd>Confirmed</dd>
+            <dt>Identity Stability</dt><dd>Stable</dd>
+            <dt>Behavioral Variability</dt><dd>Controlled</dd>
+            <dt>Reaction Predictability</dt><dd>Limited</dd>
+            <dt>Decision-Making Mode</dt><dd>Analytical</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Emotional Influence</dt><dd>Suppressed</dd>
+            <dt>Response Speed</dt><dd>Contextual</dd>
+            <dt>Choice Stability</dt><dd>High</dd>
+            <dt>Stress Resistance</dt><dd>High</dd>
+            <dt>Uncertainty Tolerance</dt><dd>Elevated</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Cognitive Consistency</dt><dd>Preserved</dd>
+            <dt>Deviation Risk</dt><dd>Present</dd>
+            <dt>Destabilization Tendency</dt><dd>Low</dd>
+            <dt>Threat Potential</dt><dd>Critical</dd>
+            <dt>Conflict Potential</dt><dd>Situational</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Betrayal Sensitivity</dt><dd>Critical</dd>
+            <dt>Intervention Threshold</dt><dd>High</dd>
+            <dt>Irreversibility Threshold</dt><dd>High</dd>
+            <dt>Formal Anomaly Status</dt><dd>Within Norm</dd>
+            <dt>Observed Behavior</dt><dd>Nonstandard</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Deviation Classification</dt><dd>Incomplete</dd>
+            <dt>System Interpretation</dt><dd>Unstable</dd>
+            <dt>Identity Conflict</dt><dd>Previously Recorded</dd>
+            <dt>System Significance</dt><dd>High</dd>
+            <dt>System Ignorability</dt><dd>Impossible</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Local Impact</dt><dd>Significant</dd>
+            <dt>Group Dynamics Influence</dt><dd>Variable</dd>
+            <dt>Hierarchical Effects</dt><dd>Pronounced</dd>
+            <dt>Strategic Value</dt><dd>High</dd>
+            <dt>Long-Term Consequences</dt><dd>Probable</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Interaction Type</dt><dd>Asymmetric</dd>
+            <dt>Direct Control</dt><dd>Absent</dd>
+            <dt>Indirect Influence</dt><dd>Stable</dd>
+            <dt>System Controllability</dt><dd>Conditional</dd>
+            <dt>System Forecast</dt><dd>Unstable Trajectory</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Registry Status (legacy detailed view; keep until you intentionally compress/remove) -->
     <section class="section" id="registry-status">
       <h2>1. Registry Status</h2>
       <div class="grid2">
@@ -453,6 +568,7 @@
     </div>
 
   </div>
-<script src="hl-core.js"></script>
+
+  <script src="hl-core.js"></script>
 </body>
 </html>
