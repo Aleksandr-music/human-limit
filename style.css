@@ -1,13 +1,44 @@
+/* =========================================================
+   HUMAN LIMIT — CANONICAL STYLE.CSS (single-source)
+   - One background system: Banner Protocol (data-bg)
+   - No legacy --banner pipeline
+   ========================================================= */
+
+/* Base tokens */
 :root{
   --bg:#0b0b0b;
   --fg:#cfcfcf;
   --dim:#8e8e8e;
   --dim2:#5f5f5f;
 
-  --banner: none;
-  --banner-opacity: 0.14;
-  --banner-blur: 0px;
-  --banner-dim: 0.55;
+  /* HL Banner Protocol: file map (do not rename files) */
+  --hl-bg-entry:     url("/human-limit/images/png/hl-entry-banner-01.png");
+  --hl-bg-access:    url("/human-limit/images/png/hl-access-banner-01.png");
+  --hl-bg-interface: url("/human-limit/images/png/hl-interface-banner-01.png");
+  --hl-bg-world:     url("/human-limit/images/png/hl-world-banner-01.png");
+  --hl-bg-system:    url("/human-limit/images/png/hl-system-banner-01.png");
+  --hl-bg-subjects:  url("/human-limit/images/png/hl-subjects-banner-01.png");
+  --hl-bg-archive:   url("/human-limit/images/png/hl-archive-banner-01.png");
+
+  /* Global readability tuning (keep LOW; banners already dark) */
+  --hl-dim: 0.06;        /* overall dark overlay */
+  --hl-vignette: 0.14;   /* vignette strength */
+  --hl-contrast: 1.08;   /* banner clarity */
+  --hl-saturate: 0.95;   /* near-monochrome */
+
+  /* Panel (glass) */
+  --panel-bg: rgba(0,0,0,.16);
+  --panel-border: rgba(255,255,255,.18);
+  --panel-shadow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 18px 60px rgba(0,0,0,.55);
+  --panel-blur: 8px;
+}
+
+/* Global reset-ish */
+*,
+*::before,
+*::after{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{ height:100%; }
@@ -31,64 +62,20 @@ body{
   position:relative;
 }
 
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-2;
-
-  background-image: var(--banner);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  opacity: var(--banner-opacity);
-  filter: blur(var(--banner-blur));
-  transform: scale(1.02);
-
-  pointer-events:none;
-}
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-
-  background: rgba(0,0,0,var(--banner-dim));
-
-  pointer-events:none;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-*,
-*::before,
-*::after{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+a{ color:inherit; text-decoration:none; }
 
 .dim{ color:var(--dim); }
 .dim2{ color:var(--dim2); }
 .warn{ color:var(--fg); }
 
+/* UI nodes */
 .node{
   display:inline-block;
   color:var(--fg);
-  text-decoration:none;
   cursor:pointer;
 }
-
 .node:hover{ text-decoration:underline; }
-
-.node::before{
-  content:"> ";
-  color:var(--fg);
-}
+.node::before{ content:"> "; color:var(--fg); }
 
 .cursor{
   display:inline-block;
@@ -96,12 +83,9 @@ a{
   margin-left:6px;
   animation:blink 1s infinite;
 }
-
 @keyframes blink{
-  0%{opacity:0;}
-  49%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:1;}
+  0%,49%{opacity:0;}
+  50%,100%{opacity:1;}
 }
 
 .spacer-1{ height:18px; }
@@ -114,42 +98,19 @@ a{
   color:var(--fg);
 }
 
-.title, .node, .cursor{
-  -webkit-user-select:none;
-  user-select:none;
-}
+.title, .node, .cursor{ user-select:none; }
+input, textarea, .output{ user-select:text; }
 
-input, textarea{
-  -webkit-user-select:text;
-  user-select:text;
-}
-
-.output{
-  -webkit-user-select:text;
-  user-select:text;
-}
-
+/* Subject rows */
 .subject-row{
   display:block;
   color:var(--dim);
   cursor:pointer;
-  text-decoration:none;
   transition:color .12s ease, opacity .12s ease;
 }
-
-.subject-row:hover{
-  color:var(--fg);
-  text-decoration:none;
-}
-
-.subject-row:active{
-  opacity:0.55;
-}
-
-.subject-row:focus{
-  outline:none;
-  color:var(--fg);
-}
+.subject-row:hover{ color:var(--fg); }
+.subject-row:active{ opacity:0.55; }
+.subject-row:focus{ outline:none; color:var(--fg); }
 
 .is-busy .subject-row,
 .is-busy .cmd,
@@ -158,12 +119,9 @@ input, textarea{
   opacity:0.6;
 }
 
-.hint{
-  color:var(--dim2);
-  transition:opacity .15s ease;
-}
+.hint{ color:var(--dim2); transition:opacity .15s ease; }
 
-/* GLOBAL BACK LINK (canonical like Mentor) */
+/* Back link (keep as-is, but readable on dark) */
 .back-link{
   position:absolute;
   top:12px;
@@ -171,83 +129,58 @@ input, textarea{
   font-size:11px;
   letter-spacing:.08em;
   text-transform:uppercase;
-  color:rgba(0,0,0,.65);
+  color:rgba(255,255,255,.65);
   text-decoration:none;
   font-weight:700;
   z-index:5;
 }
+.back-link:hover{ color:rgba(255,255,255,.92); }
 
-.back-link:hover{
-  color:rgba(0,0,0,.9);
-}
+/* =========================================================
+   HL — Banner Protocol (single background pipeline)
+   Activate by adding: <body data-bg="entry|access|...">
+   ========================================================= */
 
-@media (max-width:680px){
-  body{
-    padding:28px 16px;
-    line-height:24px;
-  }
-}
-/* =========================
-   HUMAN LIMIT — BANNER PROTOCOL
-   Single source of truth for page backgrounds
-   ========================= */
-
-:root{
-  /* Banner file map (do not rename files) */
-  --hl-bg-entry:     url("/human-limit/images/png/hl-entry-banner-01.png");
---hl-bg-access:    url("/human-limit/images/png/hl-access-banner-01.png");
---hl-bg-interface: url("/human-limit/images/png/hl-interface-banner-01.png");
---hl-bg-world:     url("/human-limit/images/png/hl-world-banner-01.png");
---hl-bg-system:    url("/human-limit/images/png/hl-system-banner-01.png");
---hl-bg-subjects:  url("/human-limit/images/png/hl-subjects-banner-01.png");
---hl-bg-archive:   url("/human-limit/images/png/hl-archive-banner-01.png");
-
-  /* Global readability tuning */
-  --hl-bg-dim: 0.04;          /* overlay darkness (0–1) */
-  --hl-bg-vignette: 0.12;     /* vignette strength */
-  --hl-bg-contrast: 1.00;     /* image contrast */
-  --hl-bg-saturate: 0.90;     /* keep near-monochrome */
-}
-
-/* Apply to pages by setting body[data-bg="..."] */
 body[data-bg]{
-  position: relative;
-  background: #000;
-  overflow-x: hidden;
+  background:#000; /* fallback */
 }
 
+/* banner image layer */
 body[data-bg]::before{
   content:"";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  filter: contrast(var(--hl-bg-contrast)) saturate(var(--hl-bg-saturate));
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter: contrast(var(--hl-contrast)) saturate(var(--hl-saturate));
+  transform: scale(1.02);
+  pointer-events:none;
 }
 
+/* readability layer */
 body[data-bg]::after{
   content:"";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-opacity: calc(var(--hl-bg-dim));
-  /* universal readability layer */
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:1;
+
   background:
     radial-gradient(1200px 760px at 55% 42%,
-      rgba(255,255,255, calc(0.10 * (1 - var(--hl-bg-dim)))),
-      rgba(0,0,0, calc(var(--hl-bg-vignette)))
+      rgba(255,255,255, 0.06),
+      rgba(0,0,0, var(--hl-vignette))
     ),
     linear-gradient(
       180deg,
-      rgba(0,0,0, calc(var(--hl-bg-dim) + 0.10)),
-      rgba(0,0,0, calc(var(--hl-bg-dim) + 0.20))
+      rgba(0,0,0, calc(var(--hl-dim) + 0.06)),
+      rgba(0,0,0, calc(var(--hl-dim) + 0.14))
     );
 }
 
-/* Banner selector (the only mapping layer) */
+/* Mapping (the ONLY mapping layer) */
 body[data-bg="entry"]::before     { background-image: var(--hl-bg-entry); }
 body[data-bg="access"]::before    { background-image: var(--hl-bg-access); }
 body[data-bg="interface"]::before { background-image: var(--hl-bg-interface); }
@@ -256,29 +189,32 @@ body[data-bg="system"]::before    { background-image: var(--hl-bg-system); }
 body[data-bg="subjects"]::before  { background-image: var(--hl-bg-subjects); }
 body[data-bg="archive"]::before   { background-image: var(--hl-bg-archive); }
 
-/* Optional per-page tuning (only if you need it later) */
-body[data-bg="interface"]{
-  --hl-bg-dim: 0.26;
-}
-body[data-bg="access"]{
-  --hl-bg-dim: 0.24;
-}
-/* HL — Panel transparency (let banners show through) */
-.panel{
-  background: rgba(0,0,0,.18) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  border-color: rgba(255,255,255,.18) !important;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.08) inset,
-    0 18px 60px rgba(0,0,0,.55) !important;
-}
-/* HL — kill legacy full-screen backgrounds when Banner Protocol is active */
+/* Prevent legacy fullscreen layers from hiding banners */
 body[data-bg] .bg,
-body[data-bg] .veil{
+body[data-bg] .veil,
+body[data-bg] .bg-scene,
+body[data-bg] .bg-layer,
+body[data-bg] .bg-fx,
+body[data-bg] .bg-dim{
   display:none !important;
 }
-/* HL — boost banner visibility a bit */
-body[data-bg]::before{
-  filter: contrast(1.08) saturate(0.95) !important;
+
+/* =========================================================
+   Panels (Entry page / Interface panels)
+   ========================================================= */
+
+.panel{
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: blur(var(--panel-blur));
+  -webkit-backdrop-filter: blur(var(--panel-blur));
+}
+
+/* Mobile */
+@media (max-width:680px){
+  body{
+    padding:28px 16px;
+    line-height:24px;
+  }
 }
