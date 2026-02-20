@@ -1,1 +1,154 @@
+<!-- index.html | Human Limit — Entry Point -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>HUMAN LIMIT — Entry Point</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    :root{
+      --bg: url("images/png/hl-entry-map.png?v=3");
+      --dim: .22;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 980px;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 700px at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.86)),
+        linear-gradient(180deg, rgba(0,0,0,.82), rgba(0,0,0,.92)),
+        var(--bg);
+      background-size:cover;
+      background-position:center;
+      filter: saturate(0.9);
+      opacity:1;
+    }
+    .veil{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,var(--dim));
+      pointer-events:none;
+    }
+    .wrap{
+      position:relative;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:70px var(--pad);
+    }
+    .panel{
+      width:min(var(--max), 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:28px 22px;
+      backdrop-filter: blur(6px);
+      background:rgba(0,0,0,.34);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+    }
+    .title{
+      margin:0 0 12px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-size:22px;
+      line-height:1.2;
+    }
+    .tag{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+      letter-spacing:.02em;
+    }
+    .cta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:18px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.35);
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      min-width:220px;
+    }
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
+    .hint{
+      margin-top:16px;
+      color:rgba(255,255,255,.52);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-top:1px solid rgba(255,255,255,.10);
+      margin-top:18px;
+      padding-top:14px;
+      color:rgba(255,255,255,.56);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .mono{ letter-spacing:.10em; text-transform:uppercase; }
+  </style>
+</head>
+<body data-bg="entry">
+<div class="sys-node" aria-hidden="true">
+  <span class="dot"></span>
+  <span class="label">NODE: ACTIVE</span>
+</div>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="veil" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="panel">
+      <h1 class="title">HUMAN LIMIT</h1>
+      <p class="tag">The world is already decided.</p>
+
+      <div class="cta">
+        <a class="btn" href="access.html">Access System</a>
+      </div>
+
+      <div class="hint">
+        Entry point does not reveal content.<br>
+        It initiates access.
+      </div>
+
+      <div class="row">
+        <div class="mono">ENTRY POINT</div>
+        <div>Visibility: <span class="mono">Restricted</span></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
