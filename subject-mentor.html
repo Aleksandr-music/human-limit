@@ -3,422 +3,444 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SUBJECT: MENTOR — Internal Registry</title>
 
-  <!-- Optional: JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
 
   <style>
     :root{
-      --bg:#0b0b0b;
-      --paper:#cfcfcf;
-      --paper2:#bdbdbd;
-      --ink:#111;
-      --shadow: rgba(0,0,0,.55);
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.9);
     }
 
-    *{ box-sizing:border-box; }
-
+    html,body{height:100%;}
     body{
       margin:0;
-      background: radial-gradient(1200px 800px at 50% 20%, #151515 0%, var(--bg) 65%);
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      color:#eaeaea;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
       display:flex;
-      min-height:100svh;
       align-items:center;
-      justify-content:center;
-      padding:24px;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
     }
 
-    .sheet-wrap{ width:min(860px, 100%); }
-
-    /* Sheet = flex column (header/content/footer never overlap) */
-    .sheet{
-      position:relative;
+    .crumbs{
       display:flex;
-      flex-direction:column;
-      background:
-        radial-gradient(800px 420px at 35% 15%, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 60%),
-        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.18)),
-        repeating-linear-gradient(
-          0deg,
-          rgba(0,0,0,.075) 0px,
-          rgba(0,0,0,.075) 1px,
-          rgba(0,0,0,0) 2px,
-          rgba(0,0,0,0) 18px
-        ),
-        linear-gradient(180deg, var(--paper), var(--paper2));
-      border: 2px solid rgba(0,0,0,.45);
-      box-shadow: 0 18px 55px var(--shadow);
-      aspect-ratio: 210 / 297;
-      overflow:hidden;
-      color: var(--ink);
-    }
-
-    .noise{
-      pointer-events:none;
-      position:absolute; inset:0;
-      background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-      mix-blend-mode:multiply;
-      opacity:.6;
-    }
-
-    .header{
-      padding:18px 18px 10px 18px;
-      border-bottom:2px solid rgba(0,0,0,.55);
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:12px;
-      align-items:start;
-      flex:0 0 auto;
-    }
-
-    .header h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      font-weight:700;
-    }
-
-    .subline{
-      margin-top:6px;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
       font-size:12px;
       letter-spacing:.08em;
       text-transform:uppercase;
-      color:rgba(0,0,0,.70);
-      font-weight:600;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+      margin:18px 0 22px;
+    }
+
+    @media (max-width: 880px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    .h1{
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--hard);
+      margin:0 0 10px;
     }
 
     .meta{
-      text-align:right;
-      min-width:250px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
     }
-
-    .meta .id{
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:8px 12px;
       font-size:13px;
-      font-weight:700;
-      letter-spacing:.08em;
-    }
-
-    .meta .small{
-      margin-top:8px;
-      font-size:11px;
-      letter-spacing:.06em;
-      color:rgba(0,0,0,.75);
-      text-transform:uppercase;
       line-height:1.35;
     }
-
-    .stamp{
-      position:absolute;
-      top:14px;
-      right:14px;
-      width:124px;
-      height:124px;
-      opacity:.25;
-      transform: rotate(8deg);
-      filter: contrast(120%) saturate(0%);
-      background: center/contain no-repeat url("images/png/hl-shield-stamp.png");
-      mix-blend-mode:multiply;
-      pointer-events:none;
+    @media (max-width: 520px){
+      .meta dl{ grid-template-columns: 1fr; }
     }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
 
-    /* Back link — SAME behavior as Alex (not fixed to top of sheet) */
-    .back-link{
-      font-size:11px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:rgba(0,0,0,.65);
-      text-decoration:none;
-      font-weight:700;
-    }
-    .back-link:hover{ color:rgba(0,0,0,.9); }
-
-    .content{
-      padding:16px 18px 18px 18px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      flex:1 1 auto;
-      overflow:auto;
-      -webkit-overflow-scrolling: touch;
-      min-height:0;
-    }
-
-    .photo-frame{
-      border:2px solid rgba(0,0,0,.55);
-      background: rgba(0,0,0,.08);
-      aspect-ratio: 16 / 9;
-      position:relative;
+    .portrait{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
       overflow:hidden;
-      flex:0 0 auto;
     }
-
-    .photo-frame .label{
-      position:absolute;
-      left:10px; top:10px;
-      font-size:11px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      background: rgba(255,255,255,.55);
-      padding:4px 6px;
-      border:1px solid rgba(0,0,0,.35);
-      font-weight:700;
-    }
-
-    .photo-frame img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  filter: grayscale(100%) contrast(115%);
-} 
-
-    .photo-frame .placeholder{
-      position:absolute;
-      inset:0;
+    .portrait .ph{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      border-radius:12px;
+      border:1px dashed rgba(255,255,255,.18);
       display:flex;
       align-items:center;
       justify-content:center;
-      color:rgba(0,0,0,.55);
-      font-weight:700;
-      letter-spacing:.12em;
-      text-transform:uppercase;
+      color:var(--faint);
       font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .portrait .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
     }
 
-    .lines{
-      border-top:2px solid rgba(0,0,0,.45);
-      padding-top:10px;
-      display:flex;
-      flex-direction:column;
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
     }
 
-    .row{
+    .grid2{
       display:grid;
-      grid-template-columns: 260px 1fr;
-      align-items:center;
-      gap:10px;
-      padding:10px 0;
-      border-bottom:1px solid rgba(0,0,0,.35);
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 880px){
+      .grid2{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color:var(--hard);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .bullets li{ margin:8px 0; }
+    .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
       font-size:12px;
-    }
-
-    .row .k{
+      letter-spacing:.10em;
       text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:700;
-      color:rgba(0,0,0,.85);
+      color:var(--hard);
+      opacity:.95;
     }
-
-    .row .v{
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      font-weight:700;
-      color:rgba(0,0,0,.80);
-      line-height:1.25;
-      word-break:break-word;
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
     }
-
-    .classified{ color:rgba(0,0,0,.60); }
-
-    .redact-bar{
-      display:inline-block;
-      padding:2px 8px;
-      background: rgba(0,0,0,.85);
-      color: rgba(255,255,255,.88);
-      border-radius:2px;
-      letter-spacing:.08em;
-      font-weight:800;
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
     }
 
     .footer{
-      position:relative;
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
       display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      font-size:10px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:rgba(0,0,0,.65);
-      background: rgba(207,207,207,.85);
-      padding:10px 18px 14px 18px;
-      border-top:1px solid rgba(0,0,0,.35);
-      flex:0 0 auto;
-    }
-
-    .footer .date{
-      display:flex;
-      gap:10px;
+      flex-wrap:wrap;
+      gap:10px 14px;
       align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
     }
-
-    .footer .date .box{
-      width:140px;
-      height:14px;
-      background: rgba(0,0,0,.85);
-      border-radius:2px;
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
     }
-
-    @media (max-width:680px){
-      body{ padding:16px; }
-      .row{ grid-template-columns: 1fr; gap:6px; }
-      .meta{ min-width:0; text-align:left; }
-      .header{ grid-template-columns: 1fr; }
-      .stamp{ width:104px; height:104px; top:12px; right:12px; }
-    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
   </style>
 </head>
 
 <body>
-  <div class="sheet-wrap">
-    <div class="sheet" id="sheet">
-      <div class="stamp" aria-hidden="true"></div>
-      <div class="noise" aria-hidden="true"></div>
+  <div class="wrap">
 
-      <div class="header">
-        <div>
-          <h1>SUBJECT PROFILE — INTERNAL REGISTRY</h1>
-          <div class="subline" id="subjectTitle">SUBJECT: BOB</div>
-        </div>
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Gateway</a>
+        <span class="muted">/</span>
+        <a href="subjects.html">Subjects</a>
+        <span class="muted">/</span>
+        <span>Subject File</span>
+      </div>
+      <div class="badge">Internal Registry</div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1 class="h1">SUBJECT: MENTOR</h1>
 
         <div class="meta">
-          <div class="id" id="subjectId">ID: S–AT–C–003474</div>
-          <div class="small">
-            CLASSIFICATION: <span id="classification">ACTIVE UNIT</span><br/>
-            ACCESS STATUS: <span id="accessStatus">LIMITED</span>
-          </div>
+          <dl>
+            <dt>System ID</dt><dd>HL-IR-55-C</dd>
+            <dt>Classification Tier</dt><dd>Mentor / Asset</dd>
+            <dt>Current Status</dt><dd>REDACTED</dd>
+            <dt>System Visibility</dt><dd>Restricted</dd>
+            <dt>Clearance Requirement</dt><dd>Amber</dd>
+          </dl>
         </div>
       </div>
 
-      <a href="subjects.html" class="back-link">← BACK TO DATABASE</a>
-
-      <div class="content">
-        <div class="photo-frame" id="photoFrame">
-          <div class="label">PHOTO — 16:9</div>
-
-          <img id="photo" alt="" style="display:none" />
-          <div class="placeholder" id="photoPlaceholder">INSERT IMAGE LATER</div>
-        </div>
-
-        <div class="lines" id="lines"></div>
-      </div>
-
-      <div class="footer">
-        <div>HUMAN LIMIT / INTERNAL FILE</div>
-        <div class="date">
-          <div>CREATED:</div>
-          <div class="box" title="CLASSIFIED"></div>
+      <div class="portrait">
+        <!-- Replace with canonical portrait if/when you add it -->
+        <div class="ph">Portrait Placeholder</div>
+        <div class="note">
+          <span class="muted">Note:</span> Canonical portrait only. No stylization drift. No composite images. Maintain utilitarian look.
         </div>
       </div>
     </div>
+
+    <!-- 1. Registry Status -->
+    <section class="section" id="registry-status">
+      <h2>1. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational State</dt><dd>Stable</dd>
+            <dt>Tracking Flag</dt><dd>Active</dd>
+            <dt>Control Condition</dt><dd>Independent</dd>
+            <dt>Containment</dt><dd>Situational</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Exposure Tolerance</dt><dd>Very High</dd>
+            <dt>Authority Response</dt><dd>Dominant</dd>
+            <dt>Group Integration</dt><dd>High</dd>
+            <dt>Deviation Alert</dt><dd>Minimal</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Risk & Stability Profile -->
+    <section class="section" id="risk-stability">
+      <h2>2. Risk &amp; Stability Profile</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Threat Potential</dt><dd>Critical</dd>
+            <dt>Predictability Index</dt><dd>High</dd>
+            <dt>Compliance Drift</dt><dd>Low</dd>
+            <dt>Stress Response</dt><dd>Controlled</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Escalation</dt><dd>High (Decisive)</dd>
+            <dt>Strategic Capacity</dt><dd>Very High</dd>
+            <dt>Operational Use</dt><dd>Field Mentor</dd>
+            <dt>Failure Mode</dt><dd>None observed</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Behavioral Observations -->
+    <section class="section" id="observations">
+      <h2>3. Behavioral Observations</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Maintains controlled presence; speaks minimally and only when action is required.</li>
+          <li>Operates with a long-horizon objective; prioritizes outcome over emotion.</li>
+          <li>Executes close-range elimination without escalation noise.</li>
+          <li>Establishes hierarchy through competence; does not seek approval.</li>
+          <li>Demonstrates strong protective bias toward selected assets once bonded.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. Recorded Patterns -->
+    <section class="section" id="patterns">
+      <h2>4. Recorded Patterns</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Engagement Pattern</dt><dd>Direct / Final</dd>
+            <dt>Decision Timing Model</dt><dd>Immediate Commit</dd>
+            <dt>Trust Formation Tendency</dt><dd>Selective</dd>
+            <dt>Authority Negotiation</dt><dd>Override</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Group Utility</dt><dd>Stability Core</dd>
+            <dt>Influence Vector</dt><dd>Command</dd>
+            <dt>Aggression Trigger Points</dt><dd>Threat to Mission</dd>
+            <dt>Persistence Under Fatigue</dt><dd>Exceptional</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Known Incidents / Records -->
+    <section class="section" id="incidents">
+      <h2>5. Known Incidents / Records</h2>
+      <div class="card">
+        <div class="incident">
+          <div class="code">HL-IR-55-01</div>
+          <div class="detail">
+            Confirmed elimination of hostile guard during night cycle without alert escalation.
+            <div class="row">Severity: Critical · Outcome: Successful · Note: Silent neutralization capability</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-55-03</div>
+          <div class="detail">
+            Coordinated internal countermeasure following betrayal indicator; maintained system plausibility.
+            <div class="row">Severity: High · Outcome: Contained · Note: Operational deception under constraint</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. System Remarks -->
+    <section class="section" id="system-remarks">
+      <h2>6. System Remarks</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Identity is intentionally fragmented; official record chain is suppressed.</li>
+          <li>Subject functions as a mentor-class stabilizer under forced conditions.</li>
+          <li>High operational competence increases systemic leverage risk.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 7. Data Integrity -->
+    <section class="section" id="data-integrity">
+      <h2>7. Data Integrity</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Record Completeness</dt><dd>Redacted</dd>
+            <dt>Source Reliability</dt><dd>High</dd>
+            <dt>Cross-Reference Density</dt><dd>High</dd>
+            <dt>Temporal Coverage</dt><dd>Partial Window</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identity Certainty</dt><dd>Suppressed</dd>
+            <dt>Alias Stability</dt><dd>Stable</dd>
+            <dt>Context Drift Risk</dt><dd>Low</dd>
+            <dt>Redaction Ratio</dt><dd>High</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Clearance Restrictions -->
+    <section class="section" id="clearance">
+      <h2>8. Clearance Restrictions</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Origin chain and service history require Tier Black authorization.</li>
+          <li>Operational network linkage requires Tier Black escalation.</li>
+          <li>Training protocol archive requires Tier Amber authorization.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
+      <div>
+        <a href="subjects.html">Return to Subjects</a>
+        <span class="muted"> · </span>
+        <a href="system.html">Open System Registry</a>
+      </div>
+    </div>
+
   </div>
-
-  <script>
-    const data = {
-      subject: "BOB",
-      id: "S–AT–C–003474",
-      classification: "ACTIVE UNIT",
-      accessStatus: "LIMITED",
-
-      // add later, e.g. "images/png/hl-subject-mentor-mugshot.png"
-      photo: "images/png/hl-subject-mentor-mugshot.png", 
-
-      rows: [
-        ["CALLSIGN / NICKNAME", "MENTOR"],
-
-        ["AGE", "55"],
-        ["HEIGHT", "192 CM"],
-        ["EYE COLOR", { classified: true }],
-
-        ["PSYCHOLOGICAL STATE", "STABLE / CONTROLLED"],
-        ["PHYSICAL CONDITION", "OPTIMAL"],
-
-        ["REAL NAME", { classified: true }],
-        ["MARITAL STATUS", { classified: true }],
-        ["NATIONALITY", { classified: true }],
-        ["COUNTRY OF BIRTH", { classified: true }],
-        ["LANGUAGES", { classified: true }],
-
-        ["CIVIL PROFESSION", "CLASSIFIED"],
-
-        ["MEDICAL EXAMINER", { classified: true }],
-        ["TREATMENT UNIT", { classified: true }],
-        ["CHRONIC MEDICATION", { classified: true }],
-        ["RESTRAINT DEVICE — BRACELET S/N", { classified: true }],
-        ["IMPLANTED DEVICE — CAPSULE S/N", { classified: true }],
-
-        ["COMBAT SPECIALIZATION", { classified: true }],
-        ["WEAPON PROFICIENCY", { classified: true }],
-        ["TACTICAL APTITUDE", { classified: true }],
-        ["ANALYTICAL THINKING", { classified: true }],
-        ["SITUATIONAL AWARENESS", { classified: true }],
-        ["DECISION LATENCY", { classified: true }],
-        ["STRESS RESISTANCE", { classified: true }],
-        ["COMPLIANCE INDEX", { classified: true }],
-        ["ESCAPE RISK", { classified: true }],
-
-        ["RECRUITER", { classified: true, renderMode: "bar", text: "CLASSIFIED" }],
-        ["FILE AUTHOR", { classified: true, renderMode: "bar", text: "CLASSIFIED" }]
-      ],
-    };
-
-    function renderValue(v){
-      if (typeof v === "string") return `<span>${escapeHtml(v)}</span>`;
-      if (v && v.classified){
-        if (v.renderMode === "bar") {
-          const t = v.text || "CLASSIFIED";
-          return `<span class="redact-bar">${escapeHtml(t)}</span>`;
-        }
-        return `<span class="classified">CLASSIFIED</span>`;
-      }
-      return `<span class="classified">CLASSIFIED</span>`;
-    }
-
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    // Header
-    document.getElementById("subjectTitle").textContent = `SUBJECT: ${data.subject}`;
-    document.getElementById("subjectId").textContent = `ID: ${data.id}`;
-    document.getElementById("classification").textContent = data.classification;
-    document.getElementById("accessStatus").textContent = data.accessStatus;
-
-    // Photo
-    const img = document.getElementById("photo");
-    const ph = document.getElementById("photoPlaceholder");
-    if (data.photo && data.photo.trim().length){
-      img.src = data.photo;
-      img.style.display = "block";
-      ph.style.display = "none";
-    } else {
-      img.style.display = "none";
-      ph.style.display = "flex";
-    }
-
-    // Lines
-    const lines = document.getElementById("lines");
-    data.rows.forEach(([k,v]) => {
-      const row = document.createElement("div");
-      row.className = "row";
-      row.innerHTML = `
-        <div class="k">${escapeHtml(k)}:</div>
-        <div class="v">${renderValue(v)}</div>
-      `;
-      lines.appendChild(row);
-    });
-  </script>
 </body>
 </html>
