@@ -1,4 +1,4 @@
-<!-- subject-alex.html | Human Limit — Subject File (ALEX) | canonical + aggregated dossier -->
+<!-- subject-alex.html | Human Limit — Subject File (ALEX) | canonical + deduped structured dossier -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* Minimal local layout helpers (kept neutral; main visuals live in style.css) */
     :root{
       --page-max: 1080px;
       --pad: 20px;
@@ -84,7 +83,6 @@
       align-items:start;
       margin:18px 0 22px;
     }
-
     @media (max-width: 880px){
       .hero{ grid-template-columns:1fr; }
     }
@@ -262,7 +260,6 @@
   </style>
 </head>
 
-<!-- IMPORTANT: keep banner protocol consistent -->
 <body data-bg="subjects">
   <div class="wrap">
 
@@ -297,10 +294,8 @@
       </div>
 
       <div class="portrait">
-        <!-- When ready, replace the placeholder with your canonical portrait -->
-        <!-- Example:
-          <img src="images/png/hl-subject-alex-01.png" alt="SUBJECT: ALEX">
-        -->
+        <!-- Replace when ready -->
+        <!-- <img src="images/png/hl-subject-alex-01.png" alt="SUBJECT: ALEX"> -->
         <div class="ph">Portrait Placeholder</div>
 
         <div class="note">
@@ -310,9 +305,9 @@
       </div>
     </div>
 
-    <!-- 0. Canonical Aggregated Dossier (fixed data; no loss of meaning) -->
+    <!-- 1. Aggregated Dossier (canonical overview; primary index) -->
     <section class="section" id="aggregated-dossier">
-      <h2>0. Canonical Aggregated Dossier</h2>
+      <h2>1. Aggregated Dossier</h2>
 
       <div class="grid2">
         <div class="card">
@@ -399,14 +394,12 @@
       </div>
     </section>
 
-    <!-- 1. Registry Status (legacy detailed view; keep until you intentionally compress/remove) -->
+    <!-- 2. Registry Status (DE-DUPED: keep only what is not already in Aggregated Dossier) -->
     <section class="section" id="registry-status">
-      <h2>1. Registry Status</h2>
+      <h2>2. Registry Status</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Operational State</dt><dd>Stable</dd>
-            <dt>Tracking Flag</dt><dd>Active</dd>
             <dt>Control Condition</dt><dd>Indirect</dd>
             <dt>Containment</dt><dd>Situational</dd>
           </dl>
@@ -422,13 +415,12 @@
       </div>
     </section>
 
-    <!-- 2. Risk & Stability Profile -->
+    <!-- 3. Risk & Stability Profile (DE-DUPED) -->
     <section class="section" id="risk-stability">
-      <h2>2. Risk &amp; Stability Profile</h2>
+      <h2>3. Risk &amp; Stability Profile</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Threat Potential</dt><dd>Critical</dd>
             <dt>Predictability Index</dt><dd>Medium</dd>
             <dt>Compliance Drift</dt><dd>Growing</dd>
             <dt>Stress Response</dt><dd>Controlled</dd>
@@ -445,9 +437,9 @@
       </div>
     </section>
 
-    <!-- 3. Behavioral Observations -->
+    <!-- 4. Behavioral Observations (unique narrative; keep) -->
     <section class="section" id="observations">
-      <h2>3. Behavioral Observations</h2>
+      <h2>4. Behavioral Observations</h2>
       <div class="card">
         <ul class="bullets">
           <li>Maintains composure under high-pressure exposure; emotional output remains minimal.</li>
@@ -459,9 +451,9 @@
       </div>
     </section>
 
-    <!-- 4. Recorded Patterns -->
+    <!-- 5. Recorded Patterns (unique specifics; keep) -->
     <section class="section" id="patterns">
-      <h2>4. Recorded Patterns</h2>
+      <h2>5. Recorded Patterns</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
@@ -482,9 +474,9 @@
       </div>
     </section>
 
-    <!-- 5. Known Incidents / Records -->
+    <!-- 6. Known Incidents / Records (unique; keep) -->
     <section class="section" id="incidents">
-      <h2>5. Known Incidents / Records</h2>
+      <h2>6. Known Incidents / Records</h2>
       <div class="card">
         <div class="incident">
           <div class="code">HL-IR-02-01</div>
@@ -510,9 +502,9 @@
       </div>
     </section>
 
-    <!-- 6. System Remarks -->
+    <!-- 7. System Remarks (dedupe-friendly narrative; keep) -->
     <section class="section" id="system-remarks">
-      <h2>6. System Remarks</h2>
+      <h2>7. System Remarks</h2>
       <div class="card">
         <ul class="bullets">
           <li>Primary subject remains functional and difficult to destabilize through standard pressure cycles.</li>
@@ -523,9 +515,9 @@
       </div>
     </section>
 
-    <!-- 7. Data Integrity -->
+    <!-- 8. Data Integrity (unique; keep) -->
     <section class="section" id="data-integrity">
-      <h2>7. Data Integrity</h2>
+      <h2>8. Data Integrity</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
@@ -537,7 +529,6 @@
         </div>
         <div class="card">
           <dl class="kv">
-            <dt>Identity Certainty</dt><dd>Confirmed</dd>
             <dt>Alias Stability</dt><dd>Stable</dd>
             <dt>Context Drift Risk</dt><dd>Medium</dd>
             <dt>Redaction Ratio</dt><dd>Noticeable</dd>
@@ -546,9 +537,9 @@
       </div>
     </section>
 
-    <!-- 8. Clearance Restrictions -->
+    <!-- 9. Clearance Restrictions (unique; keep) -->
     <section class="section" id="clearance">
-      <h2>8. Clearance Restrictions</h2>
+      <h2>9. Clearance Restrictions</h2>
       <div class="card">
         <ul class="bullets">
           <li>Full transcript of Subject origin chain is restricted.</li>
