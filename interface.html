@@ -1,4 +1,4 @@
-<!-- interface.html | Human Limit — System Interface (canonical, Banner Protocol compatible) -->
+<!-- interface.html | Human Limit — System Interface (canonical, Variant A hub) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <!-- Single source of truth for backgrounds + global UI -->
   <link rel="stylesheet" href="style.css">
 
   <style>
@@ -77,32 +76,93 @@
       gap:14px;
     }
 
-    /* NOTE: .panel visuals can also be tuned globally in style.css; keep lightweight here */
     .panel{
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px 16px;
     }
 
-    .nav a{
-      display:block;
-      padding:10px 10px;
-      border-radius:12px;
-      border:1px solid transparent;
-      color:var(--hard);
-      text-decoration:none;
-      letter-spacing:.10em;
+    /* SYSTEM LINE */
+    .sysline{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      background: rgba(0,0,0,.18);
+      color:rgba(255,255,255,.72);
+      font-size:12px;
+      line-height:1.6;
+      letter-spacing:.06em;
       text-transform:uppercase;
-      font-size:13px;
     }
-    .nav a:hover{
+    .sysline .tag{ color:rgba(255,255,255,.52); }
+    .sysline .val{ color:rgba(255,255,255,.90); }
+    .sysline .sep{ color:rgba(255,255,255,.22); }
+
+    /* Navigation rows (system-like) */
+    .navrows{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+    }
+    .navrow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      text-decoration:none;
+      color:var(--hard);
+    }
+    .navrow:hover{
       border-color: rgba(255,255,255,.22);
       background: rgba(0,0,0,.18);
     }
-    .nav a .arrow{ color:var(--faint); margin-right:10px; }
+    .navrow:active{ opacity:.78; }
+
+    .navleft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .arrow{ color:var(--faint); }
+    .node{
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    .meta{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-size:11px;
+      color:rgba(255,255,255,.58);
+      white-space:nowrap;
+    }
+    .pill{
+      padding:4px 8px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      background: rgba(0,0,0,.16);
+      color:rgba(255,255,255,.70);
+    }
+    .pill.ok{ color:rgba(255,255,255,.88); }
+    .pill.dim{ color:rgba(255,255,255,.58); }
 
     .status{
-      margin-top:12px;
+      margin-top:14px;
       border-top:1px solid rgba(255,255,255,.10);
       padding-top:12px;
       display:grid;
@@ -141,7 +201,7 @@
     }
     .btn:hover{ border-color: rgba(255,255,255,.28); }
 
-    /* STATE MONITOR overlay (mode, not a nav page) */
+    /* STATE MONITOR overlay */
     .overlay{
       position:fixed; inset:0;
       display:none;
@@ -159,6 +219,7 @@
       border:1px solid var(--line);
       border-radius:18px;
       padding:18px 16px;
+      background: rgba(0,0,0,.28);
     }
     .overlay .head{
       display:flex;
@@ -179,15 +240,13 @@
       font-size:12px;
       line-height:1.7;
       color:rgba(255,255,255,.66);
+      white-space:pre-line;
     }
     .mon .ok{ color:rgba(255,255,255,.90); }
     .mon .dim{ color:rgba(255,255,255,.46); }
   </style>
 </head>
 
-<!-- IMPORTANT:
-     data-bg="interface" is the ONLY background selector.
-     Do NOT add .bg / .veil divs here. -->
 <body data-bg="interface">
   <main class="wrap">
     <div class="top">
@@ -197,17 +256,68 @@
     </div>
 
     <div class="grid">
-      <section class="panel nav" aria-label="Primary navigation">
-        <a href="world.html"><span class="arrow">&gt;</span>World</a>
-        <a href="system.html"><span class="arrow">&gt;</span>System</a>
-        <a href="subjects.html"><span class="arrow">&gt;</span>Subjects</a>
-        <a href="archive.html"><span class="arrow">&gt;</span>Archive</a>
+      <section class="panel" aria-label="Primary hub">
+        <!-- SYSTEM LINE (behaviour layer) -->
+        <div class="sysline" id="sysline" aria-live="polite">
+          <span class="tag">System line:</span>
+          <span class="val" id="sysMsg">INITIALIZING</span>
+          <span class="sep">•</span>
+          <span class="tag">Node:</span>
+          <span class="val">INTERFACE</span>
+        </div>
+
+        <!-- HUB ROUTING (only hub in Variant A) -->
+        <div class="navrows" aria-label="Routing">
+          <a class="navrow" href="world.html">
+            <div class="navleft">
+              <span class="arrow">&gt;</span>
+              <span class="node">World</span>
+            </div>
+            <div class="meta">
+              <span class="pill ok">Visible</span>
+              <span class="pill dim">Partial</span>
+            </div>
+          </a>
+
+          <a class="navrow" href="system.html">
+            <div class="navleft">
+              <span class="arrow">&gt;</span>
+              <span class="node">System</span>
+            </div>
+            <div class="meta">
+              <span class="pill ok">Online</span>
+              <span class="pill dim">Read-only</span>
+            </div>
+          </a>
+
+          <a class="navrow" href="subjects.html">
+            <div class="navleft">
+              <span class="arrow">&gt;</span>
+              <span class="node">Subjects</span>
+            </div>
+            <div class="meta">
+              <span class="pill ok">Indexed</span>
+              <span class="pill dim">Limited</span>
+            </div>
+          </a>
+
+          <a class="navrow" href="archive.html">
+            <div class="navleft">
+              <span class="arrow">&gt;</span>
+              <span class="node">Archive</span>
+            </div>
+            <div class="meta">
+              <span class="pill ok">Persistent</span>
+              <span class="pill dim">No deletion</span>
+            </div>
+          </a>
+        </div>
 
         <div class="status" aria-label="Session status">
-          <div><span class="k">Access Status:</span> <span class="v">Active</span></div>
-          <div><span class="k">Clearance:</span> <span class="v">Blue</span></div>
-          <div><span class="k">Visibility:</span> <span class="v">Partial</span></div>
-          <div><span class="k">Errors:</span> <span class="v">0</span></div>
+          <div><span class="k">Access Status:</span> <span class="v" id="stAccess">Active</span></div>
+          <div><span class="k">Clearance:</span> <span class="v" id="stClear">Blue</span></div>
+          <div><span class="k">Visibility:</span> <span class="v" id="stVis">Partial</span></div>
+          <div><span class="k">Errors:</span> <span class="v" id="stErr">0</span></div>
         </div>
 
         <div class="tools">
@@ -223,12 +333,13 @@
         <p class="ttl">State Monitor</p>
         <button class="btn" type="button" id="closeMonitor">Close</button>
       </div>
-      <div class="mon">
+      <div class="mon" id="monOut">
         <div><span class="dim">Session Node:</span> <span class="ok">INTERFACE</span></div>
         <div><span class="dim">Channel:</span> <span class="ok">Stable</span></div>
         <div><span class="dim">Latency:</span> <span class="ok">Nominal</span></div>
         <div><span class="dim">Visibility Lock:</span> <span class="ok">Engaged</span></div>
-        <div><span class="dim">Anomalies:</span> <span class="ok">None detected</span></div>
+        <div><span class="dim">Anomalies:</span> <span class="ok" id="monAnom">None detected</span></div>
+        <div><span class="dim">System line:</span> <span class="ok" id="monLine">—</span></div>
         <div><span class="dim">Note:</span> <span class="ok">Monitor is a mode. Not a destination.</span></div>
       </div>
     </div>
@@ -236,38 +347,89 @@
 
   <script>
     (function(){
+      const body = document.body;
+
+      // UI
+      const sysMsg = document.getElementById('sysMsg');
+      const stAccess = document.getElementById('stAccess');
+      const stClear  = document.getElementById('stClear');
+      const stVis    = document.getElementById('stVis');
+      const stErr    = document.getElementById('stErr');
+
+      // Monitor
       const monitor = document.getElementById('monitor');
       const openBtn = document.getElementById('openMonitor');
       const closeBtn = document.getElementById('closeMonitor');
+      const monAnom = document.getElementById('monAnom');
+      const monLine = document.getElementById('monLine');
 
-      function openMonitor(){
-        monitor.classList.add('is-open');
-      }
-      function closeMonitor(){
-        monitor.classList.remove('is-open');
-      }
+      function openMonitor(){ monitor.classList.add('is-open'); }
+      function closeMonitor(){ monitor.classList.remove('is-open'); }
 
       openBtn.addEventListener('click', openMonitor);
       closeBtn.addEventListener('click', closeMonitor);
-      monitor.addEventListener('click', (e) => {
-        if (e.target === monitor) closeMonitor();
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMonitor();
+      monitor.addEventListener('click', (e) => { if(e.target === monitor) closeMonitor(); });
+      document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeMonitor(); });
+
+      // Behaviour layer (subtle)
+      const lines = [
+        "CHANNEL STABLE",
+        "ROUTING READY",
+        "VISIBILITY LOCK ENGAGED",
+        "NOISE FLOOR NOMINAL",
+        "TRACE ACTIVE",
+        "INDEX PARTIAL"
+      ];
+
+      function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+      // Rare minor anomaly (kept subtle; does not change routing)
+      function computeAnomaly(){
+        // ~15% chance per load
+        const roll = Math.random();
+        if(roll < 0.15) return "Minor anomaly: timing drift";
+        return "None detected";
+      }
+
+      function applyBootState(){
+        stAccess.textContent = "Active";
+        stClear.textContent  = "Blue";
+        stVis.textContent    = "Partial";
+        stErr.textContent    = "0";
+
+        const anom = computeAnomaly();
+        monAnom.textContent = anom;
+
+        if(anom !== "None detected"){
+          sysMsg.textContent = "MINOR ANOMALY LOGGED";
+          monLine.textContent = "MINOR ANOMALY LOGGED";
+          // Keep errors at 0 (this is narrative, not a real fault)
+        }else{
+          const l = pick(lines);
+          sysMsg.textContent = l;
+          monLine.textContent = l;
+        }
+
+        // small follow-up update (single)
+        window.setTimeout(() => {
+          const l2 = pick(lines);
+          sysMsg.textContent = l2;
+          monLine.textContent = l2;
+        }, 1800);
+      }
+
+      // BFCache / style re-apply
+      window.addEventListener('pageshow', function(){
+        const v = body.getAttribute('data-bg') || 'interface';
+        body.setAttribute('data-bg', '');
+        void body.offsetHeight;
+        body.setAttribute('data-bg', v);
+
+        applyBootState();
       });
 
-      /*
-        Critical fix for “back navigation shows old look / no banner”:
-        Some browsers restore the page from BFCache with stale computed styles.
-        We force Banner Protocol re-application on pageshow (including persisted).
-      */
-      window.addEventListener('pageshow', function(){
-        const body = document.body;
-        const v = body.getAttribute('data-bg') || 'interface';
-        body.setAttribute('data-bg', '');        // drop
-        void body.offsetHeight;                  // reflow
-        body.setAttribute('data-bg', v);         // re-apply
-      });
+      // initial
+      applyBootState();
     })();
   </script>
 </body>
