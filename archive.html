@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!-- archive.html | Human Limit — Archive (canonical, Variant A: no global nav) -->
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Archive</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>HUMAN LIMIT — Archive</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,34 +13,147 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    .copy{
-      display:block;
-      font-size:15px;
-      line-height:26px;
-      max-width:720px;
-      color:var(--dim);
+    :root{
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 1080px;
+    }
+
+    html,body{height:100%}
+    body{
       margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      position:relative;
+      max-width:var(--max);
+      margin:0 auto;
+      padding:58px var(--pad) 64px;
+    }
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding-bottom:16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:18px;
+    }
+
+    .back{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border-bottom:1px solid transparent;
+      padding-bottom:2px;
+      white-space:nowrap;
+    }
+    .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
+
+    h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      line-height:1.2;
+      text-align:center;
+      flex:1;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 16px;
+    }
+
+    .meta{
+      display:grid;
+      gap:6px;
+      font-size:12px;
+      color:rgba(255,255,255,.62);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      line-height:1.6;
+    }
+
+    .copy{
+      margin:12px 0 0;
+      font-size:13px;
+      line-height:1.8;
+      color:rgba(255,255,255,.72);
+      max-width:760px;
+    }
+
+    .tools{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.30);
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
+
+    @media (max-width: 680px){
+      .wrap{ padding:52px 16px 60px; }
     }
   </style>
 </head>
 
-<body data-bg="archive"> 
+<body data-bg="archive">
+  <main class="wrap">
+    <div class="top">
+      <a class="back" href="interface.html">← Back</a>
+      <h1>HUMAN LIMIT — ARCHIVE</h1>
+      <span aria-hidden="true" style="width:60px"></span>
+    </div>
 
-  <div class="title">
-    SYSTEM ARCHIVE<span class="cursor">_</span>
-  </div>
+    <div class="grid">
+      <section class="panel" aria-label="System archive">
+        <div class="meta">
+          <div>Record status: Persistent</div>
+          <div>Deletion rights: Not granted</div>
+        </div>
 
-  <div class="dim2">RECORD STATUS: PERSISTENT</div>
-  <div class="dim2">DELETION RIGHTS: NOT GRANTED</div>
+        <p class="copy">
+          All subject states remain stored.<br>
+          Absence does not imply deletion.
+        </p>
 
-  <div class="spacer-1"></div>
-
-  <div class="copy">All subject states remain stored.<br>
-Absence does not imply deletion.</div>
-
-  <div class="spacer-2"></div>
-
-  <a class="node" href="interface.html">RETURN TO SYSTEM</a>
-
+        <div class="tools">
+          <a class="btn" href="interface.html">Return</a>
+        </div>
+      </section>
+    </div>
+  </main>
 </body>
 </html>
