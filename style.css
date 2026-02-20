@@ -248,6 +248,7 @@ body[data-bg="world"]::before     { background-image: var(--hl-bg-world); }
 body[data-bg="system"]::before    { background-image: var(--hl-bg-system); }
 body[data-bg="subjects"]::before  { background-image: var(--hl-bg-subjects); }
 body[data-bg="archive"]::before   { background-image: var(--hl-bg-archive); }
+body[data-bg="hlaccess"]::before { background-image: var(--hl-bg-hlaccess); }
 
 /* Prevent legacy fullscreen layers from hiding banners */
 body[data-bg] .bg,
