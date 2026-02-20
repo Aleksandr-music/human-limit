@@ -1,4 +1,4 @@
-<!-- system.html | Human Limit — System (canonical, Banner Protocol compatible) -->
+<!-- system.html | Human Limit — System (content page, Variant A) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -92,6 +92,7 @@
     @media (max-width: 720px){
       .row{ grid-template-columns: 1fr; }
     }
+
     .k{ color:var(--faint); }
     .v{ color:var(--hard); letter-spacing:.06em; text-transform:uppercase; }
 
@@ -111,30 +112,17 @@
       gap:10px;
       align-items:flex-start;
     }
+
     .arrow{ color:var(--faint); }
 
-    .tools{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
+    .footer{
       margin-top:14px;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      color:var(--hard);
-      background:rgba(0,0,0,.30);
-      text-decoration:none;
-      letter-spacing:.08em;
-      text-transform:uppercase;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:12px;
       font-size:12px;
-      cursor:pointer;
+      color:rgba(255,255,255,.58);
+      line-height:1.7;
     }
-    .btn:hover{ border-color: rgba(255,255,255,.28); }
   </style>
 </head>
 
@@ -163,10 +151,9 @@
           <div class="item"><span class="arrow">&gt;</span><span>World parameters: partial visibility</span></div>
         </div>
 
-        <div class="tools">
-          <a class="btn" href="world.html">World</a>
-          <a class="btn" href="subjects.html">Subjects</a>
-          <a class="btn" href="archive.html">Archive</a>
+        <div class="footer" aria-label="Note">
+          Navigation is centralized in <span class="v" style="font-size:12px">System Interface</span>.
+          This node exposes state only. No routing permissions.
         </div>
       </section>
     </div>
