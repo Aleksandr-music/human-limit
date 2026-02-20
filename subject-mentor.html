@@ -1,4 +1,4 @@
-<!-- subject-mentor.html | Human Limit — Subject File (BOB / JOHN) | canonical + deduped structured dossier -->
+<!-- subject-mentor.html | Human Limit — Subject File (BOB) | canonical + deduped structured dossier -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,6 +136,19 @@
       display:block;
       border:1px solid rgba(255,255,255,.10);
     }
+    .portrait .ph{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      border-radius:12px;
+      border:1px dashed rgba(255,255,255,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--faint);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
     .portrait .note{
       margin-top:10px;
       font-size:12px;
@@ -156,10 +169,9 @@
       color:var(--hard);
     }
 
-    /* IMPORTANT: one-column layout (as in your Alex file) */
     .grid2{
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr; /* keep single column to avoid “left/right block split” */
       gap:14px;
     }
 
@@ -192,6 +204,36 @@
     }
     .bullets li{ margin:8px 0; }
     .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
 
     .footer{
       margin-top:30px;
@@ -234,15 +276,15 @@
         <h1 class="h1">SUBJECT: BOB</h1>
 
         <p class="tagline">
-          Low-signature operator profile. Identity narrative accepted by intake. Persistent analytical anomalies observed.
+          Declared identity accepted. Persistent anomaly density. Influence footprint exceeds system visibility.
         </p>
 
         <div class="meta">
           <dl>
-            <dt>System ID</dt><dd>S-UK-C-00XXXX</dd>
-            <dt>Registry Name</dt><dd>BOB</dd>
-            <dt>Native / True Identity</dt><dd>JOHN</dd>
-            <dt>Classification Tier</dt><dd>Strategic Asset</dd>
+            <dt>System ID</dt><dd>S-AT-C-003474</dd>
+            <dt>Registry Name (System)</dt><dd>BOB</dd>
+            <dt>Native Identifier</dt><dd>JOHN</dd>
+            <dt>Classification Tier</dt><dd>Primary Subject</dd>
             <dt>Current Status</dt><dd>Active</dd>
             <dt>System Visibility</dt><dd>Partial</dd>
             <dt>Clearance Requirement</dt><dd>Black</dd>
@@ -251,15 +293,18 @@
       </div>
 
       <div class="portrait">
-        <img src="images/subjects/hl-subject-mentor-01.png" alt="SUBJECT: BOB">
+        <!-- Replace with your actual file when ready -->
+        <!-- Example: <img src="images/subjects/hl-subject-mentor-01.png" alt="SUBJECT: BOB"> -->
+        <div class="ph">Portrait Placeholder</div>
+
         <div class="note">
           <span class="muted">Note:</span>
           Registry image locked.
         </div>
       </div>
-    </div> <!-- .hero CLOSED (critical) -->
+    </div>
 
-    <!-- 1. Aggregated Dossier -->
+    <!-- 1. Aggregated Dossier (canonical overview; primary index) -->
     <section class="section" id="aggregated-dossier">
       <h2>1. Aggregated Dossier</h2>
 
@@ -270,64 +315,205 @@
             <dt>Observation Flag</dt><dd>Active</dd>
             <dt>System Visibility</dt><dd>Partial</dd>
             <dt>Containment Condition</dt><dd>Situational</dd>
-            <dt>External Influence</dt><dd>Limited</dd>
+            <dt>External Influence</dt><dd>Minimal</dd>
           </dl>
         </div>
 
         <div class="card">
           <dl class="kv">
-            <dt>Declared Cover Role</dt><dd>Cook (Accepted)</dd>
-            <dt>Behavioral Signature</dt><dd>Nonstandard</dd>
-            <dt>Cognitive Profile</dt><dd>High-Structure</dd>
-            <dt>Leadership Posture</dt><dd>Suppressed</dd>
-            <dt>Decision Influence</dt><dd>High (Indirect)</dd>
+            <dt>Identification Certainty</dt><dd>Formally Confirmed</dd>
+            <dt>Identity Stability</dt><dd>Stable</dd>
+            <dt>Behavioral Predictability</dt><dd>Artificially Elevated</dd>
+            <dt>Reaction Reliability</dt><dd>High</dd>
+            <dt>Decision Architecture</dt><dd>Analytical</dd>
           </dl>
         </div>
 
         <div class="card">
           <dl class="kv">
-            <dt>Age Appearance</dt><dd>~55</dd>
-            <dt>Physical Efficiency</dt><dd>Elevated</dd>
-            <dt>Movement Economy</dt><dd>Exceptional</dd>
-            <dt>Stress Response</dt><dd>Controlled</dd>
-            <dt>Intervention Threshold</dt><dd>High</dd>
+            <dt>Cognitive Coherence</dt><dd>High</dd>
+            <dt>Emotional Interference</dt><dd>Negligible</dd>
+            <dt>Stress Resistance</dt><dd>Exceptional</dd>
+            <dt>Deviation Risk</dt><dd>Structurally Present</dd>
+            <dt>Anomaly Density</dt><dd>Elevated</dd>
           </dl>
         </div>
 
         <div class="card">
           <dl class="kv">
-            <dt>Identity Certainty (System)</dt><dd>Confirmed</dd>
-            <dt>Anomaly Density</dt><dd>High</dd>
-            <dt>Predictability Index</dt><dd>Low</dd>
-            <dt>Deviation Risk</dt><dd>Present</dd>
-            <dt>System Significance</dt><dd>Critical</dd>
+            <dt>Classification Confidence</dt><dd>Degraded</dd>
+            <dt>Interpretation Stability</dt><dd>Uncertain</dd>
+            <dt>Strategic Value</dt><dd>High</dd>
+            <dt>Control Feasibility</dt><dd>Conditional</dd>
+            <dt>Ignorability</dt><dd>Impossible</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 2. Profile Notes -->
-    <section class="section" id="profile-notes">
-      <h2>2. Profile Notes</h2>
+    <!-- 2. Registry Status (DE-DUPED) -->
+    <section class="section" id="registry-status">
+      <h2>2. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Declared Civil Identity</dt><dd>Cook (Accepted)</dd>
+            <dt>Role Recognition</dt><dd>Passive / Background Entity</dd>
+            <dt>Dominance Projection</dt><dd>Suppressed</dd>
+            <dt>Authority Interaction</dt><dd>Neutralized</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Observed Influence</dt><dd>Disproportionate</dd>
+            <dt>Hierarchy Response</dt><dd>Distorted</dd>
+            <dt>Behavioral Footprint</dt><dd>Low-Noise</dd>
+            <dt>Monitoring State</dt><dd>Persistent Passive</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Risk & Stability Profile (DE-DUPED) -->
+    <section class="section" id="risk-stability">
+      <h2>3. Risk &amp; Stability Profile</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Threat Potential</dt><dd>Latent / Context-Triggered</dd>
+            <dt>Predictability Index</dt><dd>Misleadingly High</dd>
+            <dt>Compliance Signature</dt><dd>Simulated</dd>
+            <dt>Instability Probability</dt><dd>Low</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Engagement</dt><dd>Selective</dd>
+            <dt>Escalation Pattern</dt><dd>Controlled</dd>
+            <dt>Failure Mode</dt><dd>Strategic Withdrawal</dd>
+            <dt>Exposure Sensitivity</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Behavioral Observations (unique narrative; keep) -->
+    <section class="section" id="observations">
+      <h2>4. Behavioral Observations</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Subject selected registry name “BOB” as a personal anchor linked to a deceased son.</li>
-          <li>Cover narrative maintained intentionally; social visibility minimized on purpose.</li>
-          <li>System detects high-level field discipline inconsistent with declared civilian role.</li>
-          <li>Influence pattern: pushes group leadership outward while retaining decisive weight privately.</li>
-          <li>Primary motivation vector: locate and recover missing son embedded within system structure.</li>
+          <li>Deliberately minimizes visible dominance markers; avoids status-seeking.</li>
+          <li>Demonstrates consistent suppression of leadership projection.</li>
+          <li>Maintains neutral posture toward authority despite capability signals.</li>
+          <li>Exhibits stable restraint under provocation; no impulsive reactions observed.</li>
+          <li>Behavior strongly indicates intentional misrepresentation of functional capacity.</li>
+          <li>Social positioning appears premeditated and sustained across cycles.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 3. Restrictions -->
-    <section class="section" id="clearance">
-      <h2>3. Clearance Restrictions</h2>
+    <!-- 5. Recorded Patterns (unique specifics; keep) -->
+    <section class="section" id="patterns">
+      <h2>5. Recorded Patterns</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Authority Negotiation</dt><dd>Controlled Compliance</dd>
+            <dt>Leadership Expression</dt><dd>Indirect / Delegated</dd>
+            <dt>Conflict Strategy</dt><dd>Avoidance unless required</dd>
+            <dt>Risk Processing</dt><dd>Long-Horizon</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Group Influence Vector</dt><dd>High despite passive posture</dd>
+            <dt>Trust Formation</dt><dd>Highly Selective</dd>
+            <dt>Behavioral Variability</dt><dd>Intentionally Narrow</dd>
+            <dt>Energy Expenditure Model</dt><dd>Economical / Precision-Based</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Known Incidents / Records (unique; keep) -->
+    <section class="section" id="incidents">
+      <h2>6. Known Incidents / Records</h2>
+      <div class="card">
+        <div class="incident">
+          <div class="code">HL-IR-02-03</div>
+          <div class="detail">
+            Motor response exceeded declared age profile under controlled observation window.
+            <div class="row">Severity: Moderate · Outcome: Logged · Note: Interpreted as statistical irregularity</div>
+          </div>
+        </div>
+
+        <div class="incident">
+          <div class="code">HL-IR-02-09</div>
+          <div class="detail">
+            Physical efficiency exceeded cohort averages with minimal fatigue signature.
+            <div class="row">Severity: High · Outcome: Reinterpreted · Note: No corrective action authorized</div>
+          </div>
+        </div>
+
+        <div class="incident">
+          <div class="code">HL-IR-02-14</div>
+          <div class="detail">
+            Influence over group decision chain detected without formal authority markers.
+            <div class="row">Severity: Moderate · Outcome: Unresolved · Note: Causal model remains unstable</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. System Remarks (keep) -->
+    <section class="section" id="system-remarks">
+      <h2>7. System Remarks</h2>
       <div class="card">
         <ul class="bullets">
-          <li>True service record is sealed (Black only).</li>
-          <li>Operational link to missing embedded asset is compartmentalized.</li>
-          <li>Cross-subject influence mapping requires Black escalation.</li>
+          <li>Declared identity remains internally consistent; behavioral signatures remain inconsistent.</li>
+          <li>No overt threat behavior detected; latent capability is statistically supported.</li>
+          <li>Prediction models produce stable-looking outputs with degraded causal validity.</li>
+          <li>Direct intervention is not recommended without anomaly convergence.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. Data Integrity (unique; keep) -->
+    <section class="section" id="data-integrity">
+      <h2>8. Data Integrity</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Record Completeness</dt><dd>Fragmented</dd>
+            <dt>Signal Consistency</dt><dd>High</dd>
+            <dt>Cross-Reference Stability</dt><dd>Unstable</dd>
+            <dt>Interpretation Drift</dt><dd>Increasing</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Identity Mapping</dt><dd>Formally Stable</dd>
+            <dt>Anomaly Recurrence</dt><dd>Repeated</dd>
+            <dt>Model Confidence</dt><dd>Reduced</dd>
+            <dt>Redaction Ratio</dt><dd>Moderate</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Clearance Restrictions (unique; keep) -->
+    <section class="section" id="clearance">
+      <h2>9. Clearance Restrictions</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Origin chain records restricted.</li>
+          <li>Pre-system history requires Tier Black authorization.</li>
+          <li>Behavioral deviation analysis restricted.</li>
+          <li>Cross-subject correlation matrices locked.</li>
         </ul>
       </div>
     </section>
