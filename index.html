@@ -1,16 +1,17 @@
-<!-- index.html | Human Limit — Entry Point (temporary) -->
+<!-- index.html | Multi-Project Entry Node -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>HUMAN LIMIT — Entry Point</title>
+  <title>SYSTEM ENTRY NODE</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <!-- ВАЖНО: добавляем версию, чтобы убить кэш стилей -->
+  <link rel="stylesheet" href="style.css?v=4">
 
   <style>
     :root{
@@ -46,14 +47,15 @@
       margin:0 0 12px;
       text-transform:uppercase;
       letter-spacing:.14em;
-      font-size:22px;
+      font-size:18px;
       line-height:1.2;
     }
     .tag{
       margin:0 0 18px;
       color:var(--muted);
-      font-size:14px;
+      font-size:13px;
       letter-spacing:.02em;
+      line-height:1.6;
     }
     .cta{
       display:flex;
@@ -76,9 +78,10 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       font-size:12px;
-      min-width:220px;
+      min-width:260px;
     }
     .btn:hover{ border-color: rgba(255,255,255,.28); }
+
     .hint{
       margin-top:16px;
       color:rgba(255,255,255,.52);
@@ -110,20 +113,22 @@
 
   <main class="wrap">
     <section class="panel">
-      <h1 class="title">HUMAN LIMIT</h1>
-      <p class="tag">The world is already decided.</p>
+      <h1 class="title">SYSTEM ENTRY NODE</h1>
+      <p class="tag">Select project. Access requires valid entry code.</p>
 
       <div class="cta">
-        <a class="btn" href="hl-access.html">Access System</a>
+        <a class="btn" href="hl-access.html">HUMAN LIMIT</a>
+        <a class="btn" href="bv-access.html">BLACK VEIL</a>
+        <a class="btn" href="sg-access.html">SILENT GRID</a>
       </div>
 
       <div class="hint">
-        Entry point does not reveal content.<br>
-        It initiates access.
+        Index does not expose content.<br>
+        It routes to project-specific access gates.
       </div>
 
       <div class="row">
-        <div class="mono">ENTRY POINT</div>
+        <div class="mono">ENTRY NODE</div>
         <div>Visibility: <span class="mono">Restricted</span></div>
       </div>
     </section>
