@@ -77,6 +77,7 @@
       const url = new URL("access.html", window.location.href);
       url.searchParams.set("need", required);
       url.searchParams.set("from", location.pathname.split("/").pop() || "page");
+url.searchParams.set("next", location.href);
       location.replace(url.toString());
     }
   }
