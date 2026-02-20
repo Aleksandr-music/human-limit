@@ -1,13 +1,13 @@
-<!-- subject-mentor.html | Human Limit — Subject File (standalone page) -->
+<!-- subject-mentor.html | Human Limit — Subject File (BOB / JOHN) | canonical + deduped structured dossier -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SUBJECT: BOB — Internal Registry</title>
 
-<meta name="hl-requires" content="BLACK">
-
-  <title>SUBJECT: MENTOR — Internal Registry</title>
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,7 +83,6 @@
       align-items:start;
       margin:18px 0 22px;
     }
-
     @media (max-width: 880px){
       .hero{ grid-template-columns:1fr; }
     }
@@ -95,6 +94,13 @@
       text-transform:uppercase;
       color:var(--hard);
       margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
     }
 
     .meta{
@@ -122,18 +128,13 @@
       padding:12px;
       overflow:hidden;
     }
-    .portrait .ph{
+    .portrait img{
       width:100%;
       aspect-ratio: 4 / 5;
+      object-fit: cover;
       border-radius:12px;
-      border:1px dashed rgba(255,255,255,.18);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:var(--faint);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
     }
     .portrait .note{
       margin-top:10px;
@@ -155,13 +156,11 @@
       color:var(--hard);
     }
 
+    /* IMPORTANT: one-column layout (as in your Alex file) */
     .grid2{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap:14px;
-    }
-    @media (max-width: 880px){
-      .grid2{ grid-template-columns:1fr; }
     }
 
     .card{
@@ -194,36 +193,6 @@
     .bullets li{ margin:8px 0; }
     .muted{ color:var(--muted); }
 
-    .incident{
-      display:grid;
-      grid-template-columns: 160px 1fr;
-      gap:10px 14px;
-      padding:12px 0;
-      border-top:1px solid rgba(255,255,255,.10);
-    }
-    .incident:first-child{ border-top:0; padding-top:0; }
-    @media (max-width: 520px){
-      .incident{ grid-template-columns: 1fr; }
-    }
-    .incident .code{
-      font-size:12px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color:var(--hard);
-      opacity:.95;
-    }
-    .incident .detail{
-      font-size:13px;
-      line-height:1.5;
-      color:var(--hard);
-    }
-    .incident .detail .row{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.02em;
-    }
-
     .footer{
       margin-top:30px;
       padding-top:16px;
@@ -246,7 +215,7 @@
   </style>
 </head>
 
-<body>
+<body data-bg="subjects">
   <div class="wrap">
 
     <div class="topbar">
@@ -262,175 +231,103 @@
 
     <div class="hero">
       <div>
-        <h1 class="h1">SUBJECT: MENTOR</h1>
+        <h1 class="h1">SUBJECT: BOB</h1>
+
+        <p class="tagline">
+          Low-signature operator profile. Identity narrative accepted by intake. Persistent analytical anomalies observed.
+        </p>
 
         <div class="meta">
           <dl>
-            <dt>System ID</dt><dd>S-AT-C-003474</dd>
-            <dt>Classification Tier</dt><dd>Mentor / Asset</dd>
-            <dt>Current Status</dt><dd>REDACTED</dd>
-            <dt>System Visibility</dt><dd>Restricted</dd>
-            <dt>Clearance Requirement</dt><dd>Amber</dd>
+            <dt>System ID</dt><dd>S-UK-C-00XXXX</dd>
+            <dt>Registry Name</dt><dd>BOB</dd>
+            <dt>Native / True Identity</dt><dd>JOHN</dd>
+            <dt>Classification Tier</dt><dd>Strategic Asset</dd>
+            <dt>Current Status</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
+            <dt>Clearance Requirement</dt><dd>Black</dd>
           </dl>
         </div>
       </div>
 
       <div class="portrait">
-        <!-- Replace with canonical portrait if/when you add it -->
-        <div class="ph">Portrait Placeholder</div>
+        <img src="images/subjects/hl-subject-mentor-01.png" alt="SUBJECT: BOB">
         <div class="note">
-          <span class="muted">Note:</span> Canonical portrait only. No stylization drift. No composite images. Maintain utilitarian look.
+          <span class="muted">Note:</span>
+          Registry image locked.
         </div>
       </div>
-    </div>
+    </div> <!-- .hero CLOSED (critical) -->
 
-    <!-- 1. Registry Status -->
-    <section class="section" id="registry-status">
-      <h2>1. Registry Status</h2>
+    <!-- 1. Aggregated Dossier -->
+    <section class="section" id="aggregated-dossier">
+      <h2>1. Aggregated Dossier</h2>
+
       <div class="grid2">
         <div class="card">
           <dl class="kv">
             <dt>Operational State</dt><dd>Stable</dd>
-            <dt>Tracking Flag</dt><dd>Active</dd>
-            <dt>Control Condition</dt><dd>Independent</dd>
-            <dt>Containment</dt><dd>Situational</dd>
+            <dt>Observation Flag</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
+            <dt>Containment Condition</dt><dd>Situational</dd>
+            <dt>External Influence</dt><dd>Limited</dd>
           </dl>
         </div>
-        <div class="card">
-          <dl class="kv">
-            <dt>Exposure Tolerance</dt><dd>Very High</dd>
-            <dt>Authority Response</dt><dd>Dominant</dd>
-            <dt>Group Integration</dt><dd>High</dd>
-            <dt>Deviation Alert</dt><dd>Minimal</dd>
-          </dl>
-        </div>
-      </div>
-    </section>
 
-    <!-- 2. Risk & Stability Profile -->
-    <section class="section" id="risk-stability">
-      <h2>2. Risk &amp; Stability Profile</h2>
-      <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Threat Potential</dt><dd>Critical</dd>
-            <dt>Predictability Index</dt><dd>High</dd>
-            <dt>Compliance Drift</dt><dd>Low</dd>
+            <dt>Declared Cover Role</dt><dd>Cook (Accepted)</dd>
+            <dt>Behavioral Signature</dt><dd>Nonstandard</dd>
+            <dt>Cognitive Profile</dt><dd>High-Structure</dd>
+            <dt>Leadership Posture</dt><dd>Suppressed</dd>
+            <dt>Decision Influence</dt><dd>High (Indirect)</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Age Appearance</dt><dd>~55</dd>
+            <dt>Physical Efficiency</dt><dd>Elevated</dd>
+            <dt>Movement Economy</dt><dd>Exceptional</dd>
             <dt>Stress Response</dt><dd>Controlled</dd>
+            <dt>Intervention Threshold</dt><dd>High</dd>
           </dl>
         </div>
+
         <div class="card">
           <dl class="kv">
-            <dt>Conflict Escalation</dt><dd>High (Decisive)</dd>
-            <dt>Strategic Capacity</dt><dd>Very High</dd>
-            <dt>Operational Use</dt><dd>Field Mentor</dd>
-            <dt>Failure Mode</dt><dd>None observed</dd>
+            <dt>Identity Certainty (System)</dt><dd>Confirmed</dd>
+            <dt>Anomaly Density</dt><dd>High</dd>
+            <dt>Predictability Index</dt><dd>Low</dd>
+            <dt>Deviation Risk</dt><dd>Present</dd>
+            <dt>System Significance</dt><dd>Critical</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 3. Behavioral Observations -->
-    <section class="section" id="observations">
-      <h2>3. Behavioral Observations</h2>
+    <!-- 2. Profile Notes -->
+    <section class="section" id="profile-notes">
+      <h2>2. Profile Notes</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Maintains controlled presence; speaks minimally and only when action is required.</li>
-          <li>Operates with a long-horizon objective; prioritizes outcome over emotion.</li>
-          <li>Executes close-range elimination without escalation noise.</li>
-          <li>Establishes hierarchy through competence; does not seek approval.</li>
-          <li>Demonstrates strong protective bias toward selected assets once bonded.</li>
+          <li>Subject selected registry name “BOB” as a personal anchor linked to a deceased son.</li>
+          <li>Cover narrative maintained intentionally; social visibility minimized on purpose.</li>
+          <li>System detects high-level field discipline inconsistent with declared civilian role.</li>
+          <li>Influence pattern: pushes group leadership outward while retaining decisive weight privately.</li>
+          <li>Primary motivation vector: locate and recover missing son embedded within system structure.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 4. Recorded Patterns -->
-    <section class="section" id="patterns">
-      <h2>4. Recorded Patterns</h2>
-      <div class="grid2">
-        <div class="card">
-          <dl class="kv">
-            <dt>Conflict Engagement Pattern</dt><dd>Direct / Final</dd>
-            <dt>Decision Timing Model</dt><dd>Immediate Commit</dd>
-            <dt>Trust Formation Tendency</dt><dd>Selective</dd>
-            <dt>Authority Negotiation</dt><dd>Override</dd>
-          </dl>
-        </div>
-        <div class="card">
-          <dl class="kv">
-            <dt>Group Utility</dt><dd>Stability Core</dd>
-            <dt>Influence Vector</dt><dd>Command</dd>
-            <dt>Aggression Trigger Points</dt><dd>Threat to Mission</dd>
-            <dt>Persistence Under Fatigue</dt><dd>Exceptional</dd>
-          </dl>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5. Known Incidents / Records -->
-    <section class="section" id="incidents">
-      <h2>5. Known Incidents / Records</h2>
-      <div class="card">
-        <div class="incident">
-          <div class="code">HL-IR-55-01</div>
-          <div class="detail">
-            Confirmed elimination of hostile guard during night cycle without alert escalation.
-            <div class="row">Severity: Critical · Outcome: Successful · Note: Silent neutralization capability</div>
-          </div>
-        </div>
-        <div class="incident">
-          <div class="code">HL-IR-55-03</div>
-          <div class="detail">
-            Coordinated internal countermeasure following betrayal indicator; maintained system plausibility.
-            <div class="row">Severity: High · Outcome: Contained · Note: Operational deception under constraint</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. System Remarks -->
-    <section class="section" id="system-remarks">
-      <h2>6. System Remarks</h2>
-      <div class="card">
-        <ul class="bullets">
-          <li>Identity is intentionally fragmented; official record chain is suppressed.</li>
-          <li>Subject functions as a mentor-class stabilizer under forced conditions.</li>
-          <li>High operational competence increases systemic leverage risk.</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- 7. Data Integrity -->
-    <section class="section" id="data-integrity">
-      <h2>7. Data Integrity</h2>
-      <div class="grid2">
-        <div class="card">
-          <dl class="kv">
-            <dt>Record Completeness</dt><dd>Redacted</dd>
-            <dt>Source Reliability</dt><dd>High</dd>
-            <dt>Cross-Reference Density</dt><dd>High</dd>
-            <dt>Temporal Coverage</dt><dd>Partial Window</dd>
-          </dl>
-        </div>
-        <div class="card">
-          <dl class="kv">
-            <dt>Identity Certainty</dt><dd>Suppressed</dd>
-            <dt>Alias Stability</dt><dd>Stable</dd>
-            <dt>Context Drift Risk</dt><dd>Low</dd>
-            <dt>Redaction Ratio</dt><dd>High</dd>
-          </dl>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. Clearance Restrictions -->
+    <!-- 3. Restrictions -->
     <section class="section" id="clearance">
-      <h2>8. Clearance Restrictions</h2>
+      <h2>3. Clearance Restrictions</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Origin chain and service history require Tier Black authorization.</li>
-          <li>Operational network linkage requires Tier Black escalation.</li>
-          <li>Training protocol archive requires Tier Amber authorization.</li>
+          <li>True service record is sealed (Black only).</li>
+          <li>Operational link to missing embedded asset is compartmentalized.</li>
+          <li>Cross-subject influence mapping requires Black escalation.</li>
         </ul>
       </div>
     </section>
@@ -445,6 +342,7 @@
     </div>
 
   </div>
-<script src="hl-core.js"></script>
+
+  <script src="hl-core.js"></script>
 </body>
 </html>
