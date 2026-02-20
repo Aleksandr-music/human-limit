@@ -1,1 +1,460 @@
+<!-- subject-template.html | Human Limit — Subject File Template (DO NOT LINK) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SUBJECT: [NAME] — Internal Registry (TEMPLATE)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Minimal local layout helpers (kept neutral; main visuals live in style.css) */
+    :root{
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.9);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+      margin:18px 0 22px;
+    }
+
+    @media (max-width: 880px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    .h1{
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--hard);
+      margin:0 0 10px;
+    }
+
+    .meta{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+    }
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .meta dl{ grid-template-columns: 1fr; }
+    }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
+
+    .portrait{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .portrait .ph{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      border-radius:12px;
+      border:1px dashed rgba(255,255,255,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--faint);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit:cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .portrait .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 880px){
+      .grid2{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color:var(--hard);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .bullets li{ margin:8px 0; }
+    .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
+
+    .footer{
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Gateway</a>
+        <span class="muted">/</span>
+        <a href="subjects.html">Subjects</a>
+        <span class="muted">/</span>
+        <span>Subject File</span>
+      </div>
+      <div class="badge">Internal Registry</div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1 class="h1">SUBJECT: [NAME]</h1>
+
+        <div class="meta">
+          <dl>
+            <dt>System ID</dt><dd>[HL-IR-XX-C]</dd>
+            <dt>Classification Tier</dt><dd>[TIER / ROLE]</dd>
+            <dt>Current Status</dt><dd>[ACTIVE / REDACTED / UNKNOWN]</dd>
+            <dt>System Visibility</dt><dd>[PARTIAL / RESTRICTED]</dd>
+            <dt>Clearance Requirement</dt><dd>[BLUE / AMBER / BLACK]</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="portrait">
+        <!-- Replace placeholder with the canonical portrait file when ready -->
+        <!-- Example:
+        <img src="images/subjects/hl-subject-[name]-01.jpg" alt="SUBJECT: [NAME]">
+        -->
+        <div class="ph">Portrait Placeholder</div>
+
+        <div class="note">
+          <span class="muted">Note:</span> Canonical portrait only. Maintain facial geometry. No stylization drift. No composite images.
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Registry Status -->
+    <section class="section" id="registry-status">
+      <h2>1. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational State</dt><dd>[STABLE / DEGRADED]</dd>
+            <dt>Tracking Flag</dt><dd>[ACTIVE / PASSIVE]</dd>
+            <dt>Control Condition</dt><dd>[INDIRECT / DIRECT / INDEPENDENT]</dd>
+            <dt>Containment</dt><dd>[SITUATIONAL / CONTROLLED]</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Exposure Tolerance</dt><dd>[LOW / MEDIUM / HIGH]</dd>
+            <dt>Authority Response</dt><dd>[RESTRAINED / DOMINANT]</dd>
+            <dt>Group Integration</dt><dd>[LOW / MEDIUM / HIGH]</dd>
+            <dt>Deviation Alert</dt><dd>[NONE / WATCHLISTED]</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Risk & Stability Profile -->
+    <section class="section" id="risk-stability">
+      <h2>2. Risk &amp; Stability Profile</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Threat Potential</dt><dd>[LOW / HIGH / CRITICAL]</dd>
+            <dt>Predictability Index</dt><dd>[LOW / MEDIUM / HIGH]</dd>
+            <dt>Compliance Drift</dt><dd>[LOW / GROWING]</dd>
+            <dt>Stress Response</dt><dd>[CONTROLLED / VOLATILE]</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Escalation</dt><dd>[LOW / MODERATE / HIGH]</dd>
+            <dt>Strategic Capacity</dt><dd>[LOW / HIGH]</dd>
+            <dt>Operational Use</dt><dd>[ROLE]</dd>
+            <dt>Failure Mode</dt><dd>[PRIMARY RISK]</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Behavioral Observations -->
+    <section class="section" id="observations">
+      <h2>3. Behavioral Observations</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>[Observation 1]</li>
+          <li>[Observation 2]</li>
+          <li>[Observation 3]</li>
+          <li>[Observation 4]</li>
+          <li>[Observation 5]</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. Recorded Patterns -->
+    <section class="section" id="patterns">
+      <h2>4. Recorded Patterns</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Engagement Pattern</dt><dd>[PATTERN]</dd>
+            <dt>Decision Timing Model</dt><dd>[MODEL]</dd>
+            <dt>Trust Formation Tendency</dt><dd>[TENDENCY]</dd>
+            <dt>Authority Negotiation</dt><dd>[MODEL]</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Group Utility</dt><dd>[UTILITY]</dd>
+            <dt>Influence Vector</dt><dd>[VECTOR]</dd>
+            <dt>Aggression Trigger Points</dt><dd>[TRIGGERS]</dd>
+            <dt>Persistence Under Fatigue</dt><dd>[LOW / HIGH]</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Known Incidents / Records -->
+    <section class="section" id="incidents">
+      <h2>5. Known Incidents / Records</h2>
+      <div class="card">
+        <div class="incident">
+          <div class="code">[HL-IR-XX-01]</div>
+          <div class="detail">
+            [Incident description]
+            <div class="row">Severity: [LEVEL] · Outcome: [RESULT] · Note: [SYSTEM NOTE]</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">[HL-IR-XX-02]</div>
+          <div class="detail">
+            [Incident description]
+            <div class="row">Severity: [LEVEL] · Outcome: [RESULT] · Note: [SYSTEM NOTE]</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. System Remarks -->
+    <section class="section" id="system-remarks">
+      <h2>6. System Remarks</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>[Remark 1]</li>
+          <li>[Remark 2]</li>
+          <li>[Remark 3]</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 7. Data Integrity -->
+    <section class="section" id="data-integrity">
+      <h2>7. Data Integrity</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Record Completeness</dt><dd>[PARTIAL / FRAGMENTED / REDACTED]</dd>
+            <dt>Source Reliability</dt><dd>[LOW / MIXED / HIGH]</dd>
+            <dt>Cross-Reference Density</dt><dd>[LOW / HIGH]</dd>
+            <dt>Temporal Coverage</dt><dd>[PARTIAL WINDOW]</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identity Certainty</dt><dd>[CONFIRMED / SUPPRESSED]</dd>
+            <dt>Alias Stability</dt><dd>[STABLE / UNSTABLE]</dd>
+            <dt>Context Drift Risk</dt><dd>[LOW / MEDIUM / HIGH]</dd>
+            <dt>Redaction Ratio</dt><dd>[LOW / NOTICEABLE / HIGH]</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Clearance Restrictions -->
+    <section class="section" id="clearance">
+      <h2>8. Clearance Restrictions</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>[Restriction 1]</li>
+          <li>[Restriction 2]</li>
+          <li>[Restriction 3]</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
+      <div>
+        <a href="subjects.html">Return to Subjects</a>
+        <span class="muted"> · </span>
+        <a href="system.html">Open System Registry</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
 
