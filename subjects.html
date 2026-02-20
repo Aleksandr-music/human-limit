@@ -1,230 +1,349 @@
-<!DOCTYPE html>
+<!-- subjects.html | Human Limit — Subjects (canonical, Variant A: no global nav) -->
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Subjects</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>HUMAN LIMIT — Subjects</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
-.block{
-  margin:0;
-  font-size:14px;
-  line-height:26px;
-  color:var(--dim);
-  white-space:pre-line;
-}
+  <link rel="stylesheet" href="style.css">
 
-/* SUBJECT ROWS: выглядят как текст, но кликабельны */
-.subject-row{
-  display:block;
-  color:var(--dim);
-  cursor:pointer;
-  text-decoration:none;
-  user-select:none;
-}
-.subject-row:hover{
-  color:var(--fg);
-  text-decoration:none; /* важно: не как ссылка */
-}
-.subject-row:focus{
-  outline:none;
-  color:var(--fg);
-}
+  <style>
+    :root{
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 1080px;
+    }
 
-/* terminal commands */
-.cmd{
-  color:var(--fg);
-  cursor:pointer;
-  user-select:none;
-}
-.cmd:hover{ text-decoration:underline; }
-.cmd::before{
-  content:"> ";
-  color:var(--fg);
-}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
 
-.hint{
-  margin-top:10px;
-  color:var(--dim2);
-  font-size:13px;
-  min-height:18px;
-  white-space:pre-line;
-}
+    .wrap{
+      position:relative;
+      max-width:var(--max);
+      margin:0 auto;
+      padding:58px var(--pad) 64px;
+    }
 
-/* lock UI during lookup */
-.is-busy .subject-row,
-.is-busy .cmd,
-.is-busy .node{
-  pointer-events:none;
-  opacity:0.7;
-}
-</style>
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding-bottom:16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:18px;
+    }
+
+    .back{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border-bottom:1px solid transparent;
+      padding-bottom:2px;
+      white-space:nowrap;
+    }
+    .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
+
+    h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      line-height:1.2;
+      text-align:center;
+      flex:1;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 16px;
+    }
+
+    .block{
+      margin:0;
+      font-size:12px;
+      line-height:1.8;
+      color:rgba(255,255,255,.72);
+      white-space:pre-line;
+    }
+
+    /* SUBJECT ROWS: text-like, but interactive */
+    .subject-row{
+      display:block;
+      margin-top:10px;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid transparent;
+      color:rgba(255,255,255,.72);
+      cursor:pointer;
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      user-select:none;
+    }
+    .subject-row:hover{
+      color:var(--hard);
+      border-color: rgba(255,255,255,.22);
+      background: rgba(0,0,0,.18);
+    }
+    .subject-row:focus{
+      outline:none;
+      color:var(--hard);
+      border-color: rgba(255,255,255,.28);
+      background: rgba(0,0,0,.22);
+    }
+    .subject-row:active{ opacity:.70; }
+
+    /* terminal commands */
+    .cmd{
+      display:inline-block;
+      margin-top:10px;
+      color:var(--hard);
+      cursor:pointer;
+      user-select:none;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .cmd:hover{ text-decoration:underline; }
+    .cmd::before{
+      content:"> ";
+      color:var(--hard);
+    }
+
+    .hint{
+      margin-top:12px;
+      color:rgba(255,255,255,.56);
+      font-size:12px;
+      min-height:22px;
+      white-space:pre-line;
+      line-height:1.7;
+    }
+
+    /* lock UI during lookup */
+    .is-busy .subject-row,
+    .is-busy .cmd{
+      pointer-events:none;
+      opacity:0.70;
+    }
+
+    .tools{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.30);
+      text-decoration:none;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
+
+    @media (max-width: 680px){
+      .wrap{ padding:52px 16px 60px; }
+    }
+  </style>
 </head>
 
-<body data-bg="subjects"> 
+<body data-bg="subjects">
+  <main class="wrap">
+    <div class="top">
+      <a class="back" href="interface.html">← Back</a>
+      <h1>HUMAN LIMIT — SUBJECTS</h1>
+      <span aria-hidden="true" style="width:60px"></span>
+    </div>
 
-<div class="title">SUBJECT DATABASE<span class="cursor">_</span></div>
+    <div class="grid">
+      <section class="panel" aria-label="Subject database">
+        <p class="block">INDEX STATUS: PARTIAL
+ACCESS LEVEL: LIMITED</p>
 
-<div class="block">INDEX STATUS: PARTIAL
-ACCESS LEVEL: LIMITED</div>
+        <div class="spacer-1" aria-hidden="true"></div>
 
-<div class="spacer-1"></div>
+        <!-- SUBJECT LIST -->
+        <a class="subject-row"
+           href="subject-alex.html"
+           data-target="subject-alex.html"
+           data-id="S-001"
+           data-name="ALEX"
+           data-status="ACTIVE"
+           data-access="LIMITED">S-001  ALEX    ACTIVE    LIMITED</a>
 
-<!-- SUBJECT LIST -->
-<a class="subject-row"
-   href="subject-alex.html"
-   data-target="subject-alex.html"
-   data-id="S-001"
-   data-name="ALEX"
-   data-status="ACTIVE"
-   data-access="LIMITED">S-001  ALEX    ACTIVE    LIMITED</a>
+        <a class="subject-row"
+           href="subject-mentor.html"
+           data-target="subject-mentor.html"
+           data-id="S-002"
+           data-name="MENTOR"
+           data-status="REDACTED"
+           data-access="DENIED">S-002  MENTOR  REDACTED  DENIED</a>
 
-<a class="subject-row"
-   href="subject-mentor.html"
-   data-target="subject-mentor.html"
-   data-id="S-002"
-   data-name="MENTOR"
-   data-status="REDACTED"
-   data-access="DENIED">S-002  MENTOR  REDACTED  DENIED</a>
+        <a class="subject-row"
+           href="subject-kiwi.html"
+           data-target="subject-kiwi.html"
+           data-id="S-003"
+           data-name="KIWI"
+           data-status="ACTIVE"
+           data-access="LIMITED">S-003  KIWI    ACTIVE    LIMITED</a>
 
-<a class="subject-row"
-   href="subject-kiwi.html"
-   data-target="subject-kiwi.html"
-   data-id="S-003"
-   data-name="KIWI"
-   data-status="ACTIVE"
-   data-access="LIMITED">S-003  KIWI    ACTIVE    LIMITED</a>
+        <a class="subject-row"
+           href="subject-french.html"
+           data-target="subject-french.html"
+           data-id="S-004"
+           data-name="FRENCH"
+           data-status="ACTIVE"
+           data-access="LIMITED">S-004  FRENCH  ACTIVE    LIMITED</a>
 
-<a class="subject-row"
-   href="subject-french.html"
-   data-target="subject-french.html"
-   data-id="S-004"
-   data-name="FRENCH"
-   data-status="ACTIVE"
-   data-access="LIMITED">S-004  FRENCH  ACTIVE    LIMITED</a>
+        <div class="spacer-2" aria-hidden="true"></div>
 
-<div class="spacer-2"></div>
+        <p class="block">QUERY VIA TERMINAL</p>
+        <div class="cmd" data-cmd="subjects:list">subjects:list</div><br>
+        <div class="cmd" data-cmd="subject alex">subject alex</div><br>
+        <div class="cmd" data-cmd="subject mentor">subject mentor</div>
 
-<div class="block">QUERY VIA TERMINAL</div>
-<div class="cmd" data-cmd="subjects:list">subjects:list</div>
-<div class="cmd" data-cmd="subject alex">subject alex</div>
-<div class="cmd" data-cmd="subject mentor">subject mentor</div>
+        <div id="hint" class="hint" aria-live="polite"></div>
 
-<div id="hint" class="hint"></div>
+        <div class="tools">
+          <a class="btn" href="interface.html">Return</a>
+        </div>
+      </section>
+    </div>
+  </main>
 
-<div class="spacer-2"></div>
+  <script>
+    (function(){
+      const hint = document.getElementById("hint");
+      const body = document.body;
 
-<a class="node" href="interface.html">RETURN TO SYSTEM</a>
-
-<script>
-(function(){
-  const hint = document.getElementById("hint");
-  const body = document.body;
-
-  function setBusy(state){
-    body.classList.toggle("is-busy", !!state);
-  }
-
-  function clearHint(){
-    hint.textContent = "";
-  }
-
-  function writeLine(line){
-    // line может быть "" для пустой строки
-    hint.textContent += (line === "" ? "\n" : ("> " + line + "\n"));
-  }
-
-  function sleep(ms){
-    return new Promise(r => setTimeout(r, ms));
-  }
-
-  async function copy(text){
-    try{
-      await navigator.clipboard.writeText(text);
-      hint.textContent = "> COPIED: " + text;
-    }catch(e){
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      try{
-        document.execCommand("copy");
-        hint.textContent = "> COPIED: " + text;
-      }catch(_){
-        hint.textContent = "> COPY FAILED";
+      function setBusy(state){
+        body.classList.toggle("is-busy", !!state);
       }
-      document.body.removeChild(ta);
-    }
-    setTimeout(() => { hint.textContent = ""; }, 1200);
-  }
 
-  async function lookupAndGo(opts){
-    setBusy(true);
-    clearHint();
+      function clearHint(){
+        hint.textContent = "";
+      }
 
-    const steps = [
-      `QUERY: ${opts.id} ${opts.name}`,
-      `STATUS: ${opts.status}`,
-      `ACCESS: ${opts.access}`,
-      "",
-      "INDEX: SEARCHING…",
-      "TRACE: OPEN NODES…",
-      "DECRYPT: STREAM…",
-      "OPEN RECORD…"
-    ];
+      function writeLine(line){
+        hint.textContent += (line === "" ? "\n" : ("> " + line + "\n"));
+      }
 
-    for(let i=0;i<steps.length;i++){
-      writeLine(steps[i]);
-      await sleep(i < 3 ? 170 : 220);
-    }
+      function sleep(ms){
+        return new Promise(r => setTimeout(r, ms));
+      }
 
-    await sleep(220);
-    window.location.href = opts.target;
-  }
+      async function copy(text){
+        try{
+          await navigator.clipboard.writeText(text);
+          hint.textContent = "> COPIED: " + text;
+        }catch(e){
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try{
+            document.execCommand("copy");
+            hint.textContent = "> COPIED: " + text;
+          }catch(_){
+            hint.textContent = "> COPY FAILED";
+          }
+          document.body.removeChild(ta);
+        }
+        setTimeout(() => { hint.textContent = ""; }, 1200);
+      }
 
-  // commands -> copy
-  document.querySelectorAll(".cmd").forEach(el => {
-    el.addEventListener("click", () => copy(el.dataset.cmd || ""));
-  });
+      async function lookupAndGo(opts){
+        setBusy(true);
+        clearHint();
 
-  // subject click -> lookup -> redirect
-  document.querySelectorAll(".subject-row").forEach(a => {
-    // keyboard support (Enter/Space)
-    a.setAttribute("role", "button");
-    a.setAttribute("tabindex", "0");
+        const steps = [
+          `QUERY: ${opts.id} ${opts.name}`,
+          `STATUS: ${opts.status}`,
+          `ACCESS: ${opts.access}`,
+          "",
+          "INDEX: SEARCHING…",
+          "TRACE: OPEN NODES…",
+          "DECRYPT: STREAM…",
+          "OPEN RECORD…"
+        ];
 
-    a.addEventListener("click", (e) => {
-      e.preventDefault();
-      const target = a.dataset.target || a.getAttribute("href");
+        for(let i=0;i<steps.length;i++){
+          writeLine(steps[i]);
+          await sleep(i < 3 ? 170 : 220);
+        }
 
-      lookupAndGo({
-        target,
-        id: a.dataset.id || "S-???",
-        name: a.dataset.name || "UNKNOWN",
-        status: a.dataset.status || "UNKNOWN",
-        access: a.dataset.access || "UNKNOWN"
+        await sleep(220);
+        window.location.href = opts.target;
+      }
+
+      // commands -> copy
+      document.querySelectorAll(".cmd").forEach(el => {
+        el.addEventListener("click", () => copy(el.dataset.cmd || ""));
       });
-    });
 
-    a.addEventListener("keydown", (e) => {
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        a.click();
-      }
-    });
-  });
+      // subject click -> lookup -> redirect
+      document.querySelectorAll(".subject-row").forEach(a => {
+        a.setAttribute("role", "button");
+        a.setAttribute("tabindex", "0");
 
-  // safety: если вернулись назад — снимаем busy
-  window.addEventListener("pageshow", () => setBusy(false));
-})();
-</script>
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const target = a.dataset.target || a.getAttribute("href");
 
+          lookupAndGo({
+            target,
+            id: a.dataset.id || "S-???",
+            name: a.dataset.name || "UNKNOWN",
+            status: a.dataset.status || "UNKNOWN",
+            access: a.dataset.access || "UNKNOWN"
+          });
+        });
+
+        a.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            a.click();
+          }
+        });
+      });
+
+      window.addEventListener("pageshow", () => setBusy(false));
+    })();
+  </script>
 </body>
 </html>
