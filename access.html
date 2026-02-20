@@ -1,10 +1,10 @@
-<!-- access.html | Human Limit — Initialization -->
+<!-- access.html | Human Limit — Access -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>INITIALIZING — Human Limit</title>
+  <title>HUMAN LIMIT — Access</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,15 +12,17 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- page requires nothing; it's the entry to clearance -->
   <style>
     :root{
-      --bg: url("images/png/hl-access-corridor.png?v=1");
       --line: rgba(255,255,255,.14);
       --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
       --hard: rgba(255,255,255,.92);
       --pad: 22px;
       --max: 980px;
     }
+
     html,body{height:100%}
     body{
       margin:0;
@@ -29,16 +31,7 @@
       background:#000;
       overflow-x:hidden;
     }
-    .bg{
-      position:fixed; inset:0;
-      background:
-        radial-gradient(1100px 680px at 50% 45%, rgba(255,255,255,.10), rgba(0,0,0,.88)),
-        linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,.92)),
-        var(--bg);
-      background-size:cover;
-      background-position:center;
-      filter:saturate(.9);
-    }
+
     .wrap{
       position:relative;
       min-height:100%;
@@ -47,88 +40,201 @@
       justify-content:center;
       padding:70px var(--pad);
     }
+
     .panel{
       width:min(var(--max), 100%);
       border:1px solid var(--line);
       border-radius:18px;
-      padding:26px 22px;
-      backdrop-filter: blur(6px);
-      background:rgba(0,0,0,.32);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+      padding:22px 18px;
     }
-    .status{
-      margin:0 0 10px;
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding-bottom:14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:16px;
+    }
+
+    .back{
       color:var(--muted);
-      font-size:13px;
-      letter-spacing:.02em;
-    }
-    .line{
-      margin:0;
-      font-size:14px;
+      text-decoration:none;
+      font-size:12px;
       letter-spacing:.08em;
       text-transform:uppercase;
+      border-bottom:1px solid transparent;
+      padding-bottom:2px;
+      white-space:nowrap;
     }
-    .log{
-      margin-top:14px;
-      border-top:1px solid rgba(255,255,255,.10);
-      padding-top:14px;
-      color:rgba(255,255,255,.62);
+    .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
+
+    h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      line-height:1.2;
+      text-align:center;
+      flex:1;
+    }
+
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
       font-size:12px;
-      line-height:1.6;
+      line-height:1.55;
     }
-    .cta{
+
+    .field{
+      margin-top:16px;
       display:flex;
-      gap:12px;
+      gap:10px;
       flex-wrap:wrap;
-      margin-top:18px;
+      align-items:center;
     }
+
+    .code{
+      flex:1;
+      min-width:240px;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.30);
+      color:var(--hard);
+      font-size:14px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      outline:none;
+    }
+    .code::placeholder{
+      color:rgba(255,255,255,.35);
+      letter-spacing:.10em;
+    }
+    .code:focus{ border-color: rgba(255,255,255,.28); }
+
     .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:12px 14px;
+      padding:14px 14px;
       border-radius:14px;
       border:1px solid var(--line);
       color:var(--hard);
-      background:rgba(0,0,0,.35);
+      background:rgba(0,0,0,.30);
       text-decoration:none;
       letter-spacing:.08em;
       text-transform:uppercase;
       font-size:12px;
-      min-width:220px;
+      cursor:pointer;
+      min-width:200px;
     }
     .btn:hover{ border-color: rgba(255,255,255,.28); }
-    .muted{ color:var(--muted); }
+
+    .status{
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:12px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+      white-space:pre-line;
+      min-height:46px;
+    }
+
+    .ok{ color: rgba(255,255,255,.92); }
+    .bad{ color: rgba(255,255,255,.72); }
+    .k{ color: var(--faint); }
   </style>
 </head>
-<body>
-  <div class="bg" aria-hidden="true"></div>
 
+<body data-bg="access">
   <main class="wrap">
-    <section class="panel">
-      <p class="status">Initializing session…</p>
-      <p class="line">Resolving parameters…</p>
-
-      <div class="log" aria-live="polite">
-        <div><span class="muted">Step 01:</span> Establishing channel</div>
-        <div><span class="muted">Step 02:</span> Synchronizing layers</div>
-        <div><span class="muted">Step 03:</span> Setting visibility constraints</div>
-        <div><span class="muted">Step 04:</span> Loading interface node</div>
+    <section class="panel" aria-label="Access panel">
+      <div class="top">
+        <a class="back" href="index.html">← Back</a>
+        <h1>HUMAN LIMIT — ACCESS</h1>
+        <span aria-hidden="true" style="width:60px"></span>
       </div>
 
-      <div class="cta">
-        <a class="btn" href="interface.html">Continue</a>
-        <a class="btn" href="index.html">Return to Entry Point</a>
+      <div class="hint" id="reqHint">
+        Enter 6-digit access code.<br>
+        Clearance state persists on this device.
       </div>
+
+      <div class="field">
+        <input class="code" id="code" inputmode="numeric" autocomplete="one-time-code"
+               maxlength="6" placeholder="______" aria-label="Access code">
+        <button class="btn" id="enter" type="button">Authorize</button>
+      </div>
+
+      <div class="status" id="status" aria-live="polite"></div>
     </section>
   </main>
 
+  <script src="hl-core.js"></script>
   <script>
-    // Auto-proceed to interface (keeps the “system” feel).
-    // If user interacts, we don't block; "Continue" is always available.
-    setTimeout(() => {
-      if (!document.hidden) window.location.href = "interface.html";
-    }, 2200);
+    (function(){
+      const codeEl = document.getElementById("code");
+      const btn = document.getElementById("enter");
+      const status = document.getElementById("status");
+      const reqHint = document.getElementById("reqHint");
+
+      const url = new URL(window.location.href);
+      const need = (url.searchParams.get("need") || "").toUpperCase();
+      const from = (url.searchParams.get("from") || "").toUpperCase();
+
+      if (need) {
+        reqHint.textContent =
+          "Access denied.\n" +
+          "Required clearance: " + need + "\n" +
+          (from ? ("Requested page: " + from) : "");
+      }
+
+      function write(lines, ok){
+        status.textContent = lines.join("\n");
+        status.className = "status " + (ok ? "ok" : "bad");
+      }
+
+      function normalizeDigits(s){
+        return String(s || "").replace(/\D/g, "").slice(0, 6);
+      }
+
+      function onInput(){
+        const v = normalizeDigits(codeEl.value);
+        codeEl.value = v;
+      }
+
+      function authorize(){
+        const v = normalizeDigits(codeEl.value);
+        if (v.length !== 6){
+          write(["> INVALID LENGTH", "> EXPECTED: 6 DIGITS"], false);
+          return;
+        }
+
+        const level = window.HL.matchCode(v);
+        if (!level){
+          write(["> CODE REJECTED", "> CLEARANCE: NONE"], false);
+          return;
+        }
+
+        const set = window.HL.setClearance(level);
+        write(["> AUTHORIZED", "> CLEARANCE: " + set, "> ROUTE: INTERFACE"], true);
+
+        setTimeout(() => { window.location.href = "interface.html"; }, 450);
+      }
+
+      codeEl.addEventListener("input", onInput);
+      btn.addEventListener("click", authorize);
+      codeEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") authorize();
+      });
+
+      // show current state
+      write(["> CURRENT CLEARANCE: " + window.HL.getClearance()], true);
+      codeEl.focus();
+    })();
   </script>
 </body>
 </html>
