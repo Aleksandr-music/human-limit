@@ -85,6 +85,7 @@
       color:var(--muted);
       font-size:12px;
       line-height:1.55;
+      white-space:pre-line;
     }
 
     .field{
@@ -153,13 +154,13 @@
   <main class="wrap">
     <section class="panel" aria-label="Access panel">
       <div class="top">
-        <a class="back" href="index.html">← Back</a>
+        <a class="back" id="backLink" href="index.html">← Back</a>
         <h1>HUMAN LIMIT — ACCESS</h1>
         <span aria-hidden="true" style="width:60px"></span>
       </div>
 
       <div class="hint" id="reqHint">
-        Enter 6-digit access code.<br>
+        Enter 6-digit access code.
         Clearance state persists on this device.
       </div>
 
@@ -180,17 +181,58 @@
       const btn = document.getElementById("enter");
       const status = document.getElementById("status");
       const reqHint = document.getElementById("reqHint");
+      const backLink = document.getElementById("backLink");
 
       const url = new URL(window.location.href);
-      const need = (url.searchParams.get("need") || "").toUpperCase();
-      const from = (url.searchParams.get("from") || "").toUpperCase();
+
+      // NEW (canonical): supports ?requires=BLACK&next=<encoded_url>
+      const requires = (url.searchParams.get("requires") || "").toUpperCase();
+      const next = url.searchParams.get("next") || "";
+
+      // BACKWARD COMPAT: supports old ?need=BLACK&from=SUBJECT-ALEX.HTML
+      const needLegacy = (url.searchParams.get("need") || "").toUpperCase();
+      const fromLegacy = (url.searchParams.get("from") || "").toUpperCase();
+
+      const need = requires || needLegacy;
+
+      function safeDecode(s){
+        try { return decodeURIComponent(String(s || "")); } catch(e){ return String(s || ""); }
+      }
+
+      function safeNextHref(){
+        // if next exists, use it; otherwise fallback to Subjects (better than Index for this flow)
+        const decoded = safeDecode(next);
+        return decoded ? decoded : "subjects.html";
+      }
+
+      function requestedLabel(){
+        // Prefer next -> extract filename; else legacy "from"
+        const decoded = safeDecode(next);
+        if (decoded){
+          try{
+            const u = new URL(decoded, window.location.href);
+            const name = (u.pathname.split("/").pop() || "").toUpperCase();
+            return name || "UNKNOWN";
+          }catch(e){
+            // if next is not a full URL, treat as path
+            const p = decoded.split("?")[0].split("#")[0];
+            const name = (p.split("/").pop() || "").toUpperCase();
+            return name || "UNKNOWN";
+          }
+        }
+        return fromLegacy || "";
+      }
 
       if (need) {
+        const req = requestedLabel();
         reqHint.textContent =
           "Access denied.\n" +
           "Required clearance: " + need + "\n" +
-          (from ? ("Requested page: " + from) : "");
+          (req ? ("Requested page: " + req) : "");
       }
+
+      // Update BACK link: if user came here to unlock a target, back should return there
+      backLink.setAttribute("href", safeNextHref());
 
       function write(lines, ok){
         status.textContent = lines.join("\n");
@@ -220,9 +262,19 @@
         }
 
         const set = window.HL.setClearance(level);
-        write(["> AUTHORIZED", "> CLEARANCE: " + set, "> ROUTE: INTERFACE"], true);
 
-        setTimeout(() => { window.location.href = "interface.html"; }, 450);
+        // Decide where to go after auth:
+        // 1) if next is provided -> return to that page
+        // 2) else -> go to interface
+        const go = safeDecode(next) || (needLegacy ? "subjects.html" : "interface.html");
+
+        write([
+          "> AUTHORIZED",
+          "> CLEARANCE: " + set,
+          "> ROUTE: " + (safeDecode(next) ? "RETURN (NEXT)" : "INTERFACE")
+        ], true);
+
+        setTimeout(() => { window.location.href = go; }, 450);
       }
 
       codeEl.addEventListener("input", onInput);
