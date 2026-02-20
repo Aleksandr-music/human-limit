@@ -1,10 +1,10 @@
-<!-- entry.html | SYSTEM ENTRY NODE — Project Router -->
+<!-- index.html | Human Limit — Entry Point (temporary) -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>SYSTEM ENTRY NODE</title>
+  <title>HUMAN LIMIT — Entry Point</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,133 +13,96 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* local layout only (keep visuals in style.css) */
+    :root{
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --hard: rgba(255,255,255,.92);
+      --pad: 22px;
+      --max: 980px;
+    }
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
     .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 64px 0 56px;
+      position:relative;
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:70px var(--pad);
     }
     .panel{
-      padding: 18px 18px;
-      border-radius: 18px;
+      width:min(var(--max), 100%);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:28px 22px;
     }
-    .topline{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:14px;
-    }
-    .kicker{
-      font-size:12px;
-      letter-spacing:.12em;
+    .title{
+      margin:0 0 12px;
       text-transform:uppercase;
-      color:rgba(255,255,255,.72);
-      margin:0 0 6px;
+      letter-spacing:.14em;
+      font-size:22px;
+      line-height:1.2;
     }
-    .h1{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.92);
-      line-height:1.25;
-    }
-    .sub{
-      margin:10px 0 0;
-      color:rgba(255,255,255,.62);
-      font-size:12px;
-      line-height:1.65;
-      max-width: 72ch;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .proj{
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:16px;
-      padding:14px;
-      background: rgba(0,0,0,.18);
-    }
-
-    .proj-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .proj-title{
-      margin:0;
+    .tag{
+      margin:0 0 18px;
+      color:var(--muted);
       font-size:14px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.92);
+      letter-spacing:.02em;
     }
-    .proj-meta{
-      margin-top:8px;
-      display:grid;
-      grid-template-columns: 150px 1fr;
-      gap:6px 12px;
-      font-size:12px;
-      line-height:1.5;
-      color:rgba(255,255,255,.70);
+    .cta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:18px;
     }
-    .proj-meta b{
-      font-weight:600;
-      color:rgba(255,255,255,.86);
-    }
-    .proj-meta span{
-      color:rgba(255,255,255,.62);
-    }
-
-    .enter{
+    .btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      padding:10px 12px;
+      gap:10px;
+      padding:14px 16px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
-      color:rgba(255,255,255,.90);
-      font-size:12px;
-      letter-spacing:.10em;
+      border:1px solid var(--line);
+      color:var(--hard);
+      background:rgba(0,0,0,.35);
+      text-decoration:none;
+      letter-spacing:.08em;
       text-transform:uppercase;
-      cursor:pointer;
-      user-select:none;
-      white-space:nowrap;
+      font-size:12px;
+      min-width:220px;
     }
-    .enter:hover{ border-color: rgba(255,255,255,.30); }
-    .enter:active{ transform: translateY(1px); opacity:.88; }
-
-    .foot{
-      margin-top:14px;
-      padding-top:14px;
-      border-top:1px solid rgba(255,255,255,.14);
-      color:rgba(255,255,255,.58);
-      font-size:11px;
-      letter-spacing:.06em;
+    .btn:hover{ border-color: rgba(255,255,255,.28); }
+    .hint{
+      margin-top:16px;
+      color:rgba(255,255,255,.52);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .row{
       display:flex;
+      gap:12px;
       flex-wrap:wrap;
-      gap:10px 14px;
+      align-items:center;
       justify-content:space-between;
+      border-top:1px solid rgba(255,255,255,.10);
+      margin-top:18px;
+      padding-top:14px;
+      color:rgba(255,255,255,.56);
+      font-size:12px;
+      letter-spacing:.04em;
     }
-
-    @media (max-width:680px){
-      .wrap{ padding: 52px 0 44px; }
-      .proj-meta{ grid-template-columns: 1fr; }
-    }
+    .mono{ letter-spacing:.10em; text-transform:uppercase; }
   </style>
 </head>
 
-<body data-bg="projects">
-
-  <!-- NODE pulse (already styled in style.css after your changes) -->
+<body data-bg="entry">
   <div class="sys-node" aria-hidden="true">
     <span class="dot"></span>
     <span class="label">NODE: ACTIVE</span>
@@ -147,86 +110,23 @@
 
   <main class="wrap">
     <section class="panel">
+      <h1 class="title">HUMAN LIMIT</h1>
+      <p class="tag">The world is already decided.</p>
 
-      <div class="topline">
-        <div>
-          <p class="kicker">Restricted routing layer</p>
-          <h1 class="h1">SYSTEM ENTRY NODE</h1>
-          <p class="sub">
-            Select a project channel. Access codes are isolated per project.
-            Unauthorized attempts are logged automatically.
-          </p>
-        </div>
-        <div class="kicker" style="text-align:right;">
-          Session<br><span style="color:rgba(255,255,255,.9)">ACTIVE</span>
-        </div>
+      <div class="cta">
+        <a class="btn" href="hl-access.html">Access System</a>
       </div>
 
-      <div class="grid">
-
-        <!-- Project 1 -->
-        <div class="proj">
-          <div class="proj-head">
-            <div>
-              <p class="proj-title">HUMAN LIMIT</p>
-              <div class="proj-meta">
-                <b>Channel</b><span>HL / CORE</span>
-                <b>Entry</b><span>index.html</span>
-                <b>Auth</b><span>6-digit code</span>
-              </div>
-            </div>
-            <button class="enter" data-go="index.html">> Enter</button>
-          </div>
-        </div>
-
-        <!-- Project 2 (stub) -->
-        <div class="proj">
-          <div class="proj-head">
-            <div>
-              <p class="proj-title">BLACK VEIL</p>
-              <div class="proj-meta">
-                <b>Channel</b><span>BV / OPS</span>
-                <b>Entry</b><span>bv-access.html</span>
-                <b>Auth</b><span>6-digit code (isolated)</span>
-              </div>
-            </div>
-            <button class="enter" data-go="bv-access.html">> Enter</button>
-          </div>
-        </div>
-
-        <!-- Project 3 (stub) -->
-        <div class="proj">
-          <div class="proj-head">
-            <div>
-              <p class="proj-title">SILENT GRID</p>
-              <div class="proj-meta">
-                <b>Channel</b><span>SG / NETWORK</span>
-                <b>Entry</b><span>sg-access.html</span>
-                <b>Auth</b><span>6-digit code (isolated)</span>
-              </div>
-            </div>
-            <button class="enter" data-go="sg-access.html">> Enter</button>
-          </div>
-        </div>
-
+      <div class="hint">
+        Entry point does not reveal content.<br>
+        It initiates access.
       </div>
 
-      <div class="foot">
-        <div>LOGGING: ENABLED</div>
-        <div>ROUTER: PROJECT-LEVEL AUTH ISOLATION</div>
+      <div class="row">
+        <div class="mono">ENTRY POINT</div>
+        <div>Visibility: <span class="mono">Restricted</span></div>
       </div>
-
     </section>
   </main>
-
-  <script>
-    // simple router
-    document.querySelectorAll('[data-go]').forEach(btn=>{
-      btn.addEventListener('click', () => {
-        const href = btn.getAttribute('data-go');
-        window.location.href = href;
-      });
-    });
-  </script>
 </body>
 </html>
