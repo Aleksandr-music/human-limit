@@ -100,3 +100,60 @@ url.searchParams.set("next", location.href);
     guardPage();
   });
 })();
+/* ===== Consent + Clarity Loader ===== */
+
+(function(){
+
+  const KEY = "hl_consent";
+  const consentBox = document.getElementById("hl-consent");
+  const acceptBtn = document.getElementById("hl-accept");
+  const declineBtn = document.getElementById("hl-decline");
+
+  if (!consentBox || !acceptBtn || !declineBtn) return;
+
+  function hasConsent(){
+    return localStorage.getItem(KEY) === "accepted";
+  }
+
+  function setConsent(value){
+    localStorage.setItem(KEY, value);
+  }
+
+  function show(){
+    consentBox.classList.remove("hidden");
+  }
+
+  function hide(){
+    consentBox.classList.add("hidden");
+  }
+
+  function loadClarity(){
+    if (window.__clarityLoaded) return;
+
+    const s = document.createElement("script");
+    s.src = "https://www.clarity.ms/tag/YOUR_ID_HERE";
+    s.async = true;
+    document.head.appendChild(s);
+
+    window.__clarityLoaded = true;
+  }
+
+  if (!hasConsent()){
+    show();
+  } else {
+    hide();
+    loadClarity();
+  }
+
+  acceptBtn.addEventListener("click", () => {
+    setConsent("accepted");
+    hide();
+    loadClarity();
+  });
+
+  declineBtn.addEventListener("click", () => {
+    setConsent("declined");
+    hide();
+  });
+
+})();
