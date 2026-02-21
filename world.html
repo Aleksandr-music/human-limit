@@ -1,4 +1,4 @@
-<!-- world.html | Human Limit — World -->
+<!-- world.html | Human Limit — World (canonical: 24 cards + 8 partial + 16 redacted auto) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,7 +21,6 @@
     :root{
       --line: rgba(255,255,255,.14);
       --muted: rgba(255,255,255,.68);
-      --faint: rgba(255,255,255,.48);
       --hard: rgba(255,255,255,.92);
       --page-max: 1080px;
       --pad: 20px;
@@ -130,12 +129,26 @@
     }
     .list li{ margin:6px 0; }
 
-    .redacted{
-      color:rgba(255,255,255,.62);
+    /* Mode filter: show/hide real cards */
+    body[data-world-mode="partial"] .card[data-partial="false"]{ display:none; }
+    body[data-world-mode="visible"]  .card[data-partial="false"]{ display:block; }
+    body[data-world-mode="visible"]  .card[data-partial="true"]{ display:block; }
+
+    /* Redacted cards (generated) */
+    .card.redacted{
+      position:relative;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:14px;
+      padding:14px;
+      background:rgba(0,0,0,.18);
+      box-shadow:0 0 0 1px rgba(255,255,255,.04) inset;
     }
-    .redacted .stamp{
+    .card.redacted h2{ color:rgba(255,255,255,.90); }
+    .card.redacted p{ color:rgba(255,255,255,.60); }
+
+    .card.redacted .stamp{
       display:inline-block;
-      margin-top:8px;
+      margin-top:10px;
       padding:6px 10px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
@@ -144,12 +157,6 @@
       font-size:10px;
       color:rgba(255,255,255,.58);
     }
-
-    /* MODE FILTER */
-    body[data-world-mode="visible"] .card[data-mode="redacted"]{ display:none; }
-    body[data-world-mode="partial"] .card[data-mode="visible"]{ display:none; }
-    body[data-world-mode="partial"] .card[data-mode="partial"]{ display:block; }
-    body[data-world-mode="partial"] .card[data-mode="redacted"]{ display:block; }
   </style>
 </head>
 
@@ -168,18 +175,16 @@
         <p class="tagline">Global layer. Projection depends on visibility mode.</p>
       </div>
 
-      <div class="pills" role="tablist" aria-label="Visibility mode">
+      <div class="pills" aria-label="Visibility mode">
         <button class="pill" type="button" data-mode="visible" aria-pressed="false">VISIBLE</button>
         <button class="pill" type="button" data-mode="partial" aria-pressed="true">PARTIAL</button>
       </div>
     </header>
 
-    <section class="grid" aria-label="World cards">
+    <section class="grid" aria-label="World cards" id="worldGrid">
 
-      <!-- PARTIAL set (пример: первые 8 карточек) -->
-      <!-- ЗАМЕНИ ТЕКСТЫ НА ЗАФИКСИРОВАННЫЕ 24 КАРТОЧКИ (ты уже утвердил) -->
-
-      <article class="card" data-mode="partial">
+      <!-- 1 -->
+      <article class="card" data-partial="true">
         <h2>WORLD / OVERVIEW</h2>
         <p>Reality is not defined by perception.
 Structures exist independent of recognition.
@@ -187,7 +192,8 @@ Limits apply regardless of awareness.
 The map is not the system. The system is the map.</p>
       </article>
 
-      <article class="card" data-mode="partial">
+      <!-- 2 -->
+      <article class="card" data-partial="true">
         <h2>WORLD PARAMETERS</h2>
         <ul class="list">
           <li>Coordinate Grid: ACTIVE</li>
@@ -199,84 +205,199 @@ The map is not the system. The system is the map.</p>
         </ul>
       </article>
 
-      <article class="card" data-mode="partial">
+      <!-- 3 -->
+      <article class="card" data-partial="true">
         <h2>GLOBAL TENSION LAYER</h2>
         <p>Tension is not war. It is pressure.
 Pressure creates routes. Routes create markets. Markets create cages.
 Highlighted zones mark friction, influence, and extraction corridors.</p>
       </article>
 
-      <article class="card" data-mode="partial">
+      <!-- 4 -->
+      <article class="card" data-partial="true">
         <h2>OPERATING PRINCIPLES</h2>
         <p>Nothing is random. Nothing is fair.
 Stability is a story told to civilians.
 The system does not protect — it allocates.</p>
       </article>
 
-      <article class="card" data-mode="partial">
-        <h2>NOTES</h2>
+      <!-- 5 -->
+      <article class="card" data-partial="true">
+        <h2>PROJECTION NOTICE</h2>
         <p>Non-indexed regions present.
 Visual projection restricted.
 Layer elevation requires authorization.</p>
       </article>
 
-      <!-- Добавь сюда ещё 3 карточки PARTIAL из твоих 24, чтобы PARTIAL выглядел богаче -->
-      <article class="card" data-mode="partial">
-        <h2>PLACEHOLDER / PARTIAL 06</h2>
-        <p>Replace with approved card text.</p>
+      <!-- 6 -->
+      <article class="card" data-partial="true">
+        <h2>STRUCTURAL LOGIC</h2>
+        <p>Order is enforced through constraint.
+Constraint generates behavior.
+Behavior generates patterns.
+Patterns are mistaken for chance.</p>
       </article>
 
-      <article class="card" data-mode="partial">
-        <h2>PLACEHOLDER / PARTIAL 07</h2>
-        <p>Replace with approved card text.</p>
+      <!-- 7 -->
+      <article class="card" data-partial="true">
+        <h2>PERCEPTION FILTER</h2>
+        <p>Observation does not reveal reality.
+It reveals permitted fragments.
+Noise is natural. Clarity is regulated.
+What is visible is never neutral.</p>
       </article>
 
-      <article class="card" data-mode="partial">
-        <h2>PLACEHOLDER / PARTIAL 08</h2>
-        <p>Replace with approved card text.</p>
+      <!-- 8 -->
+      <article class="card" data-partial="true">
+        <h2>STABILITY MODEL</h2>
+        <p>Equilibrium is temporary.
+Systems resist, then adapt, then overwrite.
+Long periods of calm indicate control, not safety.
+Collapse is rarely accidental.</p>
       </article>
 
-      <!-- REDACTED cards (показываются только в PARTIAL) -->
-      <!-- Количество заглушек = сколько карточек скрыто в PARTIAL -->
-      <article class="card redacted" data-mode="redacted">
-        <h2>DATA REDACTED</h2>
-        <p>Clearance level insufficient.
-Projection collapsed to partial layer.</p>
-        <div class="stamp">REDACTED</div>
+      <!-- 9 -->
+      <article class="card" data-partial="false">
+        <h2>MOVEMENT ECONOMICS</h2>
+        <p>Movement defines value.
+Restricted movement defines power.
+Routes precede conflicts.
+Control precedes routes.</p>
       </article>
 
-      <article class="card redacted" data-mode="redacted">
-        <h2>DATA REDACTED</h2>
-        <p>High-resolution layers require escalation.</p>
-        <div class="stamp">REDACTED</div>
+      <!-- 10 -->
+      <article class="card" data-partial="false">
+        <h2>RISK DISTRIBUTION</h2>
+        <p>Risk is never eliminated.
+It is reassigned, diluted, exported.
+Visible actors absorb invisible decisions.
+Exposure is a structural function.</p>
       </article>
 
-      <article class="card redacted" data-mode="redacted">
-        <h2>DATA REDACTED</h2>
-        <p>Access path withheld.
-Cross-layer references blocked.</p>
-        <div class="stamp">REDACTED</div>
+      <!-- 11 -->
+      <article class="card" data-partial="false">
+        <h2>INFORMATION HIERARCHY</h2>
+        <p>Information is tiered by design.
+Access defines interpretation.
+Incomplete data is operationally sufficient.
+Full context is a privilege state.</p>
       </article>
 
-      <!-- VISIBLE full set (все 24 карточки в полном виде) -->
-      <!-- В VISIBLE режиме показываются ТОЛЬКО карточки data-mode="visible" -->
-      <!-- Здесь вставь все 24 карточки как data-mode="visible". Можно те же тексты, но полные. -->
-
-      <article class="card" data-mode="visible">
-        <h2>CARD 01 / VISIBLE</h2>
-        <p>Replace with approved card #01 (full text).</p>
+      <!-- 12 -->
+      <article class="card" data-partial="false">
+        <h2>SYSTEM INERTIA</h2>
+        <p>Large systems move slowly.
+Slow movement creates the illusion of inevitability.
+Inertia is not weakness.
+It is stored momentum.</p>
       </article>
 
-      <article class="card" data-mode="visible">
-        <h2>CARD 02 / VISIBLE</h2>
-        <p>Replace with approved card #02 (full text).</p>
+      <!-- 13 -->
+      <article class="card" data-partial="false">
+        <h2>CONTROL SURFACE</h2>
+        <p>Control is rarely visible.
+Interfaces suggest choice while constraining outcome.
+Freedom of action is bounded by design.
+Permission is mistaken for autonomy.</p>
       </article>
 
-      <!-- ... продолжай до CARD 24 / VISIBLE ... -->
+      <!-- 14 -->
+      <article class="card" data-partial="false">
+        <h2>CAUSAL DENSITY</h2>
+        <p>Events are dense with hidden dependencies.
+Single causes are narrative artifacts.
+Outcomes emerge from layered constraints.
+Correlation is the mask of structure.</p>
+      </article>
 
-      <article class="card" data-mode="visible">
-        <h2>CARD 24 / VISIBLE</h2>
-        <p>Replace with approved card #24 (full text).</p>
+      <!-- 15 -->
+      <article class="card" data-partial="false">
+        <h2>ADAPTATION PRESSURE</h2>
+        <p>Systems reward alignment, not resistance.
+Deviation triggers correction vectors.
+Adaptation is survival under constraint.
+Identity erodes before structure does.</p>
+      </article>
+
+      <!-- 16 -->
+      <article class="card" data-partial="false">
+        <h2>TEMPORAL ASYMMETRY</h2>
+        <p>Timing defines advantage.
+Delayed response reshapes responsibility.
+Acceleration destabilizes weaker nodes.
+Latency is a weaponized variable.</p>
+      </article>
+
+      <!-- 17 -->
+      <article class="card" data-partial="false">
+        <h2>RESOLUTION LIMITS</h2>
+        <p>Resolution is not a property of data.
+It is a property of access.
+Detail increases with authority state.
+Opacity is deliberate, not technical.</p>
+      </article>
+
+      <!-- 18 -->
+      <article class="card" data-partial="false">
+        <h2>OBSERVATION FIELD</h2>
+        <p>Observation alters trajectories without contact.
+Awareness modifies compliance patterns.
+Visibility is itself an intervention layer.
+Unseen monitoring preserves structural purity.</p>
+      </article>
+
+      <!-- 19 -->
+      <article class="card" data-partial="false">
+        <h2>STABILITY FICTION</h2>
+        <p>Stability is statistically curated turbulence.
+Continuity exists only within tolerances.
+Equilibrium is an operational narrative.
+Collapse begins as parameter drift.</p>
+      </article>
+
+      <!-- 20 -->
+      <article class="card" data-partial="false">
+        <h2>AUTHORITY GRADIENT</h2>
+        <p>Authority propagates through asymmetry.
+Higher layers redefine lower truths.
+Consensus is not validation.
+Hierarchy precedes interpretation.</p>
+      </article>
+
+      <!-- 21 -->
+      <article class="card" data-partial="false">
+        <h2>SIGNAL vs NOISE</h2>
+        <p>Noise is signal without context.
+Signal is noise with authorization.
+Meaning depends on decoding rights.
+Silence may contain maximum data.</p>
+      </article>
+
+      <!-- 22 -->
+      <article class="card" data-partial="false">
+        <h2>CONSTRAINT ECONOMY</h2>
+        <p>Constraints generate behavioral markets.
+Scarcity amplifies compliance efficiency.
+Choice density decreases under pressure.
+Optimization replaces intention.</p>
+      </article>
+
+      <!-- 23 -->
+      <article class="card" data-partial="false">
+        <h2>IDENTITY MODEL</h2>
+        <p>Identity is a mutable system construct.
+Persistence is conditional, not inherent.
+Labels outlive biological carriers.
+Mismatch does not imply error.</p>
+      </article>
+
+      <!-- 24 -->
+      <article class="card" data-partial="false">
+        <h2>TERMINAL CONDITION</h2>
+        <p>Termination is a state transition, not an end.
+Archived entities retain systemic influence.
+Removal reshapes surrounding vectors.
+Nothing fully exits the model.</p>
       </article>
 
     </section>
@@ -286,18 +407,39 @@ Cross-layer references blocked.</p>
     (function(){
       const MODE_KEY = "HL_WORLD_MODE";
       const pills = Array.from(document.querySelectorAll(".pill[data-mode]"));
-
-      function getClearance(){
-        try { return (window.HL && window.HL.getClearance) ? window.HL.getClearance() : "NONE"; }
-        catch(e){ return "NONE"; }
-      }
+      const grid = document.getElementById("worldGrid");
 
       function readMode(){
         const saved = (localStorage.getItem(MODE_KEY) || "").toLowerCase();
-        if (saved === "visible" || saved === "partial") return saved;
+        return (saved === "visible" || saved === "partial") ? saved : "partial";
+      }
 
-        // default: NONE => PARTIAL, otherwise VISIBLE
-        return (getClearance() === "NONE") ? "partial" : "visible";
+      function syncRedacted(mode){
+        if (!grid) return;
+
+        // remove previously generated redacted
+        grid.querySelectorAll('[data-gen="redacted"]').forEach(el => el.remove());
+
+        if (mode !== "partial") return;
+
+        const total = grid.querySelectorAll('.card:not([data-gen])').length; // 24
+        const partial = grid.querySelectorAll('.card[data-partial="true"]').length; // 8
+        const need = Math.max(0, total - partial); // 16
+
+        for (let i = 0; i < need; i++){
+          const a = document.createElement("article");
+          a.className = "card redacted";
+          a.setAttribute("data-gen", "redacted");
+
+          a.innerHTML = `
+            <h2>DATA REDACTED</h2>
+            <p>Clearance level insufficient.
+Projection collapsed to partial layer.</p>
+            <div class="stamp">REDACTED</div>
+          `;
+
+          grid.appendChild(a);
+        }
       }
 
       function applyMode(mode){
@@ -309,6 +451,8 @@ Cross-layer references blocked.</p>
           const on = btn.getAttribute("data-mode") === m;
           btn.setAttribute("aria-pressed", on ? "true" : "false");
         });
+
+        syncRedacted(m);
       }
 
       pills.forEach(btn => {
