@@ -1,10 +1,12 @@
-<!-- world.html | Human Limit — World (canonical, Banner Protocol compatible) -->
+<!-- world.html | Human Limit — World -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>HUMAN LIMIT — World</title>
+  <title>WORLD — System Layer</title>
+
+  <meta name="hl-requires" content="BLACK">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,131 +14,309 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- HL Core (defer) -->
+  <script src="hl-core.js" defer></script>
+
   <style>
     :root{
       --line: rgba(255,255,255,.14);
       --muted: rgba(255,255,255,.68);
       --faint: rgba(255,255,255,.48);
       --hard: rgba(255,255,255,.92);
-      --pad: 22px;
-      --max: 1080px;
-    }
-
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      color:var(--hard);
-      background:#000;
-      overflow-x:hidden;
+      --page-max: 1080px;
+      --pad: 20px;
     }
 
     .wrap{
-      position:relative;
-      max-width:var(--max);
+      max-width:var(--page-max);
       margin:0 auto;
-      padding:58px var(--pad) 64px;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
     }
 
-    .top{
+    .topbar{
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
       gap:14px;
-      padding-bottom:16px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
       margin-bottom:18px;
     }
 
-    .back{
-      color:var(--muted);
-      text-decoration:none;
-      font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      border-bottom:1px solid transparent;
-      padding-bottom:2px;
-      white-space:nowrap;
-    }
-    .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
-
-    h1{
-      margin:0;
-      font-size:16px;
+    .titleblock{ min-width:0; }
+    .h1{
+      margin:0 0 8px;
+      font-size:18px;
       letter-spacing:.14em;
       text-transform:uppercase;
+      color:var(--hard);
       line-height:1.2;
-      text-align:center;
-      flex:1;
+    }
+    .tagline{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .pills{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.25);
+      color:rgba(255,255,255,.72);
+      font-size:11px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill:hover{ border-color: rgba(255,255,255,.28); color:rgba(255,255,255,.86); }
+
+    body[data-world-mode="visible"] .pill[data-mode="visible"],
+    body[data-world-mode="partial"] .pill[data-mode="partial"]{
+      color:rgba(255,255,255,.92);
+      border-color:rgba(255,255,255,.34);
+      background:rgba(0,0,0,.34);
     }
 
     .grid{
       display:grid;
       grid-template-columns: 1fr;
       gap:14px;
+      margin-top:18px;
     }
 
-    .panel{
+    .card{
       border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px 16px;
-    }
-
-    .copy{
-      margin:0;
-      font-size:13px;
-      line-height:1.8;
-      color:rgba(255,255,255,.72);
-      max-width:760px;
-    }
-
-    .tools{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:10px 12px;
       border-radius:14px;
-      border:1px solid var(--line);
-      color:var(--hard);
-      background:rgba(0,0,0,.30);
-      text-decoration:none;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      font-size:12px;
-      cursor:pointer;
+      padding:14px;
+      background: rgba(0,0,0,.18);
     }
-    .btn:hover{ border-color: rgba(255,255,255,.28); }
+
+    .card h2{
+      margin:0 0 10px;
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .card p{
+      margin:0;
+      color:rgba(255,255,255,.78);
+      font-size:12.5px;
+      line-height:1.65;
+      white-space:pre-line;
+    }
+
+    .list{
+      margin:0;
+      padding-left:18px;
+      color:rgba(255,255,255,.78);
+      font-size:12.5px;
+      line-height:1.65;
+    }
+    .list li{ margin:6px 0; }
+
+    .redacted{
+      color:rgba(255,255,255,.62);
+    }
+    .redacted .stamp{
+      display:inline-block;
+      margin-top:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:10px;
+      color:rgba(255,255,255,.58);
+    }
+
+    /* MODE FILTER */
+    body[data-world-mode="visible"] .card[data-mode="redacted"]{ display:none; }
+    body[data-world-mode="partial"] .card[data-mode="visible"]{ display:none; }
+    body[data-world-mode="partial"] .card[data-mode="partial"]{ display:block; }
+    body[data-world-mode="partial"] .card[data-mode="redacted"]{ display:block; }
   </style>
 </head>
 
-<body data-bg="world">
-<div class="sys-node" aria-hidden="true">
-  <span class="dot"></span>
-  <span class="label">NODE: ACTIVE</span>
-</div>
+<body data-bg="world" data-world-mode="partial">
+
+  <div class="sys-node" aria-hidden="true">
+    <span class="dot"></span>
+    <span class="label">NODE: ACTIVE</span>
+  </div>
+
   <main class="wrap">
-    <div class="top">
-      <a class="back" href="interface.html">← Back</a>
-      <h1>HUMAN LIMIT — WORLD</h1>
-      <span aria-hidden="true" style="width:60px"></span>
-    </div>
 
-    <div class="grid">
-      <section class="panel" aria-label="World statement">
-        <p class="copy">
-          Reality is not defined by perception.<br>
-          Structures exist independent of recognition.<br>
-          Limits apply regardless of awareness.
-        </p>
+    <header class="topbar">
+      <div class="titleblock">
+        <h1 class="h1">WORLD</h1>
+        <p class="tagline">Global layer. Projection depends on visibility mode.</p>
+      </div>
 
-      </section>
-    </div>
+      <div class="pills" role="tablist" aria-label="Visibility mode">
+        <button class="pill" type="button" data-mode="visible" aria-pressed="false">VISIBLE</button>
+        <button class="pill" type="button" data-mode="partial" aria-pressed="true">PARTIAL</button>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="World cards">
+
+      <!-- PARTIAL set (пример: первые 8 карточек) -->
+      <!-- ЗАМЕНИ ТЕКСТЫ НА ЗАФИКСИРОВАННЫЕ 24 КАРТОЧКИ (ты уже утвердил) -->
+
+      <article class="card" data-mode="partial">
+        <h2>WORLD / OVERVIEW</h2>
+        <p>Reality is not defined by perception.
+Structures exist independent of recognition.
+Limits apply regardless of awareness.
+The map is not the system. The system is the map.</p>
+      </article>
+
+      <article class="card" data-mode="partial">
+        <h2>WORLD PARAMETERS</h2>
+        <ul class="list">
+          <li>Coordinate Grid: ACTIVE</li>
+          <li>Regional Tension Index: DYNAMIC</li>
+          <li>Border Sensitivity: HIGH</li>
+          <li>Event Latency: 0–72h</li>
+          <li>Narrative Drift: CONTROLLED</li>
+          <li>Visibility Layer: (AUTO from mode)</li>
+        </ul>
+      </article>
+
+      <article class="card" data-mode="partial">
+        <h2>GLOBAL TENSION LAYER</h2>
+        <p>Tension is not war. It is pressure.
+Pressure creates routes. Routes create markets. Markets create cages.
+Highlighted zones mark friction, influence, and extraction corridors.</p>
+      </article>
+
+      <article class="card" data-mode="partial">
+        <h2>OPERATING PRINCIPLES</h2>
+        <p>Nothing is random. Nothing is fair.
+Stability is a story told to civilians.
+The system does not protect — it allocates.</p>
+      </article>
+
+      <article class="card" data-mode="partial">
+        <h2>NOTES</h2>
+        <p>Non-indexed regions present.
+Visual projection restricted.
+Layer elevation requires authorization.</p>
+      </article>
+
+      <!-- Добавь сюда ещё 3 карточки PARTIAL из твоих 24, чтобы PARTIAL выглядел богаче -->
+      <article class="card" data-mode="partial">
+        <h2>PLACEHOLDER / PARTIAL 06</h2>
+        <p>Replace with approved card text.</p>
+      </article>
+
+      <article class="card" data-mode="partial">
+        <h2>PLACEHOLDER / PARTIAL 07</h2>
+        <p>Replace with approved card text.</p>
+      </article>
+
+      <article class="card" data-mode="partial">
+        <h2>PLACEHOLDER / PARTIAL 08</h2>
+        <p>Replace with approved card text.</p>
+      </article>
+
+      <!-- REDACTED cards (показываются только в PARTIAL) -->
+      <!-- Количество заглушек = сколько карточек скрыто в PARTIAL -->
+      <article class="card redacted" data-mode="redacted">
+        <h2>DATA REDACTED</h2>
+        <p>Clearance level insufficient.
+Projection collapsed to partial layer.</p>
+        <div class="stamp">REDACTED</div>
+      </article>
+
+      <article class="card redacted" data-mode="redacted">
+        <h2>DATA REDACTED</h2>
+        <p>High-resolution layers require escalation.</p>
+        <div class="stamp">REDACTED</div>
+      </article>
+
+      <article class="card redacted" data-mode="redacted">
+        <h2>DATA REDACTED</h2>
+        <p>Access path withheld.
+Cross-layer references blocked.</p>
+        <div class="stamp">REDACTED</div>
+      </article>
+
+      <!-- VISIBLE full set (все 24 карточки в полном виде) -->
+      <!-- В VISIBLE режиме показываются ТОЛЬКО карточки data-mode="visible" -->
+      <!-- Здесь вставь все 24 карточки как data-mode="visible". Можно те же тексты, но полные. -->
+
+      <article class="card" data-mode="visible">
+        <h2>CARD 01 / VISIBLE</h2>
+        <p>Replace with approved card #01 (full text).</p>
+      </article>
+
+      <article class="card" data-mode="visible">
+        <h2>CARD 02 / VISIBLE</h2>
+        <p>Replace with approved card #02 (full text).</p>
+      </article>
+
+      <!-- ... продолжай до CARD 24 / VISIBLE ... -->
+
+      <article class="card" data-mode="visible">
+        <h2>CARD 24 / VISIBLE</h2>
+        <p>Replace with approved card #24 (full text).</p>
+      </article>
+
+    </section>
   </main>
+
+  <script>
+    (function(){
+      const MODE_KEY = "HL_WORLD_MODE";
+      const pills = Array.from(document.querySelectorAll(".pill[data-mode]"));
+
+      function getClearance(){
+        try { return (window.HL && window.HL.getClearance) ? window.HL.getClearance() : "NONE"; }
+        catch(e){ return "NONE"; }
+      }
+
+      function readMode(){
+        const saved = (localStorage.getItem(MODE_KEY) || "").toLowerCase();
+        if (saved === "visible" || saved === "partial") return saved;
+
+        // default: NONE => PARTIAL, otherwise VISIBLE
+        return (getClearance() === "NONE") ? "partial" : "visible";
+      }
+
+      function applyMode(mode){
+        const m = (mode === "visible") ? "visible" : "partial";
+        document.body.setAttribute("data-world-mode", m);
+        localStorage.setItem(MODE_KEY, m);
+
+        pills.forEach(btn => {
+          const on = btn.getAttribute("data-mode") === m;
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+
+      pills.forEach(btn => {
+        btn.addEventListener("click", () => applyMode(btn.getAttribute("data-mode")));
+      });
+
+      applyMode(readMode());
+    })();
+  </script>
 </body>
 </html>
