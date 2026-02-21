@@ -1,4 +1,4 @@
-<!-- access.html | Human Limit — Access (fixed + audio trigger) -->
+<!-- access.html | Human Limit — Access (fixed) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -255,10 +255,6 @@
         }
 
         const set = window.HL.setClearance(level);
-
-        // ===== REQUIRED: triggers your audio logic in hl-core.js =====
-        window.dispatchEvent(new Event("hl:authorized"));
-        // ===========================================================
 
         // After auth:
         // - if next exists -> go there
