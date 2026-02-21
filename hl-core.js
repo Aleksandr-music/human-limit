@@ -157,12 +157,15 @@ url.searchParams.set("next", location.href);
   });
 
 })();
-// ===== HL AUDIO: start after authorization =====
+
+// ===== HL AUDIO: continuous single track =====
 (function(){
-  const AUDIO_KEY = "HL_AUDIO_ENABLED";         // user preference
-  const SESSION_KEY = "HL_AUDIO_SESSION_ON";    // one session latch
-  const ENTRY_SRC = "audio/hl-entry.mp3";       // intro (optional)
-  const LOOP_SRC  = "audio/hl-loop.mp3";        // loop (optional)
+
+  const AUDIO_KEY = "HL_AUDIO_ENABLED";
+  const SESSION_KEY = "HL_AUDIO_SESSION_ON";
+
+  const LOOP_SRC = "hl-entry.mp3";   // используем один файл
+                                     // (лежит в корне репозитория)
 
   function prefEnabled(){
     const v = localStorage.getItem(AUDIO_KEY);
@@ -177,56 +180,43 @@ url.searchParams.set("next", location.href);
   }
 
   function tryPlay(audio){
-    return audio.play().catch(()=>{ /* autoplay может быть заблокирован */ });
+    return audio.play().catch(() => {});
   }
 
   function startAudio(){
+
     if (!prefEnabled()) return;
-
-    // не плодим повторный запуск при переходах
     if (window.__HL_AUDIO_STARTED__) return;
-    window.__HL_AUDIO_STARTED__ = true;
 
-    // intro -> loop
-    const intro = new Audio(ENTRY_SRC);
-    intro.preload = "auto";
-    intro.volume = 0.85;
+    window.__HL_AUDIO_STARTED__ = true;
 
     const loop = new Audio(LOOP_SRC);
     loop.preload = "auto";
-    loop.loop = true;
-    loop.volume = 0.55;
+    loop.loop = true;          // ← ключевой момент
+    loop.volume = 0.6;
 
-    // сохраняем ссылки, чтобы можно было остановить позже (если понадобится)
-    window.HL_AUDIO = { intro, loop };
+    window.HL_AUDIO = { loop };
 
-    intro.addEventListener("ended", () => {
-      tryPlay(loop);
-    });
-
-    // если intro-файла нет или не нужен — можно сразу луп
-    intro.addEventListener("error", () => {
-      tryPlay(loop);
-    });
-
-    tryPlay(intro);
+    tryPlay(loop);
   }
 
-  // 1) если авторизация произошла прямо сейчас — hl-core должен вызвать событие
+  // при успешной авторизации
   window.addEventListener("hl:authorized", () => {
     markSessionOn();
     startAudio();
   });
 
-  // 2) если пользователь уже авторизован и просто перешёл на страницу
-  // (сессия помечена) — запускаем звук при первом клике (обход autoplay)
+  // если уже авторизован и переход между страницами
   if (sessionOn()){
-    const onFirstUserGesture = () => {
+
+    const unlock = () => {
       startAudio();
-      window.removeEventListener("pointerdown", onFirstUserGesture);
-      window.removeEventListener("keydown", onFirstUserGesture);
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
     };
-    window.addEventListener("pointerdown", onFirstUserGesture, { once:true });
-    window.addEventListener("keydown", onFirstUserGesture, { once:true });
+
+    window.addEventListener("pointerdown", unlock, { once:true });
+    window.addEventListener("keydown", unlock, { once:true });
   }
+
 })();
