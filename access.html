@@ -1,4 +1,4 @@
-<!-- access.html | Human Limit — Access (fixed) -->
+<!-- access.html | Human Limit — Access (fixed + audio trigger) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,6 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- HL Core (must load before our inline logic) -->
+  <script src="hl-core.js" defer></script>
 
   <style>
     :root{
@@ -174,9 +177,10 @@
     </section>
   </main>
 
-  <script src="hl-core.js"defer></script>
   <script>
-    (function(){
+    // Run AFTER hl-core.js (defer) has initialized and DOM is ready
+    window.addEventListener("DOMContentLoaded", () => {
+
       const codeEl = document.getElementById("code");
       const btn = document.getElementById("enter");
       const status = document.getElementById("status");
@@ -212,7 +216,7 @@
             return name || "UNKNOWN";
           }
         }
-        return fromLegacy || "";
+        return (fromLegacy || "").toUpperCase();
       }
 
       function write(lines, ok){
@@ -229,6 +233,7 @@
       }
 
       function authorize(){
+
         // hard guard: core missing
         if (!window.HL || typeof window.HL.matchCode !== "function"){
           write(["> SYSTEM ERROR", "> HL-CORE NOT LOADED"], false);
@@ -236,18 +241,24 @@
         }
 
         const v = normalizeDigits(codeEl.value);
+
         if (v.length !== 6){
           write(["> INVALID LENGTH", "> EXPECTED: 6 DIGITS"], false);
           return;
         }
 
         const level = window.HL.matchCode(v);
+
         if (!level){
           write(["> CODE REJECTED", "> CLEARANCE: NONE"], false);
           return;
         }
 
         const set = window.HL.setClearance(level);
+
+        // ===== REQUIRED: triggers your audio logic in hl-core.js =====
+        window.dispatchEvent(new Event("hl:authorized"));
+        // ===========================================================
 
         // After auth:
         // - if next exists -> go there
@@ -285,7 +296,7 @@
       }
 
       codeEl.focus();
-    })();
+    });
   </script>
 </body>
 </html>
