@@ -344,3 +344,19 @@ body[data-bg] .bg-dim{
   color:rgba(255,255,255,.45);
   border-color:rgba(255,255,255,.10);
 }
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-family:"JetBrains Mono", monospace;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.72);
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.back:hover{
+  color:rgba(255,255,255,.92);
+}
