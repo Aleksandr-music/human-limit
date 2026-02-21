@@ -1,4 +1,4 @@
-<!-- access.html | Human Limit — Access -->
+<!-- access.html | Human Limit — Access (fixed) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,7 +12,6 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- page requires nothing; it's the entry to clearance -->
   <style>
     :root{
       --line: rgba(255,255,255,.14);
@@ -154,7 +153,8 @@
   <main class="wrap">
     <section class="panel" aria-label="Access panel">
       <div class="top">
-         <a class="back" href="index.html">← Back</a>
+        <!-- Canon: never allow Back to leak inside the system -->
+        <a class="back" href="index.html">← Back</a>
         <h1>HUMAN LIMIT — ACCESS</h1>
         <span aria-hidden="true" style="width:60px"></span>
       </div>
@@ -181,7 +181,6 @@
       const btn = document.getElementById("enter");
       const status = document.getElementById("status");
       const reqHint = document.getElementById("reqHint");
-      const backLink = document.getElementById("backLink");
 
       const url = new URL(window.location.href);
 
@@ -196,17 +195,11 @@
       const need = requires || needLegacy;
 
       function safeDecode(s){
-        try { return decodeURIComponent(String(s || "")); } catch(e){ return String(s || ""); }
-      }
-
-      function safeNextHref(){
-        // if next exists, use it; otherwise fallback to Subjects (better than Index for this flow)
-        const decoded = safeDecode(next);
-        return decoded ? decoded : "subjects.html";
+        try { return decodeURIComponent(String(s || "")); }
+        catch(e){ return String(s || ""); }
       }
 
       function requestedLabel(){
-        // Prefer next -> extract filename; else legacy "from"
         const decoded = safeDecode(next);
         if (decoded){
           try{
@@ -214,7 +207,6 @@
             const name = (u.pathname.split("/").pop() || "").toUpperCase();
             return name || "UNKNOWN";
           }catch(e){
-            // if next is not a full URL, treat as path
             const p = decoded.split("?")[0].split("#")[0];
             const name = (p.split("/").pop() || "").toUpperCase();
             return name || "UNKNOWN";
@@ -222,17 +214,6 @@
         }
         return fromLegacy || "";
       }
-
-      if (need) {
-        const req = requestedLabel();
-        reqHint.textContent =
-          "Access denied.\n" +
-          "Required clearance: " + need + "\n" +
-          (req ? ("Requested page: " + req) : "");
-      }
-
-      // Update BACK link: if user came here to unlock a target, back should return there
-      backLink.setAttribute("href", safeNextHref());
 
       function write(lines, ok){
         status.textContent = lines.join("\n");
@@ -244,11 +225,16 @@
       }
 
       function onInput(){
-        const v = normalizeDigits(codeEl.value);
-        codeEl.value = v;
+        codeEl.value = normalizeDigits(codeEl.value);
       }
 
       function authorize(){
+        // hard guard: core missing
+        if (!window.HL || typeof window.HL.matchCode !== "function"){
+          write(["> SYSTEM ERROR", "> HL-CORE NOT LOADED"], false);
+          return;
+        }
+
         const v = normalizeDigits(codeEl.value);
         if (v.length !== 6){
           write(["> INVALID LENGTH", "> EXPECTED: 6 DIGITS"], false);
@@ -263,10 +249,10 @@
 
         const set = window.HL.setClearance(level);
 
-        // Decide where to go after auth:
-        // 1) if next is provided -> return to that page
-        // 2) else -> go to interface
-        const go = safeDecode(next) || (needLegacy ? "subjects.html" : "interface.html");
+        // After auth:
+        // - if next exists -> go there
+        // - else -> interface
+        const go = safeDecode(next) || "interface.html";
 
         write([
           "> AUTHORIZED",
@@ -277,14 +263,27 @@
         setTimeout(() => { window.location.href = go; }, 450);
       }
 
+      if (need) {
+        const req = requestedLabel();
+        reqHint.textContent =
+          "Access denied.\n" +
+          "Required clearance: " + need + "\n" +
+          (req ? ("Requested page: " + req) : "");
+      }
+
       codeEl.addEventListener("input", onInput);
       btn.addEventListener("click", authorize);
       codeEl.addEventListener("keydown", (e) => {
         if (e.key === "Enter") authorize();
       });
 
-      // show current state
-      write(["> CURRENT CLEARANCE: " + window.HL.getClearance()], true);
+      // initial state
+      if (window.HL && typeof window.HL.getClearance === "function"){
+        write(["> CURRENT CLEARANCE: " + window.HL.getClearance()], true);
+      } else {
+        write(["> CURRENT CLEARANCE: UNKNOWN"], false);
+      }
+
       codeEl.focus();
     })();
   </script>
