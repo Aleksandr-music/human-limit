@@ -157,3 +157,76 @@ url.searchParams.set("next", location.href);
   });
 
 })();
+// ===== HL AUDIO: start after authorization =====
+(function(){
+  const AUDIO_KEY = "HL_AUDIO_ENABLED";         // user preference
+  const SESSION_KEY = "HL_AUDIO_SESSION_ON";    // one session latch
+  const ENTRY_SRC = "audio/hl-entry.mp3";       // intro (optional)
+  const LOOP_SRC  = "audio/hl-loop.mp3";        // loop (optional)
+
+  function prefEnabled(){
+    const v = localStorage.getItem(AUDIO_KEY);
+    return v === null ? true : (v === "1");
+  }
+
+  function markSessionOn(){
+    sessionStorage.setItem(SESSION_KEY, "1");
+  }
+  function sessionOn(){
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  }
+
+  function tryPlay(audio){
+    return audio.play().catch(()=>{ /* autoplay может быть заблокирован */ });
+  }
+
+  function startAudio(){
+    if (!prefEnabled()) return;
+
+    // не плодим повторный запуск при переходах
+    if (window.__HL_AUDIO_STARTED__) return;
+    window.__HL_AUDIO_STARTED__ = true;
+
+    // intro -> loop
+    const intro = new Audio(ENTRY_SRC);
+    intro.preload = "auto";
+    intro.volume = 0.85;
+
+    const loop = new Audio(LOOP_SRC);
+    loop.preload = "auto";
+    loop.loop = true;
+    loop.volume = 0.55;
+
+    // сохраняем ссылки, чтобы можно было остановить позже (если понадобится)
+    window.HL_AUDIO = { intro, loop };
+
+    intro.addEventListener("ended", () => {
+      tryPlay(loop);
+    });
+
+    // если intro-файла нет или не нужен — можно сразу луп
+    intro.addEventListener("error", () => {
+      tryPlay(loop);
+    });
+
+    tryPlay(intro);
+  }
+
+  // 1) если авторизация произошла прямо сейчас — hl-core должен вызвать событие
+  window.addEventListener("hl:authorized", () => {
+    markSessionOn();
+    startAudio();
+  });
+
+  // 2) если пользователь уже авторизован и просто перешёл на страницу
+  // (сессия помечена) — запускаем звук при первом клике (обход autoplay)
+  if (sessionOn()){
+    const onFirstUserGesture = () => {
+      startAudio();
+      window.removeEventListener("pointerdown", onFirstUserGesture);
+      window.removeEventListener("keydown", onFirstUserGesture);
+    };
+    window.addEventListener("pointerdown", onFirstUserGesture, { once:true });
+    window.addEventListener("keydown", onFirstUserGesture, { once:true });
+  }
+})();
