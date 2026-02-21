@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <!-- ВАЖНО: добавляем версию, чтобы убить кэш стилей -->
+  <!-- Versioned to reduce stale cache issues -->
   <link rel="stylesheet" href="style.css?v=4">
 
   <style>
@@ -102,35 +102,47 @@
       letter-spacing:.04em;
     }
     .mono{ letter-spacing:.10em; text-transform:uppercase; }
+
+    /* Local lock state (pre-consent): buttons disabled */
+    .hl-locked .cta .btn{
+      pointer-events:none;
+      opacity:.38;
+      filter:saturate(.4);
+    }
+    .hl-locked .cta .btn:hover{
+      border-color: var(--line);
+    }
   </style>
 </head>
 
 <body data-bg="entry">
-<div id="hl-consent" class="hl-consent hidden">
-  <div class="hl-consent-panel">
-    <div class="hl-consent-title">DATA OBSERVATION NOTICE</div>
-    <div class="hl-consent-text">
-      This interface records anonymous behavioral telemetry.<br>
-      No personal identity is stored or exposed.<br>
-      Interaction patterns may be analyzed to improve system stability.
-    </div>
-    <div class="hl-consent-actions">
-      <button id="hl-accept" class="hl-btn">ACCEPT</button>
-      <button id="hl-decline" class="hl-btn muted">DECLINE</button>
+  <!-- Consent overlay -->
+  <div id="hl-consent" class="hl-consent hidden" aria-hidden="true">
+    <div class="hl-consent-panel" role="dialog" aria-modal="true" aria-label="Data observation notice">
+      <div class="hl-consent-title">DATA OBSERVATION NOTICE</div>
+      <div class="hl-consent-text">
+        This interface records anonymous behavioral telemetry.<br>
+        No personal identity is stored or exposed.<br>
+        Interaction patterns may be analyzed to improve system stability.
+      </div>
+      <div class="hl-consent-actions">
+        <button id="hl-accept" class="hl-btn" type="button">ACCEPT</button>
+        <button id="hl-decline" class="hl-btn muted" type="button">DECLINE</button>
+      </div>
     </div>
   </div>
-</div>
+
   <div class="sys-node" aria-hidden="true">
     <span class="dot"></span>
     <span class="label">NODE: ACTIVE</span>
   </div>
 
   <main class="wrap">
-    <section class="panel">
+    <section class="panel" aria-label="Entry node">
       <h1 class="title">SYSTEM ENTRY NODE</h1>
       <p class="tag">Select project. Access requires valid entry code.</p>
 
-      <div class="cta">
+      <div class="cta" aria-label="Project list">
         <a class="btn" href="hl-access.html">HUMAN LIMIT</a>
         <a class="btn" href="bv-access.html">BLACK VEIL</a>
         <a class="btn" href="sg-access.html">SILENT GRID</a>
@@ -147,5 +159,44 @@
       </div>
     </section>
   </main>
+
+  <script>
+    (function(){
+      const KEY = "hl_consent_state"; // "accepted" | "declined"
+      const consent = document.getElementById("hl-consent");
+      const accept = document.getElementById("hl-accept");
+      const decline = document.getElementById("hl-decline");
+
+      function showConsent(){
+        document.body.classList.add("hl-locked");
+        consent.classList.remove("hidden");
+        consent.setAttribute("aria-hidden","false");
+      }
+
+      function hideConsent(){
+        document.body.classList.remove("hl-locked");
+        consent.classList.add("hidden");
+        consent.setAttribute("aria-hidden","true");
+      }
+
+      const state = localStorage.getItem(KEY);
+      if (state !== "accepted" && state !== "declined"){
+        showConsent();
+      }
+
+      accept.addEventListener("click", function(){
+        localStorage.setItem(KEY, "accepted");
+        hideConsent();
+        // Tracking scripts should be initialized ONLY after this point (later step).
+      });
+
+      decline.addEventListener("click", function(){
+        localStorage.setItem(KEY, "declined");
+        hideConsent();
+        // No tracking should run in this state (later step).
+      });
+
+    })();
+  </script>
 </body>
 </html>
