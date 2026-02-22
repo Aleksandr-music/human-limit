@@ -1,19 +1,25 @@
-/* hl-core.js | Human Limit — Clearance Core (single source of truth) */
+/* hl-core.js | Human Limit — Core (single source of truth) */
 
 (function () {
   "use strict";
 
-  // =========================
-  // 1) CONFIG — change codes ONLY here
-  // =========================
+  // ==========================================================
+  // 1) CLEARANCE CONFIG — change codes ONLY here
+  // ==========================================================
   const CODES = {
-    BLUE:  "111111",  // TODO: set your real 6-digit code
-    AMBER: "222222",  // TODO: set your real 6-digit code
-    BLACK: "333333"   // TODO: set your real 6-digit code
+    BLUE:  "111111",  // TODO: set real 6-digit code
+    AMBER: "222222",  // TODO: set real 6-digit code
+    BLACK: "333333"   // TODO: set real 6-digit code
   };
 
   const ORDER = { NONE: 0, BLUE: 1, AMBER: 2, BLACK: 3 };
-  const KEY = "HL_CLEARANCE";
+  const CLEAR_KEY = "HL_CLEARANCE";
+
+  // ==========================================================
+  // 2) CONSENT + OPTIONAL CLARITY (post-consent only)
+  // ==========================================================
+  const CONSENT_KEY = "hl_consent_state"; // "accepted" | "declined"
+  const CLARITY_ID = ""; // TODO: set Clarity project id or leave "" to disable
 
   function normalizeClearance(v) {
     const x = String(v || "").toUpperCase();
@@ -21,17 +27,18 @@
   }
 
   function getClearance() {
-    return normalizeClearance(localStorage.getItem(KEY));
+    return normalizeClearance(localStorage.getItem(CLEAR_KEY));
   }
 
   function setClearance(level) {
     const v = normalizeClearance(level);
-    localStorage.setItem(KEY, v);
+    localStorage.setItem(CLEAR_KEY, v);
     return v;
   }
 
   function matchCode(code6) {
-    const c = String(code6 || "").trim();
+    const c = String(code6 || "").replace(/\D/g, "").slice(0, 6);
+    if (c.length !== 6) return null;
     if (c === CODES.BLACK) return "BLACK";
     if (c === CODES.AMBER) return "AMBER";
     if (c === CODES.BLUE)  return "BLUE";
@@ -45,27 +52,98 @@
   }
 
   // =========================
-  // 2) UI helpers
+  // 3) UI helpers
   // =========================
   function qs(sel) { return document.querySelector(sel); }
 
   function applyClearanceBadges() {
     const cur = getClearance();
 
-    // Any element with data-hl="clearance" gets text
     document.querySelectorAll('[data-hl="clearance"]').forEach((el) => {
       el.textContent = cur;
     });
 
-    // Any element with data-hl="access-status" gets Active/Restricted
     document.querySelectorAll('[data-hl="access-status"]').forEach((el) => {
       el.textContent = cur === "NONE" ? "Restricted" : "Active";
     });
   }
 
+  // ==========================================================
+  // 4) CONSENT overlay harmonized with index.html
+  // ==========================================================
+  function consentState() {
+    const v = String(localStorage.getItem(CONSENT_KEY) || "").toLowerCase();
+    return (v === "accepted" || v === "declined") ? v : "";
+  }
+
+  function setConsentState(v) {
+    const x = (v === "accepted" || v === "declined") ? v : "";
+    if (!x) return;
+    localStorage.setItem(CONSENT_KEY, x);
+  }
+
+  function maybeLoadClarity() {
+    if (!CLARITY_ID) return;
+    if (window.__clarityLoaded) return;
+
+    // Minimal loader. (No tracking before ACCEPT.)
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.clarity.ms/tag/" + encodeURIComponent(CLARITY_ID);
+    document.head.appendChild(s);
+
+    window.__clarityLoaded = true;
+  }
+
+  function wireConsentOverlayIfPresent() {
+    const box = document.getElementById("hl-consent");
+    const acceptBtn = document.getElementById("hl-accept");
+    const declineBtn = document.getElementById("hl-decline");
+
+    // If this page has no overlay markup — do nothing.
+    if (!box || !acceptBtn || !declineBtn) {
+      // Still load Clarity if accepted and ID exists.
+      if (consentState() === "accepted") maybeLoadClarity();
+      return;
+    }
+
+    function show() {
+      document.body.classList.add("hl-locked");
+      box.classList.remove("hidden");
+      box.setAttribute("aria-hidden", "false");
+    }
+
+    function hide() {
+      document.body.classList.remove("hl-locked");
+      box.classList.add("hidden");
+      box.setAttribute("aria-hidden", "true");
+    }
+
+    const st = consentState();
+    if (st !== "accepted" && st !== "declined") {
+      show();
+    } else {
+      hide();
+      if (st === "accepted") maybeLoadClarity();
+    }
+
+    acceptBtn.addEventListener("click", () => {
+      setConsentState("accepted");
+      hide();
+      maybeLoadClarity();
+    });
+
+    declineBtn.addEventListener("click", () => {
+      setConsentState("declined");
+      hide();
+      // No tracking in this state.
+    });
+  }
+
+  // ==========================================================
+  // 5) PAGE GUARD — canonical redirect: ?requires=BLACK&next=...
+  // ==========================================================
   function guardPage() {
-    // Read requirement from meta tag:
-    // <meta name="hl-requires" content="BLUE">
     const meta = qs('meta[name="hl-requires"]');
     if (!meta) return;
 
@@ -73,18 +151,24 @@
     if (required === "NONE") return;
 
     if (!has(required)) {
-      // Deny: redirect to access
       const url = new URL("access.html", window.location.href);
+
+      // Canonical params (access.html supports this).
+      url.searchParams.set("requires", required);
+      url.searchParams.set("next", encodeURIComponent(window.location.href));
+
+      // Optional legacy hints (harmless; access.html ignores if requires/next exist)
+      const from = (location.pathname.split("/").pop() || "page").toUpperCase();
+      url.searchParams.set("from", from);
       url.searchParams.set("need", required);
-      url.searchParams.set("from", location.pathname.split("/").pop() || "page");
-url.searchParams.set("next", location.href);
+
       location.replace(url.toString());
     }
   }
 
-  // =========================
-  // 3) Public API (used by access.html)
-  // =========================
+  // ==========================================================
+  // 6) Public API (used by access.html and others)
+  // ==========================================================
   window.HL = {
     getClearance,
     setClearance,
@@ -94,66 +178,13 @@ url.searchParams.set("next", location.href);
     guardPage
   };
 
-  // Auto-run on every page that includes hl-core.js
+  // ==========================================================
+  // 7) Auto-run
+  // ==========================================================
   document.addEventListener("DOMContentLoaded", () => {
+    wireConsentOverlayIfPresent();
     applyClearanceBadges();
     guardPage();
-  });
-})();
-/* ===== Consent + Clarity Loader ===== */
-
-(function(){
-
-  const KEY = "hl_consent";
-  const consentBox = document.getElementById("hl-consent");
-  const acceptBtn = document.getElementById("hl-accept");
-  const declineBtn = document.getElementById("hl-decline");
-
-  if (!consentBox || !acceptBtn || !declineBtn) return;
-
-  function hasConsent(){
-    return localStorage.getItem(KEY) === "accepted";
-  }
-
-  function setConsent(value){
-    localStorage.setItem(KEY, value);
-  }
-
-  function show(){
-    consentBox.classList.remove("hidden");
-  }
-
-  function hide(){
-    consentBox.classList.add("hidden");
-  }
-
-  function loadClarity(){
-    if (window.__clarityLoaded) return;
-
-    const s = document.createElement("script");
-    s.src = "https://www.clarity.ms/tag/YOUR_ID_HERE";
-    s.async = true;
-    document.head.appendChild(s);
-
-    window.__clarityLoaded = true;
-  }
-
-  if (!hasConsent()){
-    show();
-  } else {
-    hide();
-    loadClarity();
-  }
-
-  acceptBtn.addEventListener("click", () => {
-    setConsent("accepted");
-    hide();
-    loadClarity();
-  });
-
-  declineBtn.addEventListener("click", () => {
-    setConsent("declined");
-    hide();
   });
 
 })();
