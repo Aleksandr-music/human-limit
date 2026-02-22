@@ -1,13 +1,13 @@
-<!-- subject-kiwi.html | Human Limit — Subject File (standalone page) -->
+<!-- subject-kiwi.html | Human Limit — Subject File (KIWI) | canonical template = ALEX (9 sections, same fields) -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-
-  <meta name="hl-requires" content="AMBER">
-
   <title>SUBJECT: KIWI — Internal Registry</title>
+
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +86,6 @@
       align-items:start;
       margin:18px 0 22px;
     }
-
     @media (max-width: 880px){
       .hero{ grid-template-columns:1fr; }
     }
@@ -98,6 +97,13 @@
       text-transform:uppercase;
       color:var(--hard);
       margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
     }
 
     .meta{
@@ -124,6 +130,14 @@
       border-radius:14px;
       padding:12px;
       overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
     }
     .portrait .ph{
       width:100%;
@@ -160,7 +174,7 @@
 
     .grid2{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap:14px;
     }
     @media (max-width: 880px){
@@ -196,6 +210,36 @@
     }
     .bullets li{ margin:8px 0; }
     .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
 
     .footer{
       margin-top:30px;
@@ -237,10 +281,14 @@
       <div>
         <h1 class="h1">SUBJECT: KIWI</h1>
 
+        <p class="tagline">
+          Group asset. High close-contact utility. Honor-driven behavioral profile. Rapid entry & level-change capability.
+        </p>
+
         <div class="meta">
           <dl>
             <dt>System ID</dt><dd>S-AT-C-003478</dd>
-            <dt>Classification Tier</dt><dd>Operational Subject</dd>
+            <dt>Classification Tier</dt><dd>Group Asset</dd>
             <dt>Current Status</dt><dd>Active</dd>
             <dt>System Visibility</dt><dd>Partial</dd>
             <dt>Clearance Requirement</dt><dd>Amber</dd>
@@ -249,22 +297,110 @@
       </div>
 
       <div class="portrait">
-        <!-- Replace with canonical portrait if/when you add it -->
-        <div class="ph">Portrait Placeholder</div>
+        <!-- Replace image file name with your canonical KIWI portrait filename -->
+        <div class="ph">Portrait Pending</div>
         <div class="note">
-          <span class="muted">Note:</span> Movement profile is critical: compact frame, high agility, professional grappling mechanics. No “heavy motion” depiction.
+          <span class="muted">Note:</span>
+          Registry image locked (canonical portrait required).
         </div>
       </div>
-    </div>
+    </div><!-- /hero -->
 
-    <!-- 1. Registry Status -->
-    <section class="section" id="registry-status">
-      <h2>1. Registry Status</h2>
+    <!-- 1. Aggregated Dossier -->
+    <section class="section" id="aggregated-dossier">
+      <h2>1. Aggregated Dossier</h2>
+
       <div class="grid2">
         <div class="card">
           <dl class="kv">
             <dt>Operational State</dt><dd>Stable</dd>
-            <dt>Tracking Flag</dt><dd>Active</dd>
+            <dt>Observation Flag</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
+            <dt>Containment Condition</dt><dd>Situational</dd>
+            <dt>External Influence</dt><dd>Limited</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identification Certainty</dt><dd>Confirmed</dd>
+            <dt>Identity Stability</dt><dd>Stable</dd>
+            <dt>Behavioral Variability</dt><dd>Low</dd>
+            <dt>Reaction Predictability</dt><dd>High</dd>
+            <dt>Decision-Making Mode</dt><dd>Direct</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Emotional Influence</dt><dd>Controlled</dd>
+            <dt>Response Speed</dt><dd>High</dd>
+            <dt>Choice Stability</dt><dd>High</dd>
+            <dt>Stress Resistance</dt><dd>High</dd>
+            <dt>Uncertainty Tolerance</dt><dd>Moderate</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Cognitive Consistency</dt><dd>Preserved</dd>
+            <dt>Deviation Risk</dt><dd>Low</dd>
+            <dt>Destabilization Tendency</dt><dd>Low</dd>
+            <dt>Threat Potential</dt><dd>High (Close Contact)</dd>
+            <dt>Conflict Potential</dt><dd>Situational</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Betrayal Sensitivity</dt><dd>High</dd>
+            <dt>Intervention Threshold</dt><dd>High</dd>
+            <dt>Irreversibility Threshold</dt><dd>Medium</dd>
+            <dt>Formal Anomaly Status</dt><dd>Within Norm</dd>
+            <dt>Observed Behavior</dt><dd>Standardized (Disciplined)</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Deviation Classification</dt><dd>Not Indexed</dd>
+            <dt>System Interpretation</dt><dd>Stable</dd>
+            <dt>Identity Conflict</dt><dd>Not Observed</dd>
+            <dt>System Significance</dt><dd>Operational</dd>
+            <dt>System Ignorability</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Local Impact</dt><dd>Significant</dd>
+            <dt>Group Dynamics Influence</dt><dd>Stabilizing</dd>
+            <dt>Hierarchical Effects</dt><dd>Support Node</dd>
+            <dt>Strategic Value</dt><dd>Medium</dd>
+            <dt>Long-Term Consequences</dt><dd>Probable</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Interaction Type</dt><dd>Direct</dd>
+            <dt>Direct Control</dt><dd>Absent</dd>
+            <dt>Indirect Influence</dt><dd>Stable</dd>
+            <dt>System Controllability</dt><dd>Conditional</dd>
+            <dt>System Forecast</dt><dd>Stable Trajectory</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Registry Status -->
+    <section class="section" id="registry-status">
+      <h2>2. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
             <dt>Control Condition</dt><dd>Indirect</dd>
             <dt>Containment</dt><dd>Situational</dd>
           </dl>
@@ -274,19 +410,18 @@
             <dt>Exposure Tolerance</dt><dd>High</dd>
             <dt>Authority Response</dt><dd>Restrained</dd>
             <dt>Group Integration</dt><dd>High</dd>
-            <dt>Deviation Alert</dt><dd>Watchlisted</dd>
+            <dt>Deviation Alert</dt><dd>Normal</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 2. Risk & Stability Profile -->
+    <!-- 3. Risk & Stability Profile -->
     <section class="section" id="risk-stability">
-      <h2>2. Risk &amp; Stability Profile</h2>
+      <h2>3. Risk &amp; Stability Profile</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Threat Potential</dt><dd>High</dd>
             <dt>Predictability Index</dt><dd>High</dd>
             <dt>Compliance Drift</dt><dd>Low</dd>
             <dt>Stress Response</dt><dd>Controlled</dd>
@@ -294,78 +429,96 @@
         </div>
         <div class="card">
           <dl class="kv">
-            <dt>Conflict Escalation</dt><dd>High (Close-range)</dd>
+            <dt>Conflict Escalation</dt><dd>Moderate</dd>
             <dt>Strategic Capacity</dt><dd>Medium</dd>
-            <dt>Operational Use</dt><dd>Grappling Specialist</dd>
-            <dt>Failure Mode</dt><dd>Overextension</dd>
+            <dt>Operational Use</dt><dd>Close-Contact Anchor</dd>
+            <dt>Failure Mode</dt><dd>Honor-Triggered Escalation</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 3. Behavioral Observations -->
+    <!-- 4. Behavioral Observations -->
     <section class="section" id="observations">
-      <h2>3. Behavioral Observations</h2>
+      <h2>4. Behavioral Observations</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Compact frame with unexpectedly fast footwork; transitions are clean and economical.</li>
-          <li>Dominant in clinch and ground-control exchanges; timing is sharp under pressure.</li>
-          <li>Maintains calm affect; aggression is functional, not emotional.</li>
-          <li>Shows strong loyalty to group cohesion; reacts quickly to internal threats.</li>
-          <li>Movement is light and controlled (do not depict as heavy or slow).</li>
+          <li>Direct, non-manipulative communication; speaks only when required.</li>
+          <li>Honor-driven ethics; rejects dirty tactics and needless cruelty.</li>
+          <li>Shows fast distance entry and immediate level-change under contact pressure.</li>
+          <li>Acts as reliable support node; not a leader, but stabilizes group cohesion.</li>
+          <li>Escalates only when provoked by dishonor, betrayal, or threat to allies.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 4. Recorded Patterns -->
+    <!-- 5. Recorded Patterns -->
     <section class="section" id="patterns">
-      <h2>4. Recorded Patterns</h2>
+      <h2>5. Recorded Patterns</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Conflict Engagement Pattern</dt><dd>Close-range / Fast</dd>
+            <dt>Conflict Engagement Pattern</dt><dd>Close-Range / Grappling</dd>
             <dt>Decision Timing Model</dt><dd>Immediate Commit</dd>
-            <dt>Trust Formation Tendency</dt><dd>Operational</dd>
+            <dt>Trust Formation Tendency</dt><dd>Fast (Selective)</dd>
             <dt>Authority Negotiation</dt><dd>Minimal</dd>
           </dl>
         </div>
         <div class="card">
           <dl class="kv">
-            <dt>Group Utility</dt><dd>Control Anchor</dd>
-            <dt>Influence Vector</dt><dd>Physical</dd>
-            <dt>Aggression Trigger Points</dt><dd>Threat to Group</dd>
+            <dt>Group Utility</dt><dd>Close-Contact Enforcement</dd>
+            <dt>Influence Vector</dt><dd>Stability / Reliability</dd>
+            <dt>Aggression Trigger Points</dt><dd>Dishonor / Threat to Allies</dd>
             <dt>Persistence Under Fatigue</dt><dd>High</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 5. Known Incidents / Records -->
+    <!-- 6. Known Incidents / Records -->
     <section class="section" id="incidents">
-      <h2>5. Known Incidents / Records</h2>
+      <h2>6. Known Incidents / Records</h2>
       <div class="card">
-        <ul class="bullets">
-          <li><span class="muted">Record:</span> Confirmed dominance over higher-mass opponent via choke (field observation).</li>
-          <li><span class="muted">Note:</span> Restraint is intentional; avoids unnecessary damage when outcome is secured.</li>
-        </ul>
+        <div class="incident">
+          <div class="code">HL-IR-KW-01</div>
+          <div class="detail">
+            Subject maintained controlled escalation during close-contact conflict cycle; no unnecessary force observed.
+            <div class="row">Severity: Low · Outcome: Contained · Note: Honor constraint preserved</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-KW-04</div>
+          <div class="detail">
+            Subject executed rapid entry + level-change sequence under pressure; stabilized ally position without command input.
+            <div class="row">Severity: Moderate · Outcome: Successful · Note: High grappling utility</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-KW-07</div>
+          <div class="detail">
+            Limitation recorded: subject cannot dominate highest-tier hostile in fair engagement.
+            <div class="row">Severity: Structural · Outcome: Persistent · Note: Threat hierarchy preserved</div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 6. System Remarks -->
+    <!-- 7. System Remarks -->
     <section class="section" id="system-remarks">
-      <h2>6. System Remarks</h2>
+      <h2>7. System Remarks</h2>
       <div class="card">
         <ul class="bullets">
-          <li>High value as a control specialist inside confined environments.</li>
-          <li>Effectiveness increases when paired with strategic leadership (see: Subject Alex / Mentor).</li>
-          <li>Stable under pressure; low volatility in interpersonal cycles.</li>
+          <li>Reliability profile is high; subject functions as a stable physical anchor in close contact.</li>
+          <li>Ethical constraints reduce volatility but can trigger escalation when honor is violated.</li>
+          <li>Operational role: protect group integrity through controlled force and positional dominance.</li>
+          <li>Maintain separation from top-tier hostile during “fair” engagement cycles; use asymmetric mitigation only.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 7. Data Integrity -->
+    <!-- 8. Data Integrity -->
     <section class="section" id="data-integrity">
-      <h2>7. Data Integrity</h2>
+      <h2>8. Data Integrity</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
@@ -377,22 +530,22 @@
         </div>
         <div class="card">
           <dl class="kv">
-            <dt>Identity Certainty</dt><dd>Confirmed</dd>
             <dt>Alias Stability</dt><dd>Stable</dd>
-            <dt>Context Drift Risk</dt><dd>Medium</dd>
+            <dt>Context Drift Risk</dt><dd>Low</dd>
             <dt>Redaction Ratio</dt><dd>Noticeable</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 8. Clearance Restrictions -->
+    <!-- 9. Clearance Restrictions -->
     <section class="section" id="clearance">
-      <h2>8. Clearance Restrictions</h2>
+      <h2>9. Clearance Restrictions</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Training record extensions require Tier Amber authorization.</li>
-          <li>Cross-subject linkage map requires Tier Black escalation.</li>
+          <li>Origin chain details are restricted.</li>
+          <li>Clan lineage references are partially redacted.</li>
+          <li>Full combat telemetry and training transcripts require Tier Amber authorization.</li>
         </ul>
       </div>
     </section>
