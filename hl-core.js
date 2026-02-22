@@ -155,7 +155,10 @@
 
       // Canonical params (access.html supports this).
       url.searchParams.set("requires", required);
-      url.searchParams.set("next", encodeURIComponent(window.location.href));
+
+      // IMPORTANT: do NOT encodeURIComponent here — URLSearchParams encodes automatically.
+      // This prevents double-encoding and broken returns.
+      url.searchParams.set("next", window.location.href);
 
       // Optional legacy hints (harmless; access.html ignores if requires/next exist)
       const from = (location.pathname.split("/").pop() || "page").toUpperCase();
