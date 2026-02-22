@@ -1,1 +1,551 @@
+<!-- subject-fed.html | Human Limit — Subject File (FED) | canonical layout aligned to subject-alex.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SUBJECT: FED — Internal Registry</title>
 
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- HL Core (single include) -->
+  <script src="hl-core.js" defer></script>
+
+  <style>
+    :root{
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.9);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+      margin:18px 0 22px;
+    }
+    @media (max-width: 880px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    .h1{
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--hard);
+      margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .meta{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+    }
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .meta dl{ grid-template-columns: 1fr; }
+    }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
+
+    .portrait{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .portrait .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (max-width: 880px){
+      .grid2{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color:var(--hard);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .bullets li{ margin:8px 0; }
+    .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
+
+    .footer{
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
+  </style>
+</head>
+
+<body data-bg="subjects">
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Gateway</a>
+        <span class="muted">/</span>
+        <a href="subjects.html">Subjects</a>
+        <span class="muted">/</span>
+        <span>Subject File</span>
+      </div>
+      <div class="badge">Internal Registry</div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1 class="h1">SUBJECT: FED</h1>
+
+        <p class="tagline">
+          Contract operative. Extreme physical dominance. Persistent coercive presence. Behavioral rigidity.
+        </p>
+
+        <div class="meta">
+          <dl>
+            <dt>System ID</dt><dd>C-OP-K-027469</dd>
+            <dt>Classification Tier</dt><dd>Contract Operative</dd>
+            <dt>Current Status</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Restricted</dd>
+            <dt>Clearance Requirement</dt><dd>Black</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="portrait">
+        <!-- Canon: single full-frame image only -->
+        <img src="images/subjects/hl-subject-fed-01.png" alt="SUBJECT: FED">
+        <div class="note">
+          <span class="muted">Note:</span>
+          Registry image locked.
+        </div>
+      </div>
+    </div><!-- /hero -->
+
+    <!-- 1. Aggregated Dossier -->
+    <section class="section" id="aggregated-dossier">
+      <h2>1. Aggregated Dossier</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Entity Type</dt><dd>Contract Operative</dd>
+            <dt>Operational Autonomy</dt><dd>High</dd>
+            <dt>Control Reliability</dt><dd>Low</dd>
+            <dt>Containment Model</dt><dd>Embedded Asset</dd>
+            <dt>Replacement Priority</dt><dd>None</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Primary Vector</dt><dd>Physical Dominance</dd>
+            <dt>Force Projection</dt><dd>Overwhelming</dd>
+            <dt>Threat Level (Close Range)</dt><dd>Critical</dd>
+            <dt>Operational Use</dt><dd>Coercion / Suppression</dd>
+            <dt>Oversight Cost</dt><dd>Severe</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Mobility Profile</dt><dd>Heavy / Deliberate</dd>
+            <dt>Reaction Speed</dt><dd>Low</dd>
+            <dt>Interruption Resistance</dt><dd>High</dd>
+            <dt>Fatigue Sensitivity</dt><dd>Low</dd>
+            <dt>Pain Response</dt><dd>Suppressed</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Escalation Baseline</dt><dd>Elevated</dd>
+            <dt>Conflict Initiation Threshold</dt><dd>Low</dd>
+            <dt>De-escalation Likelihood</dt><dd>Negligible</dd>
+            <dt>Predictive Confidence</dt><dd>High</dd>
+            <dt>Systemic Risk Level</dt><dd>Critical</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Presence Impact Radius</dt><dd>Wide</dd>
+            <dt>Psychological Pressure Effect</dt><dd>Severe</dd>
+            <dt>Group Behavior Distortion</dt><dd>Immediate</dd>
+            <dt>Deterrence Effect</dt><dd>Structural</dd>
+            <dt>Environmental Adaptation</dt><dd>Stable</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Negotiation Viability</dt><dd>Minimal</dd>
+            <dt>Authority Sensitivity</dt><dd>Minimal</dd>
+            <dt>Protocol Compliance</dt><dd>Situational</dd>
+            <dt>Impulse Regulation</dt><dd>Minimal</dd>
+            <dt>Behavioral Volatility</dt><dd>Low (but lethal)</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Registry Status -->
+    <section class="section" id="registry-status">
+      <h2>2. Registry Status</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Registry Control Channel</dt><dd>Indirect / Ineffective</dd>
+            <dt>Supervision Outcome</dt><dd>Unstable</dd>
+            <dt>Containment Stability</dt><dd>Fragile</dd>
+            <dt>Observation Priority</dt><dd>Continuous</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Hierarchy Acceptance</dt><dd>Rejected</dd>
+            <dt>Dominance Assertion</dt><dd>Constant</dd>
+            <dt>Resistance Tolerance</dt><dd>None</dd>
+            <dt>Intervention Threshold</dt><dd>High Cost</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Risk & Stability Profile -->
+    <section class="section" id="risk-stability">
+      <h2>3. Risk &amp; Stability Profile</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Violence Probability</dt><dd>High</dd>
+            <dt>Threat Predictability</dt><dd>High</dd>
+            <dt>Response Predictability</dt><dd>High</dd>
+            <dt>Strategic Variability</dt><dd>Low</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Stress Response</dt><dd>Flat</dd>
+            <dt>Failure Mode</dt><dd>Direct Aggression</dd>
+            <dt>Operational Stability</dt><dd>High</dd>
+            <dt>System Confidence</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Behavioral Observations -->
+    <section class="section" id="observations">
+      <h2>4. Behavioral Observations</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Maintains permanent dominance signaling without overt gestures.</li>
+          <li>Exerts coercive influence through proximity; silence functions as pressure.</li>
+          <li>Rarely verbalizes intent; action replaces communication.</li>
+          <li>Demonstrates absence of hesitation under confrontation.</li>
+          <li>Does not participate in negotiation patterns; refuses social equalization.</li>
+          <li>Emotional output functionally minimal; expression remains controlled.</li>
+          <li>Aggression readiness state appears constant and non-reactive.</li>
+          <li>Group destabilization occurs passively in his presence.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5. Recorded Patterns -->
+    <section class="section" id="patterns">
+      <h2>5. Recorded Patterns</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Model</dt><dd>Direct / Terminal</dd>
+            <dt>Decision Logic</dt><dd>Force-Based</dd>
+            <dt>Threat Response</dt><dd>Immediate Neutralization</dd>
+            <dt>Risk Assessment</dt><dd>Minimal</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Authority Interaction</dt><dd>Instrumental</dd>
+            <dt>Negotiation Behavior</dt><dd>Absent</dd>
+            <dt>Tolerance for Resistance</dt><dd>None</dd>
+            <dt>Coercion Method</dt><dd>Presence / Force</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Known Incidents / Records -->
+    <section class="section" id="incidents">
+      <h2>6. Known Incidents / Records</h2>
+      <div class="card">
+        <div class="incident">
+          <div class="code">HL-CI-04-01</div>
+          <div class="detail">
+            Subject eliminated internal rival during dominance dispute.
+            <div class="row">Severity: Critical · Outcome: Fatality Confirmed</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-CI-04-05</div>
+          <div class="detail">
+            Unauthorized force application during supervision cycle.
+            <div class="row">Severity: High · Outcome: Containment Maintained · Note: Authority channel degraded</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-CI-04-09</div>
+          <div class="detail">
+            Observed suppression of multi-subject opposition via intimidation alone.
+            <div class="row">Severity: Moderate · Outcome: Behavioral Compliance Shift</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. System Remarks -->
+    <section class="section" id="system-remarks">
+      <h2>7. System Remarks</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Subject functions as a non-negotiable force entity.</li>
+          <li>Verbal influence channels are consistently ineffective.</li>
+          <li>Stability derives from mass and dominance, not regulation.</li>
+          <li>Standard psychological models show low explanatory value.</li>
+          <li>Exposure to weaker cohorts increases systemic tension and suppresses initiative.</li>
+          <li>Neutralization cost assessed as extreme; escalation is not recommended.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. Data Integrity -->
+    <section class="section" id="data-integrity">
+      <h2>8. Data Integrity</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Record Completeness</dt><dd>Partial</dd>
+            <dt>Source Reliability</dt><dd>High</dd>
+            <dt>Longitudinal Consistency</dt><dd>Stable</dd>
+            <dt>Deviation Drift</dt><dd>Minimal</dd>
+          </dl>
+        </div>
+
+        <div class="card">
+          <dl class="kv">
+            <dt>Cross-Reference Density</dt><dd>Moderate</dd>
+            <dt>Temporal Coverage</dt><dd>Continuous Window</dd>
+            <dt>Redaction Ratio</dt><dd>High</dd>
+            <dt>Predictive Confidence</dt><dd>High</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Clearance Restrictions -->
+    <section class="section" id="clearance">
+      <h2>9. Clearance Restrictions</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Origin chain details are restricted.</li>
+          <li>External records are sealed.</li>
+          <li>Cross-entity leverage analysis is unavailable at Tier Blue/Amber.</li>
+          <li>Containment protocols classified under Tier Black escalation only.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
+      <div>
+        <a href="subjects.html">Return to Subjects</a>
+        <span class="muted"> · </span>
+        <a href="system.html">Open System Registry</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
