@@ -12,6 +12,9 @@
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- HL Core (single include) -->
+  <script src="hl-core.js" defer></script>
+
   <style>
     :root{
       --line: rgba(255,255,255,.14);
@@ -253,6 +256,7 @@
   <span class="dot"></span>
   <span class="label">NODE: ACTIVE</span>
 </div>
+
   <main class="wrap">
     <div class="top">
       <a class="back" href="index.html">← Back</a>
@@ -319,8 +323,8 @@
         </div>
 
         <div class="status" aria-label="Session status">
-          <div><span class="k">Access Status:</span> <span class="v" id="stAccess">Active</span></div>
-          <div><span class="k">Clearance:</span> <span class="v" id="stClear">Blue</span></div>
+          <div><span class="k">Access Status:</span> <span class="v" data-hl="access-status">Restricted</span></div>
+          <div><span class="k">Clearance:</span> <span class="v" data-hl="clearance">None</span></div>
           <div><span class="k">Visibility:</span> <span class="v" id="stVis">Partial</span></div>
           <div><span class="k">Errors:</span> <span class="v" id="stErr">0</span></div>
         </div>
@@ -356,8 +360,6 @@
 
       // UI
       const sysMsg = document.getElementById('sysMsg');
-      const stAccess = document.getElementById('stAccess');
-      const stClear  = document.getElementById('stClear');
       const stVis    = document.getElementById('stVis');
       const stErr    = document.getElementById('stErr');
 
@@ -390,15 +392,12 @@
 
       // Rare minor anomaly (kept subtle; does not change routing)
       function computeAnomaly(){
-        // ~15% chance per load
         const roll = Math.random();
         if(roll < 0.15) return "Minor anomaly: timing drift";
         return "None detected";
       }
 
       function applyBootState(){
-        stAccess.textContent = "Active";
-        stClear.textContent  = "Blue";
         stVis.textContent    = "Partial";
         stErr.textContent    = "0";
 
@@ -408,14 +407,12 @@
         if(anom !== "None detected"){
           sysMsg.textContent = "MINOR ANOMALY LOGGED";
           monLine.textContent = "MINOR ANOMALY LOGGED";
-          // Keep errors at 0 (this is narrative, not a real fault)
         }else{
           const l = pick(lines);
           sysMsg.textContent = l;
           monLine.textContent = l;
         }
 
-        // small follow-up update (single)
         window.setTimeout(() => {
           const l2 = pick(lines);
           sysMsg.textContent = l2;
@@ -423,20 +420,17 @@
         }, 1800);
       }
 
-      // BFCache / style re-apply
       window.addEventListener('pageshow', function(){
         const v = body.getAttribute('data-bg') || 'interface';
         body.setAttribute('data-bg', '');
         void body.offsetHeight;
         body.setAttribute('data-bg', v);
-
         applyBootState();
       });
 
-      // initial
       applyBootState();
     })();
   </script>
-<script src="hl-core.js" defer></script>
+
 </body>
 </html>
