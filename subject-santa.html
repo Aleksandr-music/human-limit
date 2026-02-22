@@ -1,1 +1,550 @@
+<!-- subject-santa.html | Human Limit — Subject File (SANTA) | canonical structured dossier (9 sections / 124 fields) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SUBJECT: SANTA — Internal Registry</title>
 
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- HL Core (single include) -->
+  <script src="hl-core.js" defer></script>
+
+  <style>
+    :root{
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.9);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+      margin:18px 0 22px;
+    }
+    @media (max-width: 880px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    .h1{
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--hard);
+      margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .meta{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+    }
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .meta dl{ grid-template-columns: 1fr; }
+    }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
+
+    .portrait{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .portrait .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (max-width: 880px){
+      .grid2{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color:var(--hard);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .bullets li{ margin:8px 0; }
+    .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
+
+    .footer{
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
+  </style>
+</head>
+
+<body data-bg="subjects">
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Gateway</a>
+        <span class="muted">/</span>
+        <a href="subjects.html">Subjects</a>
+        <span class="muted">/</span>
+        <span>Subject File</span>
+      </div>
+      <div class="badge">Internal Registry</div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1 class="h1">SUBJECT: SANTA</h1>
+
+        <p class="tagline">
+          Misleading age signature. High physical output masked by non-threatening appearance. Observer-mode behavior dominant.
+        </p>
+
+        <div class="meta">
+          <dl>
+            <dt>System ID</dt><dd>S-AT-C-003449</dd>
+            <dt>Classification Tier</dt><dd>Group Asset</dd>
+            <dt>Current Status</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Restricted</dd>
+            <dt>Clearance Requirement</dt><dd>Black</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="portrait">
+        <img src="images/subjects/hl-subject-santa-01.png" alt="SUBJECT: SANTA">
+        <div class="note">
+          <span class="muted">Note:</span>
+          Registry image locked.
+        </div>
+      </div>
+    </div><!-- /hero -->
+
+    <!-- 1. Aggregated Dossier -->
+    <section class="section" id="aggregated-dossier">
+      <h2>1. Aggregated Dossier</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational State</dt><dd>Stable</dd>
+            <dt>Observation Flag</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Restricted</dd>
+            <dt>Containment Condition</dt><dd>Situational</dd>
+            <dt>External Influence</dt><dd>Limited</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identification Certainty</dt><dd>Confirmed</dd>
+            <dt>Identity Stability</dt><dd>Stable</dd>
+            <dt>Behavioral Variability</dt><dd>Low</dd>
+            <dt>Reaction Predictability</dt><dd>Limited</dd>
+            <dt>Decision-Making Mode</dt><dd>Reserved</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Emotional Influence</dt><dd>Suppressed</dd>
+            <dt>Response Speed</dt><dd>Contextual</dd>
+            <dt>Choice Stability</dt><dd>High</dd>
+            <dt>Stress Resistance</dt><dd>High</dd>
+            <dt>Uncertainty Tolerance</dt><dd>High</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Cognitive Consistency</dt><dd>Preserved</dd>
+            <dt>Deviation Risk</dt><dd>Present</dd>
+            <dt>Destabilization Tendency</dt><dd>Low</dd>
+            <dt>Threat Potential</dt><dd>High</dd>
+            <dt>Conflict Potential</dt><dd>Situational</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Betrayal Sensitivity</dt><dd>Limited</dd>
+            <dt>Intervention Threshold</dt><dd>High</dd>
+            <dt>Irreversibility Threshold</dt><dd>High</dd>
+            <dt>Formal Anomaly Status</dt><dd>Nonstandard Signature</dd>
+            <dt>Observed Behavior</dt><dd>Observer</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Deviation Classification</dt><dd>Incomplete</dd>
+            <dt>System Interpretation</dt><dd>Unresolved</dd>
+            <dt>Identity Conflict</dt><dd>Not Recorded</dd>
+            <dt>System Significance</dt><dd>Medium</dd>
+            <dt>System Ignorability</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Local Impact</dt><dd>Variable</dd>
+            <dt>Group Dynamics Influence</dt><dd>Unclear</dd>
+            <dt>Hierarchical Effects</dt><dd>Minimal</dd>
+            <dt>Strategic Value</dt><dd>Conditional</dd>
+            <dt>Long-Term Consequences</dt><dd>Unknown</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Interaction Type</dt><dd>Asymmetric</dd>
+            <dt>Direct Control</dt><dd>Absent</dd>
+            <dt>Indirect Influence</dt><dd>Limited</dd>
+            <dt>System Controllability</dt><dd>Conditional</dd>
+            <dt>System Forecast</dt><dd>Unclear Trajectory</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Registry Status (DE-DUPED) -->
+    <section class="section" id="registry-status">
+      <h2>2. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Control Condition</dt><dd>Indirect</dd>
+            <dt>Containment</dt><dd>Situational</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Exposure Tolerance</dt><dd>Medium</dd>
+            <dt>Authority Response</dt><dd>Restrained</dd>
+            <dt>Group Integration</dt><dd>Moderate</dd>
+            <dt>Deviation Alert</dt><dd>Watchlisted</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Risk & Stability Profile (DE-DUPED) -->
+    <section class="section" id="risk-stability">
+      <h2>3. Risk &amp; Stability Profile</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Predictability Index</dt><dd>Medium</dd>
+            <dt>Compliance Drift</dt><dd>Low</dd>
+            <dt>Stress Response</dt><dd>Controlled</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Escalation</dt><dd>Low</dd>
+            <dt>Strategic Capacity</dt><dd>Limited</dd>
+            <dt>Operational Use</dt><dd>Support / Observer</dd>
+            <dt>Failure Mode</dt><dd>Unknown</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Behavioral Observations -->
+    <section class="section" id="observations">
+      <h2>4. Behavioral Observations</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Misleading age signature reduces threat detection; effect is persistent across observers.</li>
+          <li>Speech output minimal; subject primarily listens and watches.</li>
+          <li>Facial readability low; internal state remains non-transparent.</li>
+          <li>Physical output remains high despite “elderly” presentation; does not degrade under group training load.</li>
+          <li>Does not pursue leadership, approval, or recognition; maintains autonomous posture.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5. Recorded Patterns -->
+    <section class="section" id="patterns">
+      <h2>5. Recorded Patterns</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Engagement Pattern</dt><dd>Selective / Efficient</dd>
+            <dt>Decision Timing Model</dt><dd>Delayed Commit</dd>
+            <dt>Trust Formation Tendency</dt><dd>Minimal Disclosure</dd>
+            <dt>Authority Negotiation</dt><dd>Neutral</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Group Utility</dt><dd>Situational</dd>
+            <dt>Influence Vector</dt><dd>Presence / Uncertainty</dd>
+            <dt>Aggression Trigger Points</dt><dd>Unknown</dd>
+            <dt>Persistence Under Fatigue</dt><dd>High</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Known Incidents / Records -->
+    <section class="section" id="incidents">
+      <h2>6. Known Incidents / Records</h2>
+      <div class="card">
+        <div class="incident">
+          <div class="code">HL-IR-03-02</div>
+          <div class="detail">
+            Subject presence produced repeated underestimation events during evaluation cycles.
+            <div class="row">Severity: Moderate · Outcome: Recorded · Note: perception-mask effect persistent</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-03-06</div>
+          <div class="detail">
+            Physical performance matched group baseline despite non-threatening phenotype presentation.
+            <div class="row">Severity: Moderate · Outcome: Verified · Note: output does not correlate with visual age signature</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-03-09</div>
+          <div class="detail">
+            Background origin chain withheld by design; subject history not disclosed.
+            <div class="row">Severity: Administrative · Outcome: Redacted · Note: intentional opacity maintained</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. System Remarks -->
+    <section class="section" id="system-remarks">
+      <h2>7. System Remarks</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Primary value is perceptual disruption: subject reliably lowers opponent vigilance.</li>
+          <li>Silence and low self-disclosure preserve unpredictability; standard profiling yields limited gain.</li>
+          <li>Do not treat “elderly” presentation as a safety indicator; mismatch is structural.</li>
+          <li>Origin hypothesis noted (UK/IE) but not confirmed; treat as unverified.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. Data Integrity -->
+    <section class="section" id="data-integrity">
+      <h2>8. Data Integrity</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Record Completeness</dt><dd>Fragmented</dd>
+            <dt>Source Reliability</dt><dd>Mixed</dd>
+            <dt>Cross-Reference Density</dt><dd>Medium</dd>
+            <dt>Temporal Coverage</dt><dd>Partial Window</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Alias Stability</dt><dd>Stable</dd>
+            <dt>Context Drift Risk</dt><dd>Medium</dd>
+            <dt>Redaction Ratio</dt><dd>High</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Clearance Restrictions -->
+    <section class="section" id="clearance">
+      <h2>9. Clearance Restrictions</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Full subject origin and identity chain is restricted.</li>
+          <li>Pre-system record history is intentionally unpopulated.</li>
+          <li>Cross-subject linkage implications require Tier Black escalation.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
+      <div>
+        <a href="subjects.html">Return to Subjects</a>
+        <span class="muted"> · </span>
+        <a href="system.html">Open System Registry</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
