@@ -127,10 +127,11 @@
 </head>
 
 <body data-bg="system">
-<div class="sys-node" aria-hidden="true">
-  <span class="dot"></span>
-  <span class="label">NODE: ACTIVE</span>
-</div>
+  <div class="sys-node" aria-hidden="true">
+    <span class="dot"></span>
+    <span class="label">NODE: ACTIVE</span>
+  </div>
+
   <main class="wrap">
     <div class="top">
       <a class="back" href="interface.html">← Back</a>
@@ -142,22 +143,42 @@
       <section class="panel" aria-label="System overview">
         <div class="row" aria-label="System status">
           <div><span class="k">Core:</span> <span class="v">Online</span></div>
-          <div><span class="k">Integrity:</span> <span class="v">Stable</span></div>
-          <div><span class="k">Policy Layer:</span> <span class="v">Active</span></div>
+          <div><span class="k">Runtime State:</span> <span class="v">Stable</span></div>
+
+          <div><span class="k">Integrity:</span> <span class="v">Nominal</span></div>
+          <div><span class="k">Environment:</span> <span class="v">Restricted</span></div>
+
+          <div><span class="k">Policy Layer:</span> <span class="v">Enforced</span></div>
+          <div><span class="k">Visibility Policy:</span> <span class="v">Active</span></div>
+
+          <div><span class="k">Registry Access:</span> <span class="v">Partial</span></div>
+          <div><span class="k">Index Integrity:</span> <span class="v">Fragmented</span></div>
+
+          <div><span class="k">Session Scope:</span> <span class="v">Local</span></div>
+          <div><span class="k">Trace:</span> <span class="v">Active</span></div>
+
+          <div><span class="k">Command Channel:</span> <span class="v">Available</span></div>
           <div><span class="k">Audit:</span> <span class="v">Clean</span></div>
         </div>
 
         <div class="list" aria-label="Modules">
           <div class="item"><span class="arrow">&gt;</span><span>Registry lock: engaged</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>Mutation state: locked</span></div>
           <div class="item"><span class="arrow">&gt;</span><span>Identity resolution: suppressed</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>Disclosure model: conditional</span></div>
           <div class="item"><span class="arrow">&gt;</span><span>Access filters: enforced</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>Interpretation layer: tiered</span></div>
           <div class="item"><span class="arrow">&gt;</span><span>Telemetry: restricted</span></div>
-          <div class="item"><span class="arrow">&gt;</span><span>World parameters: partial visibility</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>Monitoring: silent</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>World parameters: visible by authorization</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>Index drift: within tolerance</span></div>
+          <div class="item"><span class="arrow">&gt;</span><span>Last sync event: withheld</span></div>
         </div>
 
         <div class="footer" aria-label="Note">
-          Navigation is centralized in <span class="v" style="font-size:12px">System Interface</span>.
-          This node exposes state only. No routing permissions.
+          Navigation is centralized in <span class="v" style="font-size:12px">System Interface</span>.<br>
+          This node exposes state only. No routing permissions.<br>
+          No personal identity is stored or exposed by this layer.
         </div>
       </section>
     </div>
