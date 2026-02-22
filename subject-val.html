@@ -1,4 +1,4 @@
-<!-- subject-val.html | Human Limit — Subject File (VAL) | unified registry layout -->
+<!-- subject-val.html | Human Limit — Subject File (VAL) | canonical layout matched to ALEX -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>SUBJECT: VAL — Internal Registry</title>
 
+  <!-- HL clearance gate -->
   <meta name="hl-requires" content="BLUE">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +14,253 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- HL Core (single include) -->
   <script src="hl-core.js" defer></script>
+
+  <style>
+    :root{
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.9);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+      margin:18px 0 22px;
+    }
+    @media (max-width: 880px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    .h1{
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--hard);
+      margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .meta{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+    }
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .meta dl{ grid-template-columns: 1fr; }
+    }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
+
+    .portrait{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .portrait .ph{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      border-radius:12px;
+      border:1px dashed rgba(255,255,255,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--faint);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .portrait .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (max-width: 880px){
+      .grid2{ grid-template-columns:1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color:var(--hard);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .bullets li{ margin:8px 0; }
+    .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
+
+    .footer{
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
+  </style>
 </head>
 
 <body data-bg="subjects">
@@ -56,9 +303,9 @@
           Registry image locked.
         </div>
       </div>
-    </div>
+    </div><!-- /hero -->
 
-    <section class="section">
+    <section class="section" id="aggregated-dossier">
       <h2>1. Aggregated Dossier</h2>
 
       <div class="grid2">
@@ -66,115 +313,215 @@
           <dl class="kv">
             <dt>Operational State</dt><dd>Unstable</dd>
             <dt>Observation Flag</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
             <dt>Containment Condition</dt><dd>Standard</dd>
             <dt>External Influence</dt><dd>High</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identification Certainty</dt><dd>Provisional</dd>
+            <dt>Identity Stability</dt><dd>Weak</dd>
+            <dt>Behavioral Variability</dt><dd>High</dd>
+            <dt>Reaction Predictability</dt><dd>Low</dd>
+            <dt>Decision-Making Mode</dt><dd>Reactive</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Emotional Influence</dt><dd>Uncontrolled</dd>
+            <dt>Response Speed</dt><dd>Delayed</dd>
+            <dt>Choice Stability</dt><dd>Low</dd>
+            <dt>Stress Resistance</dt><dd>Low</dd>
+            <dt>Uncertainty Tolerance</dt><dd>Low</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Cognitive Consistency</dt><dd>Degraded</dd>
+            <dt>Deviation Risk</dt><dd>Elevated</dd>
+            <dt>Destabilization Tendency</dt><dd>High</dd>
             <dt>Threat Potential</dt><dd>Low</dd>
+            <dt>Conflict Potential</dt><dd>Incidental</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Betrayal Sensitivity</dt><dd>High</dd>
+            <dt>Intervention Threshold</dt><dd>Low</dd>
+            <dt>Irreversibility Threshold</dt><dd>Low</dd>
+            <dt>Formal Anomaly Status</dt><dd>Within Norm</dd>
+            <dt>Observed Behavior</dt><dd>Avoidant</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Deviation Classification</dt><dd>Low-Value Asset</dd>
+            <dt>System Interpretation</dt><dd>Disposable</dd>
+            <dt>Identity Conflict</dt><dd>Not Observed</dd>
+            <dt>System Significance</dt><dd>Low</dd>
+            <dt>System Ignorability</dt><dd>Permissible</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Local Impact</dt><dd>Minor</dd>
+            <dt>Group Dynamics Influence</dt><dd>Destabilizing</dd>
+            <dt>Hierarchical Effects</dt><dd>Negligible</dd>
+            <dt>Strategic Value</dt><dd>Low</dd>
+            <dt>Long-Term Consequences</dt><dd>Unlikely</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Interaction Type</dt><dd>Dependent</dd>
+            <dt>Direct Control</dt><dd>Present</dd>
+            <dt>Indirect Influence</dt><dd>High</dd>
+            <dt>System Controllability</dt><dd>High</dd>
+            <dt>System Forecast</dt><dd>Early Termination Likely</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="registry-status">
       <h2>2. Registry Status</h2>
-
       <div class="grid2">
         <div class="card">
           <dl class="kv">
             <dt>Control Condition</dt><dd>Indirect</dd>
-            <dt>Integration Stability</dt><dd>Weak</dd>
-            <dt>Replacement Priority</dt><dd>Permissible</dd>
-            <dt>System Confidence</dt><dd>Low</dd>
+            <dt>Containment</dt><dd>Standard</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Exposure Tolerance</dt><dd>Low</dd>
+            <dt>Authority Response</dt><dd>Compliant</dd>
+            <dt>Group Integration</dt><dd>Low</dd>
+            <dt>Deviation Alert</dt><dd>Low-Grade</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="risk-stability">
       <h2>3. Risk &amp; Stability Profile</h2>
-
       <div class="grid2">
         <div class="card">
           <dl class="kv">
             <dt>Predictability Index</dt><dd>Low</dd>
-            <dt>Stress Resistance</dt><dd>Low</dd>
-            <dt>Failure Probability</dt><dd>Elevated</dd>
-            <dt>Behavioral Drift</dt><dd>Observed</dd>
+            <dt>Compliance Drift</dt><dd>Frequent</dd>
+            <dt>Stress Response</dt><dd>Amplified</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Escalation</dt><dd>Low</dd>
+            <dt>Strategic Capacity</dt><dd>Low</dd>
+            <dt>Operational Use</dt><dd>Decoy / Diversion</dd>
+            <dt>Failure Mode</dt><dd>Panic / Exposure</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="observations">
       <h2>4. Behavioral Observations</h2>
       <div class="card">
         <ul class="bullets">
           <li>Displays elevated anxiety markers during routine interaction cycles.</li>
-          <li>Exhibits defensive social adaptation behavior.</li>
-          <li>Avoidance patterns dominate conflict scenarios.</li>
-          <li>Physiological instability visible under observation.</li>
+          <li>Strives for approval; adapts speech to perceived authority expectations.</li>
+          <li>Avoidance patterns dominate conflict scenarios; escalation triggers panic response.</li>
+          <li>Visible tremor during conversation; unstable affect under scrutiny.</li>
+          <li>Nonstandard smiling behavior used as defense and social camouflage.</li>
         </ul>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="patterns">
       <h2>5. Recorded Patterns</h2>
-
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Conflict Engagement</dt><dd>Avoidant</dd>
-            <dt>Decision Model</dt><dd>Reactive</dd>
-            <dt>Authority Response</dt><dd>Compliant</dd>
-            <dt>Group Influence</dt><dd>Negligible</dd>
+            <dt>Conflict Engagement Pattern</dt><dd>Avoidant</dd>
+            <dt>Decision Timing Model</dt><dd>Immediate Reaction</dd>
+            <dt>Trust Formation Tendency</dt><dd>Fast / Unstable</dd>
+            <dt>Authority Negotiation</dt><dd>Compliant</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Group Utility</dt><dd>Low</dd>
+            <dt>Influence Vector</dt><dd>Dependency</dd>
+            <dt>Aggression Trigger Points</dt><dd>Rejection / Threat</dd>
+            <dt>Persistence Under Fatigue</dt><dd>Low</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="incidents">
       <h2>6. Known Incidents / Records</h2>
       <div class="card">
         <div class="incident">
           <div class="code">HL-IR-03-02</div>
           <div class="detail">
             Subject exhibited stress response amplification during evaluation cycle.
-            <div class="row">Severity: Low · Outcome: Logged</div>
+            <div class="row">Severity: Low · Outcome: Logged · Note: baseline instability under observation</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="system-remarks">
       <h2>7. System Remarks</h2>
       <div class="card">
         <ul class="bullets">
-          <li>System longevity probability below cohort median.</li>
-          <li>No strategic dependency registered.</li>
-          <li>Monitoring maintained for behavioral variance tracking.</li>
+          <li>System assigns subject as low-value and replaceable; no strategic dependency registered.</li>
+          <li>Primary utility: diversion / decoy exposure profile under pursuit pressure.</li>
+          <li>Long-term survivability probability below cohort median.</li>
+          <li>Monitoring maintained for behavioral variance logging only.</li>
         </ul>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="data-integrity">
       <h2>8. Data Integrity</h2>
-
       <div class="grid2">
         <div class="card">
           <dl class="kv">
             <dt>Record Completeness</dt><dd>Partial</dd>
             <dt>Source Reliability</dt><dd>Mixed</dd>
+            <dt>Cross-Reference Density</dt><dd>Low</dd>
             <dt>Temporal Coverage</dt><dd>Fragmented</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Alias Stability</dt><dd>Stable</dd>
+            <dt>Context Drift Risk</dt><dd>Low</dd>
+            <dt>Redaction Ratio</dt><dd>High</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="clearance">
       <h2>9. Clearance Restrictions</h2>
       <div class="card">
         <ul class="bullets">
           <li>Extended psychological diagnostics restricted.</li>
           <li>System ranking rationale not exposed.</li>
+          <li>Long-range operational logs withheld under Tier Amber/Black escalation.</li>
         </ul>
       </div>
     </section>
@@ -183,6 +530,8 @@
       <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
       <div>
         <a href="subjects.html">Return to Subjects</a>
+        <span class="muted"> · </span>
+        <a href="system.html">Open System Registry</a>
       </div>
     </div>
 
