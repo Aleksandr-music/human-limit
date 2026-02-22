@@ -188,9 +188,13 @@
 
       const url = new URL(window.location.href);
 
-      // NEW (canonical): supports ?requires=BLACK&next=<encoded_url>
+      // NEW (canonical): supports ?requires=BLACK&next=<url>
       const requires = (url.searchParams.get("requires") || "").toUpperCase();
-      const next = url.searchParams.get("next") || "";
+
+      // IMPORTANT:
+      // URLSearchParams already decodes percent-encoding.
+      // But we support legacy/over-encoded cases safely.
+      const nextRaw = url.searchParams.get("next") || "";
 
       // BACKWARD COMPAT: supports old ?need=BLACK&from=SUBJECT-ALEX.HTML
       const needLegacy = (url.searchParams.get("need") || "").toUpperCase();
@@ -198,20 +202,24 @@
 
       const need = requires || needLegacy;
 
-      function safeDecode(s){
-        try { return decodeURIComponent(String(s || "")); }
-        catch(e){ return String(s || ""); }
+      function maybeDecodeOnce(s){
+        const str = String(s || "");
+        // Decode only if it still contains %XX sequences (i.e., looks encoded).
+        if (!/%[0-9A-Fa-f]{2}/.test(str)) return str;
+        try { return decodeURIComponent(str); }
+        catch(e){ return str; }
       }
 
+      const nextUrl = maybeDecodeOnce(nextRaw);
+
       function requestedLabel(){
-        const decoded = safeDecode(next);
-        if (decoded){
+        if (nextUrl){
           try{
-            const u = new URL(decoded, window.location.href);
+            const u = new URL(nextUrl, window.location.href);
             const name = (u.pathname.split("/").pop() || "").toUpperCase();
             return name || "UNKNOWN";
           }catch(e){
-            const p = decoded.split("?")[0].split("#")[0];
+            const p = nextUrl.split("?")[0].split("#")[0];
             const name = (p.split("/").pop() || "").toUpperCase();
             return name || "UNKNOWN";
           }
@@ -259,12 +267,12 @@
         // After auth:
         // - if next exists -> go there
         // - else -> interface
-        const go = safeDecode(next) || "interface.html";
+        const go = nextUrl || "interface.html";
 
         write([
           "> AUTHORIZED",
           "> CLEARANCE: " + set,
-          "> ROUTE: " + (safeDecode(next) ? "RETURN (NEXT)" : "INTERFACE")
+          "> ROUTE: " + (nextUrl ? "RETURN (NEXT)" : "INTERFACE")
         ], true);
 
         setTimeout(() => { window.location.href = go; }, 450);
