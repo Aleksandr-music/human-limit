@@ -83,6 +83,12 @@
     }
     .pill:hover{ border-color: rgba(255,255,255,.28); color:rgba(255,255,255,.86); }
 
+    .pill[aria-disabled="true"]{
+      opacity:.55;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
     body[data-world-mode="visible"] .pill[data-mode="visible"],
     body[data-world-mode="partial"] .pill[data-mode="partial"]{
       color:rgba(255,255,255,.92);
@@ -160,7 +166,7 @@
   </style>
 </head>
 
-<body data-bg="world" data-world-mode="partial">
+<body data-bg="world" data-world-mode="visible">
 
   <div class="sys-node" aria-hidden="true">
     <span class="dot"></span>
@@ -170,15 +176,16 @@
   <main class="wrap">
 
     <header class="topbar">
-<a class="back" href="interface.html">← BACK</a>
+      <a class="back" href="interface.html">← BACK</a>
+
       <div class="titleblock">
         <h1 class="h1">WORLD</h1>
         <p class="tagline">Global layer. Projection depends on visibility mode.</p>
       </div>
 
       <div class="pills" aria-label="Visibility mode">
-        <button class="pill" type="button" data-mode="visible" aria-pressed="false">VISIBLE</button>
-        <button class="pill" type="button" data-mode="partial" aria-pressed="true">PARTIAL</button>
+        <button class="pill" type="button" data-mode="visible" aria-pressed="true">VISIBLE</button>
+        <button class="pill" type="button" data-mode="partial" aria-pressed="false">PARTIAL</button>
       </div>
     </header>
 
@@ -410,9 +417,18 @@ Nothing fully exits the model.</p>
       const pills = Array.from(document.querySelectorAll(".pill[data-mode]"));
       const grid = document.getElementById("worldGrid");
 
+      // Access gate for VISIBLE mode (future-proof)
+      function canUseVisible(){
+        return (window.HL && typeof window.HL.has === "function" && window.HL.has("BLACK"));
+      }
+
       function readMode(){
         const saved = (localStorage.getItem(MODE_KEY) || "").toLowerCase();
-        return (saved === "visible" || saved === "partial") ? saved : "partial";
+        if(saved === "visible" || saved === "partial") return saved;
+
+        // Default depends on clearance:
+        // BLACK => visible, else partial
+        return canUseVisible() ? "visible" : "partial";
       }
 
       function syncRedacted(mode){
@@ -444,16 +460,27 @@ Projection collapsed to partial layer.</p>
       }
 
       function applyMode(mode){
-        const m = (mode === "visible") ? "visible" : "partial";
+        let m = (mode === "visible") ? "visible" : "partial";
+
+        // enforce access: if no BLACK, force partial
+        if(m === "visible" && !canUseVisible()) m = "partial";
+
         document.body.setAttribute("data-world-mode", m);
         localStorage.setItem(MODE_KEY, m);
 
         pills.forEach(btn => {
-          const on = btn.getAttribute("data-mode") === m;
+          const btnMode = btn.getAttribute("data-mode");
+          const on = btnMode === m;
           btn.setAttribute("aria-pressed", on ? "true" : "false");
         });
 
         syncRedacted(m);
+      }
+
+      // Disable VISIBLE pill if not allowed (future-proof)
+      const visibleBtn = document.querySelector('.pill[data-mode="visible"]');
+      if(visibleBtn && !canUseVisible()){
+        visibleBtn.setAttribute("aria-disabled", "true");
       }
 
       pills.forEach(btn => {
