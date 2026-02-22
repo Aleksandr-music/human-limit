@@ -346,7 +346,7 @@
         <div><span class="dim">Session Node:</span> <span class="ok">INTERFACE</span></div>
         <div><span class="dim">Channel:</span> <span class="ok">Stable</span></div>
         <div><span class="dim">Latency:</span> <span class="ok">Nominal</span></div>
-        <div><span class="dim">Visibility Lock:</span> <span class="ok">Engaged</span></div>
+        <div><span class="dim">Visibility Lock:</span> <span class="ok" id="monLock">—</span></div>
         <div><span class="dim">Anomalies:</span> <span class="ok" id="monAnom">None detected</span></div>
         <div><span class="dim">System line:</span> <span class="ok" id="monLine">—</span></div>
         <div><span class="dim">Note:</span> <span class="ok">Monitor is a mode. Not a destination.</span></div>
@@ -360,15 +360,16 @@
 
       // UI
       const sysMsg = document.getElementById('sysMsg');
-      const stVis    = document.getElementById('stVis');
-      const stErr    = document.getElementById('stErr');
+      const stVis  = document.getElementById('stVis');
+      const stErr  = document.getElementById('stErr');
 
       // Monitor
-      const monitor = document.getElementById('monitor');
-      const openBtn = document.getElementById('openMonitor');
+      const monitor  = document.getElementById('monitor');
+      const openBtn  = document.getElementById('openMonitor');
       const closeBtn = document.getElementById('closeMonitor');
-      const monAnom = document.getElementById('monAnom');
-      const monLine = document.getElementById('monLine');
+      const monAnom  = document.getElementById('monAnom');
+      const monLine  = document.getElementById('monLine');
+      const monLock  = document.getElementById('monLock');
 
       function openMonitor(){ monitor.classList.add('is-open'); }
       function closeMonitor(){ monitor.classList.remove('is-open'); }
@@ -390,16 +391,25 @@
 
       function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
-      // Rare minor anomaly (kept subtle; does not change routing)
       function computeAnomaly(){
         const roll = Math.random();
         if(roll < 0.15) return "Minor anomaly: timing drift";
         return "None detected";
       }
 
+      function computeVisibility(){
+        // Visible only at BLACK; else Partial
+        if(window.HL && typeof window.HL.has === "function" && window.HL.has("BLACK")) return "Visible";
+        return "Partial";
+      }
+
       function applyBootState(){
-        stVis.textContent    = "Partial";
-        stErr.textContent    = "0";
+        const vis = computeVisibility();
+        stVis.textContent = vis;
+        stErr.textContent = "0";
+
+        // Lock label follows visibility
+        if(monLock) monLock.textContent = (vis === "Visible") ? "Released" : "Engaged";
 
         const anom = computeAnomaly();
         monAnom.textContent = anom;
@@ -428,6 +438,7 @@
         applyBootState();
       });
 
+      // Run once after hl-core has had a chance to attach HL (defer + DOM order safe enough)
       applyBootState();
     })();
   </script>
