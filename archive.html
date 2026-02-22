@@ -1,4 +1,4 @@
-<!-- archive.html | Human Limit — Archive (canonical: 24 records, BLACK clearance, given names only) -->
+<!-- archive.html | Human Limit — Archive (canonical: 40 records, BLACK clearance, given names only) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -58,6 +58,7 @@
       text-transform:uppercase;
       white-space:nowrap;
     }
+    .back:hover{ color:rgba(255,255,255,.92); }
 
     h1{
       margin:0;
@@ -68,7 +69,52 @@
       flex:1;
     }
 
-    .grid{
+    .grid{ display:grid; gap:14px; }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px 16px;
+      background:rgba(0,0,0,.14);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px 14px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    @media (max-width: 720px){
+      .row{ grid-template-columns: 1fr; }
+    }
+
+    .k{ color:var(--faint); }
+    .v{ color:var(--hard); letter-spacing:.06em; text-transform:uppercase; }
+
+    .list{
+      margin-top:12px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:12px;
+      display:grid;
+      gap:10px;
+      font-size:12px;
+      color:rgba(255,255,255,.66);
+      line-height:1.7;
+    }
+    .item{ display:flex; gap:10px; align-items:flex-start; }
+    .arrow{ color:var(--faint); }
+
+    .footer{
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:12px;
+      font-size:12px;
+      color:rgba(255,255,255,.58);
+      line-height:1.7;
+    }
+
+    .records{
       display:grid;
       gap:10px;
     }
@@ -80,17 +126,15 @@
       font-size:12px;
       line-height:1.6;
       color:rgba(255,255,255,.70);
-      background:rgba(0,0,0,.16);
+      background:rgba(0,0,0,.12);
     }
 
     .id{ color:var(--hard); letter-spacing:.08em; }
-    .k{ color:var(--faint); }
-    .v{ color:var(--hard); text-transform:uppercase; letter-spacing:.06em; }
-
     .redacted{
       margin-top:6px;
       color:rgba(255,255,255,.46);
       letter-spacing:.12em;
+      text-transform:uppercase;
     }
   </style>
 </head>
@@ -108,33 +152,82 @@
     <span aria-hidden="true" style="width:60px"></span>
   </div>
 
-  <section class="grid" aria-label="Archive records">
+  <div class="grid">
+    <!-- PREVIEW / HEADER INFO (as discussed: before records) -->
+    <section class="panel" aria-label="Archive overview">
+      <div class="row" aria-label="Archive status">
+        <div><span class="k">Node:</span> <span class="v">Archive</span></div>
+        <div><span class="k">Clearance Required:</span> <span class="v">Black</span></div>
+        <div><span class="k">Scope:</span> <span class="v">Subjects</span></div>
+        <div><span class="k">Records:</span> <span class="v">40</span></div>
+        <div><span class="k">Status Model:</span> <span class="v">Inactive</span></div>
+        <div><span class="k">Index:</span> <span class="v">Read-only</span></div>
+      </div>
 
-    <div class="rec"><span class="id">ID S-AT-C-002899</span><br><span class="k">Registry Name:</span> <span class="v">Lukas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003054</span><br><span class="k">Registry Name:</span> <span class="v">Ethan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003112</span><br><span class="k">Registry Name:</span> <span class="v">Noah</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003287</span><br><span class="k">Registry Name:</span> <span class="v">Daniel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003301</span><br><span class="k">Registry Name:</span> <span class="v">Oliver</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003366</span><br><span class="k">Registry Name:</span> <span class="v">Mateo</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003418</span><br><span class="k">Registry Name:</span> <span class="v">Adrian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003502</span><br><span class="k">Registry Name:</span> <span class="v">Jonas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003577</span><br><span class="k">Registry Name:</span> <span class="v">Marcus</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003601</span><br><span class="k">Registry Name:</span> <span class="v">Felix</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003744</span><br><span class="k">Registry Name:</span> <span class="v">Victor</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003812</span><br><span class="k">Registry Name:</span> <span class="v">Leonard</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-003905</span><br><span class="k">Registry Name:</span> <span class="v">Samuel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004021</span><br><span class="k">Registry Name:</span> <span class="v">Thomas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004118</span><br><span class="k">Registry Name:</span> <span class="v">Patrick</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004203</span><br><span class="k">Registry Name:</span> <span class="v">Hugo</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004287</span><br><span class="k">Registry Name:</span> <span class="v">Nathaniel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004344</span><br><span class="k">Registry Name:</span> <span class="v">Arthur</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004402</span><br><span class="k">Registry Name:</span> <span class="v">Julian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004518</span><br><span class="k">Registry Name:</span> <span class="v">Benjamin</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004603</span><br><span class="k">Registry Name:</span> <span class="v">Adrian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004744</span><br><span class="k">Registry Name:</span> <span class="v">Michael</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
-    <div class="rec"><span class="id">ID S-AT-C-004801</span><br><span class="k">Registry Name:</span> <span class="v">Robert</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="list" aria-label="Policy notes">
+        <div class="item"><span class="arrow">&gt;</span><span>Registry names are single-token identifiers (given name only).</span></div>
+        <div class="item"><span class="arrow">&gt;</span><span>Records moved to Archive imply status transition: INACTIVE.</span></div>
+        <div class="item"><span class="arrow">&gt;</span><span>Expanded fields require higher clearance and remain redacted.</span></div>
+        <div class="item"><span class="arrow">&gt;</span><span>Deletion is not permitted. Persistence is enforced.</span></div>
+      </div>
 
-  </section>
+      <div class="footer" aria-label="Notice">
+        This node exposes archived registry headers only.<br>
+        Detailed subject telemetry and incident chains are restricted beyond this layer.
+      </div>
+    </section>
+
+    <!-- RECORDS -->
+    <section class="records" aria-label="Archive records">
+      <div class="rec"><span class="id">ID S-AT-C-002899</span><br><span class="k">Registry Name:</span> <span class="v">Lukas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002903</span><br><span class="k">Registry Name:</span> <span class="v">Ethan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002918</span><br><span class="k">Registry Name:</span> <span class="v">Noah</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002927</span><br><span class="k">Registry Name:</span> <span class="v">Daniel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002935</span><br><span class="k">Registry Name:</span> <span class="v">Oliver</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002948</span><br><span class="k">Registry Name:</span> <span class="v">Mateo</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002957</span><br><span class="k">Registry Name:</span> <span class="v">Adrian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002963</span><br><span class="k">Registry Name:</span> <span class="v">Jonas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+      <div class="rec"><span class="id">ID S-AT-C-002971</span><br><span class="k">Registry Name:</span> <span class="v">Marcus</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002982</span><br><span class="k">Registry Name:</span> <span class="v">Felix</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-002995</span><br><span class="k">Registry Name:</span> <span class="v">Victor</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003004</span><br><span class="k">Registry Name:</span> <span class="v">Samuel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003011</span><br><span class="k">Registry Name:</span> <span class="v">Thomas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003022</span><br><span class="k">Registry Name:</span> <span class="v">Patrick</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003037</span><br><span class="k">Registry Name:</span> <span class="v">Hugo</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003041</span><br><span class="k">Registry Name:</span> <span class="v">Arthur</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+      <div class="rec"><span class="id">ID S-AT-C-003056</span><br><span class="k">Registry Name:</span> <span class="v">Julian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003063</span><br><span class="k">Registry Name:</span> <span class="v">Benjamin</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003071</span><br><span class="k">Registry Name:</span> <span class="v">Michael</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003084</span><br><span class="k">Registry Name:</span> <span class="v">Gabriel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003099</span><br><span class="k">Registry Name:</span> <span class="v">Henry</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003108</span><br><span class="k">Registry Name:</span> <span class="v">Logan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003117</span><br><span class="k">Registry Name:</span> <span class="v">Caleb</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+      <div class="rec"><span class="id">ID S-AT-C-003124</span><br><span class="k">Registry Name:</span> <span class="v">Connor</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003131</span><br><span class="k">Registry Name:</span> <span class="v">Owen</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003145</span><br><span class="k">Registry Name:</span> <span class="v">Ryan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003152</span><br><span class="k">Registry Name:</span> <span class="v">Jack</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003168</span><br><span class="k">Registry Name:</span> <span class="v">Liam</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003177</span><br><span class="k">Registry Name:</span> <span class="v">Isaac</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003188</span><br><span class="k">Registry Name:</span> <span class="v">Adam</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+      <div class="rec"><span class="id">ID S-AT-C-003197</span><br><span class="k">Registry Name:</span> <span class="v">Aaron</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003205</span><br><span class="k">Registry Name:</span> <span class="v">Andrew</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003214</span><br><span class="k">Registry Name:</span> <span class="v">Jason</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003223</span><br><span class="k">Registry Name:</span> <span class="v">Kevin</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003236</span><br><span class="k">Registry Name:</span> <span class="v">Eric</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003244</span><br><span class="k">Registry Name:</span> <span class="v">Dylan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003257</span><br><span class="k">Registry Name:</span> <span class="v">Mason</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+      <div class="rec"><span class="id">ID S-AT-C-003268</span><br><span class="k">Registry Name:</span> <span class="v">Wyatt</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003276</span><br><span class="k">Registry Name:</span> <span class="v">Jordan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003287</span><br><span class="k">Registry Name:</span> <span class="v">Nathan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+      <div class="rec"><span class="id">ID S-AT-C-003296</span><br><span class="k">Registry Name:</span> <span class="v">Scott</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+    </section>
+  </div>
 </main>
 </body>
 </html>
