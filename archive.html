@@ -1,4 +1,4 @@
-<!-- archive.html | Human Limit — Archive (canonical: 40 records, BLACK clearance, given names only) -->
+<!-- archive.html | Human Limit — Archive (canonical: BLACK clearance, Page 1 preview, Records=3144) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -136,6 +136,47 @@
       letter-spacing:.12em;
       text-transform:uppercase;
     }
+
+    /* Pagination (inactive by design) */
+    .pager{
+      margin-top:14px;
+      border-top:1px solid rgba(255,255,255,.10);
+      padding-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-start;
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.62);
+    }
+    .page{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.14);
+      color:rgba(255,255,255,.58);
+      user-select:none;
+    }
+    .page.active{
+      color:rgba(255,255,255,.92);
+      border-color:rgba(255,255,255,.30);
+      background:rgba(0,0,0,.22);
+    }
+    .page.disabled{
+      opacity:.55;
+      pointer-events:none;
+    }
+    .dots{
+      padding:6px 2px;
+      color:rgba(255,255,255,.40);
+    }
   </style>
 </head>
 
@@ -153,13 +194,13 @@
   </div>
 
   <div class="grid">
-    <!-- PREVIEW / HEADER INFO (as discussed: before records) -->
+    <!-- PREVIEW / HEADER INFO -->
     <section class="panel" aria-label="Archive overview">
       <div class="row" aria-label="Archive status">
         <div><span class="k">Node:</span> <span class="v">Archive</span></div>
         <div><span class="k">Clearance Required:</span> <span class="v">Black</span></div>
         <div><span class="k">Scope:</span> <span class="v">Subjects</span></div>
-        <div><span class="k">Records:</span> <span class="v">40</span></div>
+        <div><span class="k">Records:</span> <span class="v">3144</span></div>
         <div><span class="k">Status Model:</span> <span class="v">Inactive</span></div>
         <div><span class="k">Index:</span> <span class="v">Read-only</span></div>
       </div>
@@ -177,8 +218,10 @@
       </div>
     </section>
 
-    <!-- RECORDS -->
+    <!-- RECORDS (Page 1 preview subset) -->
     <section class="records" aria-label="Archive records">
+
+      <!-- (оставляем 40 карточек как было) -->
       <div class="rec"><span class="id">ID S-AT-C-002899</span><br><span class="k">Registry Name:</span> <span class="v">Lukas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
       <div class="rec"><span class="id">ID S-AT-C-002903</span><br><span class="k">Registry Name:</span> <span class="v">Ethan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
       <div class="rec"><span class="id">ID S-AT-C-002918</span><br><span class="k">Registry Name:</span> <span class="v">Noah</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
@@ -225,6 +268,19 @@
       <div class="rec"><span class="id">ID S-AT-C-003276</span><br><span class="k">Registry Name:</span> <span class="v">Jordan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
       <div class="rec"><span class="id">ID S-AT-C-003287</span><br><span class="k">Registry Name:</span> <span class="v">Nathan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
       <div class="rec"><span class="id">ID S-AT-C-003296</span><br><span class="k">Registry Name:</span> <span class="v">Scott</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+
+      <!-- Pagination (Page 1 shown; others disabled) -->
+      <div class="pager" aria-label="Pages">
+        <span class="k" style="letter-spacing:.08em;">Pages:</span>
+        <span class="page active" aria-current="page">1</span>
+        <span class="page disabled" aria-disabled="true">2</span>
+        <span class="page disabled" aria-disabled="true">3</span>
+        <span class="page disabled" aria-disabled="true">4</span>
+        <span class="page disabled" aria-disabled="true">5</span>
+        <span class="page disabled" aria-disabled="true">6</span>
+        <span class="page disabled" aria-disabled="true">7</span>
+        <span class="dots">...</span>
+      </div>
 
     </section>
   </div>
