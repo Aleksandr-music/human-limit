@@ -1,13 +1,13 @@
-<!-- subject-french.html | Human Limit — Subject File (standalone page) -->
+<!-- subject-french.html | Human Limit — Subject File (FRENCH) | canonical template = ALEX (9 sections, same fields) -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-
-  <meta name="hl-requires" content="BLUE">
-
   <title>SUBJECT: FRENCH — Internal Registry</title>
+
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,6 @@
   <script src="hl-core.js" defer></script>
 
   <style>
-    /* Minimal local layout helpers (kept neutral; main visuals live in style.css) */
     :root{
       --page-max: 1080px;
       --pad: 20px;
@@ -87,7 +86,6 @@
       align-items:start;
       margin:18px 0 22px;
     }
-
     @media (max-width: 880px){
       .hero{ grid-template-columns:1fr; }
     }
@@ -99,6 +97,13 @@
       text-transform:uppercase;
       color:var(--hard);
       margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
     }
 
     .meta{
@@ -125,6 +130,14 @@
       border-radius:14px;
       padding:12px;
       overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
     }
     .portrait .ph{
       width:100%;
@@ -161,7 +174,7 @@
 
     .grid2{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap:14px;
     }
     @media (max-width: 880px){
@@ -268,11 +281,15 @@
       <div>
         <h1 class="h1">SUBJECT: FRENCH</h1>
 
+        <p class="tagline">
+          Social catalyst. High adaptability. Contact-optimized observation profile. Non-force skillset with operational utility.
+        </p>
+
         <div class="meta">
           <dl>
             <dt>System ID</dt><dd>S-AT-C-003479</dd>
-            <dt>Classification Tier</dt><dd>Active Entity</dd>
-            <dt>Current Status</dt><dd>Observable</dd>
+            <dt>Classification Tier</dt><dd>Group Asset</dd>
+            <dt>Current Status</dt><dd>Active</dd>
             <dt>System Visibility</dt><dd>Partial</dd>
             <dt>Clearance Requirement</dt><dd>Blue</dd>
           </dl>
@@ -280,23 +297,110 @@
       </div>
 
       <div class="portrait">
-        <!-- Replace placeholder with your canonical portrait file if/when you add it to /images/ -->
-        <!-- Example: <img src="images/subjects/hl-subject-french-01.jpg" alt="SUBJECT: FRENCH" style="width:100%;border-radius:12px;display:block;"> -->
-        <div class="ph">Portrait Placeholder</div>
+        <!-- Replace with your canonical FRENCH portrait filename in images/subjects/ -->
+        <div class="ph">Portrait Pending</div>
         <div class="note">
-          <span class="muted">Note:</span> Visual reference must remain canonical. No stylization drift. No composite images.
+          <span class="muted">Note:</span>
+          Registry image locked (canonical portrait required).
         </div>
       </div>
-    </div>
+    </div><!-- /hero -->
 
-    <!-- 1. Registry Status -->
-    <section class="section" id="registry-status">
-      <h2>1. Registry Status</h2>
+    <!-- 1. Aggregated Dossier -->
+    <section class="section" id="aggregated-dossier">
+      <h2>1. Aggregated Dossier</h2>
+
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Operational State</dt><dd>Functional</dd>
-            <dt>Tracking Flag</dt><dd>Passive</dd>
+            <dt>Operational State</dt><dd>Stable</dd>
+            <dt>Observation Flag</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
+            <dt>Containment Condition</dt><dd>Situational</dd>
+            <dt>External Influence</dt><dd>Variable</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Identification Certainty</dt><dd>Confirmed</dd>
+            <dt>Identity Stability</dt><dd>Stable</dd>
+            <dt>Behavioral Variability</dt><dd>High (Adaptive)</dd>
+            <dt>Reaction Predictability</dt><dd>Limited</dd>
+            <dt>Decision-Making Mode</dt><dd>Contextual</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Emotional Influence</dt><dd>Expressive</dd>
+            <dt>Response Speed</dt><dd>High</dd>
+            <dt>Choice Stability</dt><dd>Medium</dd>
+            <dt>Stress Resistance</dt><dd>Medium</dd>
+            <dt>Uncertainty Tolerance</dt><dd>High</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Cognitive Consistency</dt><dd>Preserved</dd>
+            <dt>Deviation Risk</dt><dd>Present</dd>
+            <dt>Destabilization Tendency</dt><dd>Medium</dd>
+            <dt>Threat Potential</dt><dd>Moderate (Non-Force)</dd>
+            <dt>Conflict Potential</dt><dd>Low (Avoids Force)</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Betrayal Sensitivity</dt><dd>High</dd>
+            <dt>Intervention Threshold</dt><dd>Medium</dd>
+            <dt>Irreversibility Threshold</dt><dd>Medium</dd>
+            <dt>Formal Anomaly Status</dt><dd>Within Norm</dd>
+            <dt>Observed Behavior</dt><dd>Nonstandard (Social)</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Deviation Classification</dt><dd>Incomplete</dd>
+            <dt>System Interpretation</dt><dd>Context-Dependent</dd>
+            <dt>Identity Conflict</dt><dd>Not Indexed</dd>
+            <dt>System Significance</dt><dd>Operational</dd>
+            <dt>System Ignorability</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Local Impact</dt><dd>Significant</dd>
+            <dt>Group Dynamics Influence</dt><dd>High</dd>
+            <dt>Hierarchical Effects</dt><dd>Emotional Vector</dd>
+            <dt>Strategic Value</dt><dd>Medium</dd>
+            <dt>Long-Term Consequences</dt><dd>Probable</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Interaction Type</dt><dd>Symmetric</dd>
+            <dt>Direct Control</dt><dd>Absent</dd>
+            <dt>Indirect Influence</dt><dd>High</dd>
+            <dt>System Controllability</dt><dd>Conditional</dd>
+            <dt>System Forecast</dt><dd>Unstable Under Isolation</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Registry Status -->
+    <section class="section" id="registry-status">
+      <h2>2. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
             <dt>Control Condition</dt><dd>Indirect</dd>
             <dt>Containment</dt><dd>Situational</dd>
           </dl>
@@ -304,7 +408,7 @@
         <div class="card">
           <dl class="kv">
             <dt>Exposure Tolerance</dt><dd>Medium</dd>
-            <dt>Authority Response</dt><dd>Adaptive</dd>
+            <dt>Authority Response</dt><dd>Restrained</dd>
             <dt>Group Integration</dt><dd>High</dd>
             <dt>Deviation Alert</dt><dd>Watchlisted</dd>
           </dl>
@@ -312,114 +416,113 @@
       </div>
     </section>
 
-    <!-- 2. Risk & Stability Profile -->
+    <!-- 3. Risk & Stability Profile -->
     <section class="section" id="risk-stability">
-      <h2>2. Risk &amp; Stability Profile</h2>
+      <h2>3. Risk &amp; Stability Profile</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Threat Potential</dt><dd>Elevated</dd>
             <dt>Predictability Index</dt><dd>Medium</dd>
-            <dt>Compliance Drift</dt><dd>Growing</dd>
-            <dt>Stress Response</dt><dd>Variable</dd>
+            <dt>Compliance Drift</dt><dd>Variable</dd>
+            <dt>Stress Response</dt><dd>Contextual</dd>
           </dl>
         </div>
         <div class="card">
           <dl class="kv">
             <dt>Conflict Escalation</dt><dd>Low</dd>
-            <dt>Persuasion Capacity</dt><dd>High</dd>
-            <dt>Operational Use</dt><dd>Social Stabilizer</dd>
-            <dt>Failure Mode</dt><dd>Impulse / Overtrust</dd>
+            <dt>Strategic Capacity</dt><dd>Medium</dd>
+            <dt>Operational Use</dt><dd>Social Access / Utility</dd>
+            <dt>Failure Mode</dt><dd>Overexposure / Fatigue</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 3. Behavioral Observations -->
+    <!-- 4. Behavioral Observations -->
     <section class="section" id="observations">
-      <h2>3. Behavioral Observations</h2>
+      <h2>4. Behavioral Observations</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Maintains outward ease under pressure; internal load not externally visible.</li>
-          <li>Rapid rapport formation; trust is distributed early and often.</li>
-          <li>Uses humor and warmth as a stabilizing mechanism in group environments.</li>
-          <li>Shows reduced situational vigilance during prolonged social engagement.</li>
-          <li>Performance remains consistent when a clear role is assigned.</li>
+          <li>Highly social, “sunny” affect; acts as emotional catalyst inside the group.</li>
+          <li>Contact-optimized observation: reads people for access, not force.</li>
+          <li>Adapts quickly to shifting situations; improvisation is a default mode.</li>
+          <li>Uses music (guitar) to maintain cohesion and preserve “human” baseline.</li>
+          <li>Not a force-oriented fighter; training focus shifts to endurance and survival after capture.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 4. Recorded Patterns -->
+    <!-- 5. Recorded Patterns -->
     <section class="section" id="patterns">
-      <h2>4. Recorded Patterns</h2>
+      <h2>5. Recorded Patterns</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Conflict Engagement Pattern</dt><dd>Avoid / Redirect</dd>
-            <dt>Decision Timing Model</dt><dd>Fast Commit</dd>
-            <dt>Trust Formation Tendency</dt><dd>Accelerated</dd>
-            <dt>Authority Negotiation</dt><dd>Soft Compliance</dd>
+            <dt>Conflict Engagement Pattern</dt><dd>Avoidance / De-escalation</dd>
+            <dt>Decision Timing Model</dt><dd>Rapid Adjust</dd>
+            <dt>Trust Formation Tendency</dt><dd>Fast (Broad)</dd>
+            <dt>Authority Negotiation</dt><dd>Adaptive Compliance</dd>
           </dl>
         </div>
         <div class="card">
           <dl class="kv">
-            <dt>Group Utility</dt><dd>Morale Buffer</dd>
-            <dt>Influence Vector</dt><dd>Social</dd>
-            <dt>Aggression Trigger Points</dt><dd>Unstable Allies</dd>
-            <dt>Persistence Under Fatigue</dt><dd>Moderate</dd>
+            <dt>Group Utility</dt><dd>Morale / Social Access</dd>
+            <dt>Influence Vector</dt><dd>Emotional / Relational</dd>
+            <dt>Aggression Trigger Points</dt><dd>Not Indexed</dd>
+            <dt>Persistence Under Fatigue</dt><dd>Developing</dd>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 5. Known Incidents / Records -->
+    <!-- 6. Known Incidents / Records -->
     <section class="section" id="incidents">
-      <h2>5. Known Incidents / Records</h2>
+      <h2>6. Known Incidents / Records</h2>
       <div class="card">
         <div class="incident">
-          <div class="code">HL-IR-FR-07</div>
+          <div class="code">HL-IR-FR-01</div>
           <div class="detail">
-            Subject assumed informal mediator role without authorization.
-            <div class="row">Severity: Low · Outcome: Stabilized group tension · Note: Repeated pattern</div>
+            Subject demonstrated covert property extraction skill set (wallet / watch removal) during observation cycle.
+            <div class="row">Severity: Moderate · Outcome: Logged · Note: Non-force operational utility</div>
           </div>
         </div>
         <div class="incident">
-          <div class="code">HL-IR-FR-12</div>
+          <div class="code">HL-IR-FR-03</div>
           <div class="detail">
-            Unscheduled contact attempt with unknown external node via indirect channel.
-            <div class="row">Severity: Moderate · Outcome: Interrupted · Note: Intent not confirmed</div>
+            Subject demonstrated constraint bypass capability (simple cuffs / basic locks) under controlled window.
+            <div class="row">Severity: High · Outcome: Contained · Note: Access-control risk</div>
           </div>
         </div>
         <div class="incident">
-          <div class="code">HL-IR-FR-19</div>
+          <div class="code">HL-IR-FR-06</div>
           <div class="detail">
-            Reduced vigilance observed during extended downtime; perimeter awareness dropped.
-            <div class="row">Severity: Moderate · Outcome: No breach · Note: Watchlisted for recurrence</div>
+            Subject initiated group cohesion routine via guitar performance during fatigue cycle.
+            <div class="row">Severity: Low · Outcome: Positive · Note: Morale stabilization</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 6. System Remarks -->
+    <!-- 7. System Remarks -->
     <section class="section" id="system-remarks">
-      <h2>6. System Remarks</h2>
+      <h2>7. System Remarks</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Subject remains operationally useful as a social stabilizer within constrained environments.</li>
-          <li>Elevated influence is non-kinetic; nonetheless capable of altering group direction.</li>
-          <li>Long-term stability depends on containment of impulse and overtrust behaviors.</li>
-          <li>Exposure to high-authority pressure increases drift probability.</li>
+          <li>Subject is not a primary force asset; value is in access, contact, and cohesion.</li>
+          <li>Skill profile increases escape-adjacent risk (locks / cuffs / social routing).</li>
+          <li>Maintain observation under any access-limiting regime; do not provide tool proximity.</li>
+          <li>Training adaptation is real but slower than heavy assets; keep expectations aligned.</li>
         </ul>
       </div>
     </section>
 
-    <!-- 7. Data Integrity -->
+    <!-- 8. Data Integrity -->
     <section class="section" id="data-integrity">
-      <h2>7. Data Integrity</h2>
+      <h2>8. Data Integrity</h2>
       <div class="grid2">
         <div class="card">
           <dl class="kv">
-            <dt>Record Completeness</dt><dd>Fragmented</dd>
+            <dt>Record Completeness</dt><dd>Partial</dd>
             <dt>Source Reliability</dt><dd>Mixed</dd>
             <dt>Cross-Reference Density</dt><dd>Medium</dd>
             <dt>Temporal Coverage</dt><dd>Partial Window</dd>
@@ -427,8 +530,7 @@
         </div>
         <div class="card">
           <dl class="kv">
-            <dt>Identity Certainty</dt><dd>Confirmed</dd>
-            <dt>Alias Stability</dt><dd>Variable</dd>
+            <dt>Alias Stability</dt><dd>Stable</dd>
             <dt>Context Drift Risk</dt><dd>Medium</dd>
             <dt>Redaction Ratio</dt><dd>Noticeable</dd>
           </dl>
@@ -436,14 +538,14 @@
       </div>
     </section>
 
-    <!-- 8. Clearance Restrictions -->
+    <!-- 9. Clearance Restrictions -->
     <section class="section" id="clearance">
-      <h2>8. Clearance Restrictions</h2>
+      <h2>9. Clearance Restrictions</h2>
       <div class="card">
         <ul class="bullets">
-          <li>Full incident transcripts are unavailable at current clearance level.</li>
-          <li>Behavioral metrics set “Mirror” is redacted pending Tier Amber authorization.</li>
-          <li>Cross-node contact history requires Tier Black escalation.</li>
+          <li>Full pre-capture background remains unindexed by design.</li>
+          <li>Network contacts (fences / handlers) are restricted.</li>
+          <li>Detailed skill transcripts (lock bypass / restraint bypass) require Tier Blue authorization.</li>
         </ul>
       </div>
     </section>
