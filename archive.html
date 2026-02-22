@@ -1,4 +1,4 @@
-<!-- archive.html | Human Limit — Archive (BLACK only, canonical) -->
+<!-- archive.html | Human Limit — Archive (canonical: 24 records, BLACK clearance, given names only) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>HUMAN LIMIT — Archive</title>
 
-  <!-- Access gate -->
   <meta name="hl-requires" content="BLACK">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,8 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- HL Core (single source of truth) -->
   <script src="hl-core.js" defer></script>
 
   <style>
@@ -31,14 +28,13 @@
     html,body{height:100%}
     body{
       margin:0;
-      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-family:"JetBrains Mono", ui-monospace, monospace;
       color:var(--hard);
       background:#000;
       overflow-x:hidden;
     }
 
     .wrap{
-      position:relative;
       max-width:var(--max);
       margin:0 auto;
       padding:58px var(--pad) 64px;
@@ -60,190 +56,85 @@
       font-size:12px;
       letter-spacing:.08em;
       text-transform:uppercase;
-      border-bottom:1px solid transparent;
-      padding-bottom:2px;
       white-space:nowrap;
     }
-    .back:hover{ border-bottom-color: rgba(255,255,255,.26); }
 
     h1{
       margin:0;
       font-size:16px;
       letter-spacing:.14em;
       text-transform:uppercase;
-      line-height:1.2;
       text-align:center;
       flex:1;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-    }
-
-    .panel{
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px 16px;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px 14px;
-      font-size:12px;
-      color:var(--muted);
-    }
-    @media (max-width: 720px){
-      .row{ grid-template-columns: 1fr; }
-    }
-
-    .k{ color:var(--faint); }
-    .v{ color:var(--hard); letter-spacing:.06em; text-transform:uppercase; }
-
-    .block{
-      margin-top:12px;
-      border-top:1px solid rgba(255,255,255,.10);
-      padding-top:12px;
-      font-size:12px;
-      line-height:1.7;
-      color:rgba(255,255,255,.66);
-      white-space:pre-line;
-    }
-
-    .list{
-      margin:12px 0 0;
-      padding-left:18px;
-      color:rgba(255,255,255,.66);
-      font-size:12px;
-      line-height:1.7;
-    }
-    .list li{ margin:6px 0; }
-
-    .records{
-      margin-top:12px;
-      border-top:1px solid rgba(255,255,255,.10);
-      padding-top:12px;
-      display:grid;
       gap:10px;
-      font-size:12px;
-      color:rgba(255,255,255,.66);
-      line-height:1.7;
     }
 
     .rec{
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--line);
       border-radius:14px;
-      padding:12px 12px;
-      background: rgba(0,0,0,.14);
-      white-space:pre-line;
+      padding:12px;
+      font-size:12px;
+      line-height:1.6;
+      color:rgba(255,255,255,.70);
+      background:rgba(0,0,0,.16);
     }
 
-    .foot{
-      margin-top:14px;
-      border-top:1px solid rgba(255,255,255,.10);
-      padding-top:12px;
-      font-size:12px;
-      color:rgba(255,255,255,.58);
-      line-height:1.7;
+    .id{ color:var(--hard); letter-spacing:.08em; }
+    .k{ color:var(--faint); }
+    .v{ color:var(--hard); text-transform:uppercase; letter-spacing:.06em; }
+
+    .redacted{
+      margin-top:6px;
+      color:rgba(255,255,255,.46);
+      letter-spacing:.12em;
     }
   </style>
 </head>
 
 <body data-bg="archive">
-  <div class="sys-node" aria-hidden="true">
-    <span class="dot"></span>
-    <span class="label">NODE: ACTIVE</span>
+<div class="sys-node" aria-hidden="true">
+  <span class="dot"></span>
+  <span class="label">NODE: ACTIVE</span>
+</div>
+
+<main class="wrap">
+  <div class="top">
+    <a class="back" href="interface.html">← Back</a>
+    <h1>HUMAN LIMIT — ARCHIVE</h1>
+    <span aria-hidden="true" style="width:60px"></span>
   </div>
 
-  <main class="wrap">
-    <div class="top">
-      <a class="back" href="interface.html">← Back</a>
-      <h1>HUMAN LIMIT — ARCHIVE</h1>
-      <span aria-hidden="true" style="width:60px"></span>
-    </div>
+  <section class="grid" aria-label="Archive records">
 
-    <div class="grid">
-      <section class="panel" aria-label="Archive node">
+    <div class="rec"><span class="id">ID S-AT-C-002899</span><br><span class="k">Registry Name:</span> <span class="v">Lukas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003054</span><br><span class="k">Registry Name:</span> <span class="v">Ethan</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003112</span><br><span class="k">Registry Name:</span> <span class="v">Noah</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003287</span><br><span class="k">Registry Name:</span> <span class="v">Daniel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003301</span><br><span class="k">Registry Name:</span> <span class="v">Oliver</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003366</span><br><span class="k">Registry Name:</span> <span class="v">Mateo</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003418</span><br><span class="k">Registry Name:</span> <span class="v">Adrian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003502</span><br><span class="k">Registry Name:</span> <span class="v">Jonas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003577</span><br><span class="k">Registry Name:</span> <span class="v">Marcus</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003601</span><br><span class="k">Registry Name:</span> <span class="v">Felix</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003744</span><br><span class="k">Registry Name:</span> <span class="v">Victor</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003812</span><br><span class="k">Registry Name:</span> <span class="v">Leonard</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-003905</span><br><span class="k">Registry Name:</span> <span class="v">Samuel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004021</span><br><span class="k">Registry Name:</span> <span class="v">Thomas</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004118</span><br><span class="k">Registry Name:</span> <span class="v">Patrick</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004203</span><br><span class="k">Registry Name:</span> <span class="v">Hugo</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004287</span><br><span class="k">Registry Name:</span> <span class="v">Nathaniel</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004344</span><br><span class="k">Registry Name:</span> <span class="v">Arthur</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004402</span><br><span class="k">Registry Name:</span> <span class="v">Julian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004518</span><br><span class="k">Registry Name:</span> <span class="v">Benjamin</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004603</span><br><span class="k">Registry Name:</span> <span class="v">Adrian</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004744</span><br><span class="k">Registry Name:</span> <span class="v">Michael</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
+    <div class="rec"><span class="id">ID S-AT-C-004801</span><br><span class="k">Registry Name:</span> <span class="v">Robert</span><br><span class="k">Status:</span> <span class="v">Inactive</span><div class="redacted">DATA REDACTED</div></div>
 
-        <div class="row" aria-label="Archive status">
-          <div><span class="k">Record Status:</span> <span class="v">Persistent</span></div>
-          <div><span class="k">Deletion Rights:</span> <span class="v">Not granted</span></div>
-          <div><span class="k">Retention Policy:</span> <span class="v">Indefinite</span></div>
-          <div><span class="k">Mutation:</span> <span class="v">Prohibited</span></div>
-        </div>
-
-        <div class="block" aria-label="Principle">
-All subject states remain stored.
-Absence does not imply deletion.
-Archive is not memory. It is evidence.
-        </div>
-
-        <div class="block" aria-label="Record types">
-<span class="v" style="font-size:12px">Record Types</span>
-<ul class="list">
-  <li>STATE SNAPSHOT</li>
-  <li>ACCESS EVENT</li>
-  <li>ROUTING TRACE</li>
-  <li>PARAMETER DRIFT</li>
-  <li>INDEX UPDATE</li>
-  <li>ANOMALY FLAG</li>
-  <li>CLEARANCE CHANGE</li>
-  <li>SUBJECT STATUS CHANGE</li>
-  <li>REDUCTION / REDACTION</li>
-  <li>AUDIT MARK</li>
-</ul>
-        </div>
-
-        <div class="block" aria-label="Schema">
-<span class="v" style="font-size:12px">Record Schema</span>
-Record ID
-Timestamp
-Node
-Source
-Subject
-Clearance
-Status
-Payload
-Hash
-Retention
-        </div>
-
-        <div class="records" aria-label="Sample records">
-          <div class="rec">R-ARC-001 | ACCESS EVENT
-NODE: INTERFACE
-CLEARANCE: BLACK
-STATUS: LOGGED</div>
-
-          <div class="rec">R-ARC-014 | SUBJECT STATUS CHANGE
-SUBJECT: ALEX
-STATUS: ACTIVE
-CLEARANCE: BLACK</div>
-
-          <div class="rec">R-ARC-023 | INDEX UPDATE
-SCOPE: SUBJECTS
-MODE: PARTIAL
-STATUS: APPLIED</div>
-
-          <div class="rec">R-ARC-031 | ANOMALY FLAG
-SEVERITY: MINOR
-TYPE: TIMING DRIFT
-STATUS: OPEN</div>
-
-          <div class="rec">R-ARC-044 | AUDIT MARK
-INTEGRITY: VERIFIED
-CHAIN: INTACT
-STATUS: CLEAN</div>
-        </div>
-
-        <div class="foot" aria-label="Note">
-This node exposes samples only.
-Full extraction is not available in this layer.
-        </div>
-
-      </section>
-    </div>
-  </main>
+  </section>
+</main>
 </body>
 </html>
