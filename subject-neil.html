@@ -1,1 +1,700 @@
+<!-- subject-neil.html | Human Limit — Subject File (NEIL) | canonical structured dossier -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SUBJECT: NEIL — Internal Registry</title>
 
+  <!-- HL clearance gate -->
+  <meta name="hl-requires" content="BLACK">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- HL Core (single include) -->
+  <script src="hl-core.js" defer></script>
+
+  <style>
+    :root{
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.9);
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+      margin:18px 0 22px;
+    }
+    @media (max-width: 880px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    .h1{
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--hard);
+      margin:0 0 10px;
+    }
+
+    .tagline{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .meta{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+    }
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .meta dl{ grid-template-columns: 1fr; }
+    }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
+
+    .portrait{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .portrait img{
+      width:100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius:12px;
+      display:block;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .portrait .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (min-width: 881px){
+      .grid2{ grid-template-columns:1fr 1fr; }
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 220px 1fr;
+      gap:8px 12px;
+      font-size:13px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .bullets{
+      margin:0;
+      padding-left:18px;
+      color:var(--hard);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .bullets li{ margin:8px 0; }
+    .muted{ color:var(--muted); }
+
+    .incident{
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:10px 14px;
+      padding:12px 0;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .incident:first-child{ border-top:0; padding-top:0; }
+    @media (max-width: 520px){
+      .incident{ grid-template-columns: 1fr; }
+    }
+    .incident .code{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      opacity:.95;
+    }
+    .incident .detail{
+      font-size:13px;
+      line-height:1.5;
+      color:var(--hard);
+    }
+    .incident .detail .row{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+    }
+
+    .footer{
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
+  </style>
+</head>
+
+<body data-bg="subjects">
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Gateway</a>
+        <span class="muted">/</span>
+        <a href="subjects.html">Subjects</a>
+        <span class="muted">/</span>
+        <span>Subject File</span>
+      </div>
+      <div class="badge">Internal Registry</div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1 class="h1">SUBJECT: NEIL</h1>
+
+        <p class="tagline">
+          Contracted operator. High physical output. Low autonomous decision capacity.
+          Alignment remains locked to FED command layer.
+        </p>
+
+        <div class="meta">
+          <dl>
+            <dt>System ID</dt><dd>C-OP-K-027458</dd>
+            <dt>Classification Tier</dt><dd>Contract Operator</dd>
+            <dt>Current Status</dt><dd>Active</dd>
+            <dt>System Visibility</dt><dd>Partial</dd>
+            <dt>Clearance Requirement</dt><dd>Black</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="portrait">
+        <img src="images/subjects/hl-subject-neil-01.png" alt="SUBJECT: NEIL">
+        <div class="note">
+          <span class="muted">Note:</span>
+          Registry image locked.
+        </div>
+      </div>
+    </div><!-- /hero -->
+
+    <!-- 1. Aggregated Dossier (dense; 40 KV pairs) -->
+    <section class="section" id="aggregated-dossier">
+      <h2>1. Aggregated Dossier</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational Role</dt><dd>Enforcer / Follower</dd>
+            <dt>Command Anchor</dt><dd>FED</dd>
+            <dt>Autonomy Level</dt><dd>Low</dd>
+            <dt>Task Reliance</dt><dd>High</dd>
+            <dt>Engagement Type</dt><dd>Direct Pressure</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Physical Output</dt><dd>High</dd>
+            <dt>Mobility Profile</dt><dd>Heavy / Slow</dd>
+            <dt>Endurance Reserve</dt><dd>Medium</dd>
+            <dt>Damage Tolerance</dt><dd>High</dd>
+            <dt>Recovery Pattern</dt><dd>Steady</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Dominance Drive</dt><dd>Contextual</dd>
+            <dt>Fear Response</dt><dd>Suppressed</dd>
+            <dt>Empathy Band</dt><dd>Low</dd>
+            <dt>Moral Friction</dt><dd>Minimal</dd>
+            <dt>Justification Model</dt><dd>Power = Right</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Decision Mode</dt><dd>Command-Triggered</dd>
+            <dt>Planning Horizon</dt><dd>Short</dd>
+            <dt>Adaptation Speed</dt><dd>Low–Medium</dd>
+            <dt>Learning Pattern</dt><dd>Repetition-Based</dd>
+            <dt>Operational Confidence</dt><dd>High (Borrowed)</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Identity Structure</dt><dd>Role-Dependent</dd>
+            <dt>Authority Preference</dt><dd>Vertical</dd>
+            <dt>Group Belonging Need</dt><dd>High</dd>
+            <dt>Status Sensitivity</dt><dd>High</dd>
+            <dt>Shame Tolerance</dt><dd>Low</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Manipulation Attempts</dt><dd>Frequent</dd>
+            <dt>Subtlety Level</dt><dd>Low</dd>
+            <dt>Self-Assessment</dt><dd>Overestimated</dd>
+            <dt>Detection Awareness</dt><dd>Low</dd>
+            <dt>Correction Response</dt><dd>Defensive</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Background Core</dt><dd>Military (Low Rank)</dd>
+            <dt>Civilian Adaptation</dt><dd>Failed</dd>
+            <dt>Transferability</dt><dd>Low</dd>
+            <dt>Skill Domain</dt><dd>Combat Routine</dd>
+            <dt>Recruitment Resistance</dt><dd>Low</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Primary Leverage</dt><dd>Belonging / Protection</dd>
+            <dt>Compliance Driver</dt><dd>Strength Alignment</dd>
+            <dt>Defection Threshold</dt><dd>High (If FED Strong)</dd>
+            <dt>Switch Risk</dt><dd>Moderate (If FED Weak)</dd>
+            <dt>Stability Anchor</dt><dd>External Leader</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Registry Status (16 KV pairs) -->
+    <section class="section" id="registry-status">
+      <h2>2. Registry Status</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Contract State</dt><dd>Verified</dd>
+            <dt>Payment Channel</dt><dd>Redacted</dd>
+            <dt>Operational Window</dt><dd>Open</dd>
+            <dt>Deployment Limit</dt><dd>Conditional</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Control Condition</dt><dd>Indirect (Leader-Layer)</dd>
+            <dt>Command Routing</dt><dd>FED-Linked</dd>
+            <dt>Override Rights</dt><dd>Restricted</dd>
+            <dt>Containment Need</dt><dd>Low (While Anchored)</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Public Exposure</dt><dd>Denied</dd>
+            <dt>Data Visibility</dt><dd>Partial</dd>
+            <dt>Trace Footprint</dt><dd>Medium</dd>
+            <dt>Redaction Ratio</dt><dd>Noticeable</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational Trust</dt><dd>Medium</dd>
+            <dt>Reliability Index</dt><dd>Medium</dd>
+            <dt>Discipline Integrity</dt><dd>High (Under FED)</dd>
+            <dt>Independent Reliability</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Risk & Stability Profile (16 KV pairs) -->
+    <section class="section" id="risk-stability">
+      <h2>3. Risk &amp; Stability Profile</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Predictability Index</dt><dd>High (With Orders)</dd>
+            <dt>Behavioral Drift</dt><dd>Moderate</dd>
+            <dt>Impulsivity Band</dt><dd>Medium</dd>
+            <dt>Escalation Tendency</dt><dd>Medium</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Authority Attachment</dt><dd>High</dd>
+            <dt>Leader Loss Sensitivity</dt><dd>Critical</dd>
+            <dt>Re-Anchor Speed</dt><dd>Fast</dd>
+            <dt>Switch Trigger</dt><dd>Perceived Weakness</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Moral Inhibition</dt><dd>Low</dd>
+            <dt>Witness Risk</dt><dd>Medium</dd>
+            <dt>Collateral Tolerance</dt><dd>High</dd>
+            <dt>Damage Mitigation</dt><dd>Low</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Manipulation Exposure</dt><dd>High</dd>
+            <dt>Deception Competence</dt><dd>Low</dd>
+            <dt>Correction Acceptance</dt><dd>Low</dd>
+            <dt>Humiliation Response</dt><dd>Aggressive</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Behavioral Observations -->
+    <section class="section" id="observations">
+      <h2>4. Behavioral Observations</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Demonstrates strong compliance when a dominant command source is present and stable.</li>
+          <li>Shows low initiative in ambiguous environments; seeks instruction rather than framing goals.</li>
+          <li>Displays status-driven arrogance toward weaker operators; intimidation is used as baseline control.</li>
+          <li>Operates with minimal moral hesitation; adopts “power-as-legitimacy” as core rationale.</li>
+          <li>Attempts tactical deception; execution remains obvious and routinely detected by peers.</li>
+          <li>Interprets loyalty as affiliation with strength, not ethical commitment or shared values.</li>
+          <li>Under public challenge, shifts into defensive aggression to restore perceived hierarchy.</li>
+          <li>Civilian identity remains underdeveloped; role identity dominates self-concept.</li>
+          <li>Maintains functional discipline inside rigid structures; outside structure becomes erratic.</li>
+          <li>Displays persistent contempt for “civil order” framing; views it as weakness or fiction.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5. Recorded Patterns (16 KV pairs) -->
+    <section class="section" id="patterns">
+      <h2>5. Recorded Patterns</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Conflict Engagement Pattern</dt><dd>Pressure / Dominate</dd>
+            <dt>Decision Timing</dt><dd>Late (Await Orders)</dd>
+            <dt>Risk Selection</dt><dd>Leader-Filtered</dd>
+            <dt>Authority Negotiation</dt><dd>Low</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Social Positioning</dt><dd>Rank-Seeking</dd>
+            <dt>Trust Formation</dt><dd>Transactional</dd>
+            <dt>Respect Logic</dt><dd>Strength-Only</dd>
+            <dt>Humor / Warmth</dt><dd>Suppressed</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Deception Pattern</dt><dd>Small Gains</dd>
+            <dt>Deception Frequency</dt><dd>Medium</dd>
+            <dt>Consequence Awareness</dt><dd>Low</dd>
+            <dt>Exposure Reaction</dt><dd>Deny / Blame</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Group Utility</dt><dd>Mass / Enforcement</dd>
+            <dt>Mobility Tradeoff</dt><dd>Speed for Power</dd>
+            <dt>Persistence Under Fatigue</dt><dd>Medium</dd>
+            <dt>Precision Under Stress</dt><dd>Low</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Known Incidents / Records -->
+    <section class="section" id="incidents">
+      <h2>6. Known Incidents / Records</h2>
+      <div class="card">
+        <div class="incident">
+          <div class="code">HL-IR-04-03</div>
+          <div class="detail">
+            Subject escalated verbal pressure against a weaker operator during meal-cycle queue.
+            <div class="row">Severity: Low · Outcome: Logged · Note: Hierarchy assertion behavior</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-04-08</div>
+          <div class="detail">
+            Subject attempted minor resource diversion; action detected and reversed by peers.
+            <div class="row">Severity: Low · Outcome: Corrected · Note: Deception competence remains limited</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-04-11</div>
+          <div class="detail">
+            Subject demonstrated improved discipline and task stability under direct FED proximity.
+            <div class="row">Severity: None · Outcome: Noted · Note: External anchor effect confirmed</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-04-16</div>
+          <div class="detail">
+            Subject failed independent prioritization during an unstructured drill; required re-tasking.
+            <div class="row">Severity: Medium · Outcome: Reassigned · Note: Autonomy deficit under ambiguity</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-04-19</div>
+          <div class="detail">
+            Subject responded with defensive aggression when publicly corrected on false claim.
+            <div class="row">Severity: Medium · Outcome: De-escalated · Note: Status threat response</div>
+          </div>
+        </div>
+        <div class="incident">
+          <div class="code">HL-IR-04-23</div>
+          <div class="detail">
+            Subject maintained operational output despite injury discomfort; requested no relief.
+            <div class="row">Severity: Low · Outcome: Continued · Note: Pain tolerance used as dominance signal</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. System Remarks -->
+    <section class="section" id="system-remarks">
+      <h2>7. System Remarks</h2>
+      <div class="card">
+        <ul class="bullets">
+          <li>Subject stability is leader-dependent: high function under FED; degradation expected under leader absence.</li>
+          <li>Best used as direct-pressure unit with explicit rules of engagement and visible command authority.</li>
+          <li>Independent assignments increase operational noise and raise conflict with peers due to arrogance pattern.</li>
+          <li>Ethical friction is minimal; oversight required only for collateral control and exposure management.</li>
+          <li>Maintain placement inside strong hierarchy to prevent opportunistic re-alignment to alternative power sources.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. Data Integrity (16 KV pairs) -->
+    <section class="section" id="data-integrity">
+      <h2>8. Data Integrity</h2>
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>Record Completeness</dt><dd>Partial</dd>
+            <dt>Source Reliability</dt><dd>Mixed</dd>
+            <dt>Temporal Coverage</dt><dd>Fragmented</dd>
+            <dt>Cross-Reference Density</dt><dd>Medium</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Alias Stability</dt><dd>Stable</dd>
+            <dt>Identity Certainty</dt><dd>Confirmed</dd>
+            <dt>Context Drift Risk</dt><dd>Medium</dd>
+            <dt>Redaction Level</dt><dd>Moderate</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Biographical Coverage</dt><dd>Limited</dd>
+            <dt>Military Record</dt><dd>Partial (Rank Low)</dd>
+            <dt>Civilian History</dt><dd>Low Fidelity</dd>
+            <dt>Contract Trail</dt><dd>Redacted</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Behavioral Sampling</dt><dd>Consistent</dd>
+            <dt>Variance Window</dt><dd>Narrow</dd>
+            <dt>Observer Agreement</dt><dd>High</dd>
+            <dt>Update Frequency</dt><dd>Routine</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Clearance Restrictions (20 KV pairs = 124 total KV across page) -->
+    <section class="section" id="clearance">
+      <h2>9. Clearance Restrictions</h2>
+
+      <div class="grid2">
+        <div class="card">
+          <dl class="kv">
+            <dt>FED Linkage Map</dt><dd>Restricted</dd>
+            <dt>Contract Origin Chain</dt><dd>Restricted</dd>
+            <dt>Payment Routing</dt><dd>Redacted</dd>
+            <dt>External Contacts</dt><dd>Redacted</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Full Military Dossier</dt><dd>Restricted</dd>
+            <dt>Medical File</dt><dd>Restricted</dd>
+            <dt>Disciplinary Log</dt><dd>Restricted</dd>
+            <dt>Training Transcript</dt><dd>Tier Escalation Required</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Operational Footage</dt><dd>Restricted</dd>
+            <dt>Witness Statements</dt><dd>Restricted</dd>
+            <dt>Incident Raw Audio</dt><dd>Restricted</dd>
+            <dt>Internal Complaints</dt><dd>Limited</dd>
+          </dl>
+        </div>
+        <div class="card">
+          <dl class="kv">
+            <dt>Cross-Group Placement</dt><dd>Restricted</dd>
+            <dt>Authority Overrides</dt><dd>Restricted</dd>
+            <dt>Off-Record Tasks</dt><dd>Denied</dd>
+            <dt>Independent Missions</dt><dd>Denied</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <dl class="kv">
+            <dt>Psychometric Raw Scores</dt><dd>Restricted</dd>
+            <dt>Interview Transcripts</dt><dd>Restricted</dd>
+            <dt>Motivation Analysis</dt><dd>Limited</dd>
+            <dt>Longitudinal Profile</dt><dd>Restricted</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
+      <div>
+        <a href="subjects.html">Return to Subjects</a>
+        <span class="muted"> · </span>
+        <a href="system.html">Open System Registry</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
