@@ -412,10 +412,21 @@ Nothing fully exits the model.</p>
   </main>
 
   <script>
-    (function(){
+    // IMPORTANT:
+    // hl-core.js is loaded with "defer", therefore window.HL becomes available
+    // only AFTER the document is parsed. We must initialize World logic on DOMContentLoaded.
+    window.addEventListener("DOMContentLoaded", () => {
+
       const MODE_KEY = "HL_WORLD_MODE";
       const pills = Array.from(document.querySelectorAll(".pill[data-mode]"));
       const grid = document.getElementById("worldGrid");
+
+      function hardStop(e){
+        if (!e) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+      }
 
       // Access gate for VISIBLE mode (future-proof)
       function canUseVisible(){
@@ -483,12 +494,16 @@ Projection collapsed to partial layer.</p>
         visibleBtn.setAttribute("aria-disabled", "true");
       }
 
+      // Critical: pills must NOT trigger parent click handlers
       pills.forEach(btn => {
-        btn.addEventListener("click", () => applyMode(btn.getAttribute("data-mode")));
+        btn.addEventListener("click", (e) => {
+          hardStop(e);
+          applyMode(btn.getAttribute("data-mode"));
+        }, true); // capture=true to intercept early
       });
 
       applyMode(readMode());
-    })();
+    });
   </script>
 </body>
 </html>
