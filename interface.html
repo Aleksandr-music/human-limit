@@ -142,27 +142,6 @@
       font-size:13px;
       white-space:nowrap;
     }
-    .meta{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-size:11px;
-      color:rgba(255,255,255,.58);
-      white-space:nowrap;
-    }
-    .pill{
-      padding:4px 8px;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:999px;
-      background: rgba(0,0,0,.16);
-      color:rgba(255,255,255,.70);
-    }
-    .pill.ok{ color:rgba(255,255,255,.88); }
-    .pill.dim{ color:rgba(255,255,255,.58); }
 
     .status{
       margin-top:14px;
@@ -275,16 +254,12 @@
           <span class="val">INTERFACE</span>
         </div>
 
-        <!-- HUB ROUTING (only hub in Variant A) -->
+        <!-- HUB ROUTING -->
         <div class="navrows" aria-label="Routing">
           <a class="navrow" href="world.html">
             <div class="navleft">
               <span class="arrow">&gt;</span>
               <span class="node">World</span>
-            </div>
-            <div class="meta">
-              <span class="pill ok">Visible</span>
-              <span class="pill dim">Partial</span>
             </div>
           </a>
 
@@ -293,10 +268,6 @@
               <span class="arrow">&gt;</span>
               <span class="node">System</span>
             </div>
-            <div class="meta">
-              <span class="pill ok">Online</span>
-              <span class="pill dim">Read-only</span>
-            </div>
           </a>
 
           <a class="navrow" href="subjects.html">
@@ -304,20 +275,12 @@
               <span class="arrow">&gt;</span>
               <span class="node">Subjects</span>
             </div>
-            <div class="meta">
-              <span class="pill ok">Indexed</span>
-              <span class="pill dim">Limited</span>
-            </div>
           </a>
 
           <a class="navrow" href="archive.html">
             <div class="navleft">
               <span class="arrow">&gt;</span>
               <span class="node">Archive</span>
-            </div>
-            <div class="meta">
-              <span class="pill ok">Persistent</span>
-              <span class="pill dim">No deletion</span>
             </div>
           </a>
         </div>
@@ -408,7 +371,6 @@
         stVis.textContent = vis;
         stErr.textContent = "0";
 
-        // Lock label follows visibility
         if(monLock) monLock.textContent = (vis === "Visible") ? "Released" : "Engaged";
 
         const anom = computeAnomaly();
@@ -438,7 +400,6 @@
         applyBootState();
       });
 
-      // Run once after hl-core has had a chance to attach HL (defer + DOM order safe enough)
       applyBootState();
     })();
   </script>
