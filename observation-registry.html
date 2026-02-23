@@ -1,4 +1,4 @@
-<!-- observation-registry.html | Human Limit — Observation Registry (canonical template) -->
+<!-- observation-registry.html | Human Limit — Observation Registry (router hub) -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,8 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- HL Core (single include) -->
   <script src="hl-core.js" defer></script>
 
   <style>
@@ -148,86 +146,9 @@
       padding:14px;
     }
 
-    /* RECORD LIST */
-    .record{
-      display:block;
-      text-decoration:none;
-      color:inherit;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:14px;
-      padding:14px;
-      margin-top:12px;
-      background: rgba(0,0,0,.20);
-      cursor:pointer;
-      user-select:none;
-    }
-    .record:hover{
-      border-color: rgba(255,255,255,.22);
-      background: rgba(0,0,0,.28);
-    }
-    .record:active{ opacity:.78; }
-    .record:focus{
-      outline:none;
-      border-color: rgba(255,255,255,.28);
-      background: rgba(0,0,0,.32);
-    }
-
-    .rec-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding-bottom:10px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      margin-bottom:10px;
-      text-transform:uppercase;
-      letter-spacing:.10em;
-      font-size:12px;
-    }
-    .rec-id{ color:var(--hard); opacity:.96; }
-    .rec-status{ color:var(--muted); }
-
-    .kv{
-      margin:0;
-      display:grid;
-      grid-template-columns: 180px 1fr;
-      gap:8px 12px;
-      font-size:12px;
-      line-height:1.45;
-    }
-    @media (max-width: 520px){
-      .kv{ grid-template-columns: 1fr; }
-    }
-    .kv dt{ color:var(--faint); }
-    .kv dd{ margin:0; color:var(--hard); }
-
-    .desc{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.55;
-    }
-
-    .flags{
-      margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px 10px;
-      color:rgba(255,255,255,.62);
-      font-size:11px;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-    }
-    .flag{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:999px;
-      padding:6px 8px;
-      background: rgba(0,0,0,.18);
-    }
-
     /* terminal hint */
     .hint{
-      margin-top:12px;
+      margin-top:10px;
       color:rgba(255,255,255,.56);
       font-size:12px;
       min-height:22px;
@@ -235,8 +156,90 @@
       line-height:1.7;
     }
 
+    /* PILLS */
+    .pills{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 720px){
+      .pills{ grid-template-columns: 1fr; }
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      text-decoration:none;
+      color:inherit;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      padding:12px 14px;
+      background: rgba(0,0,0,.20);
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill:hover{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(0,0,0,.28);
+    }
+    .pill:active{ opacity:.80; }
+    .pill:focus{
+      outline:none;
+      border-color: rgba(255,255,255,.28);
+      background: rgba(0,0,0,.32);
+    }
+
+    .pill-left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+    .pill-title{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .pill-sub{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .pill-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex:0 0 auto;
+      color:rgba(255,255,255,.62);
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .tier{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      padding:6px 8px;
+      background: rgba(0,0,0,.18);
+    }
+    .go{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      padding:6px 10px;
+      background: rgba(0,0,0,.18);
+    }
+
     /* lock UI during lookup */
-    .is-busy .record{
+    .is-busy .pill{
       pointer-events:none;
       opacity:0.70;
     }
@@ -285,7 +288,7 @@
     <header class="header" aria-label="Registry header">
       <div>
         <h1 class="h1">OBSERVATION REGISTRY</h1>
-        <p class="tagline">SYSTEM MONITORING INTERFACE · PASSIVE SURVEILLANCE LAYER · RECORDS ROUTE TO SEPARATE NODES</p>
+        <p class="tagline">SYSTEM MONITORING INTERFACE · PASSIVE SURVEILLANCE LAYER · ROUTES TO SEPARATE NODES</p>
       </div>
 
       <div class="meta" aria-label="Registry meta">
@@ -298,137 +301,115 @@
       </div>
     </header>
 
-    <section class="section" aria-label="Observation records">
-      <h2>Registry Records</h2>
+    <section class="section" aria-label="Observation nodes">
+      <h2>Registry Nodes</h2>
 
-      <div class="card" aria-label="Record list container">
+      <div class="card" aria-label="Node router">
         <div class="hint" id="hint" aria-live="polite"></div>
 
-        <!-- RECORD UNIT (template) -->
-        <a class="record"
-           href="rec-ir-04-011.html"
-           data-target="rec-ir-04-011.html"
-           data-rec="REC-IR-04-011"
-           data-type="INCIDENT LOG"
-           data-status="ACTIVE"
-           data-access="BLACK">
-          <div class="rec-head">
-            <div class="rec-id">REC-IR-04-011</div>
-            <div class="rec-status">ACTIVE</div>
-          </div>
+        <div class="pills" aria-label="Node list">
+          <!-- 01 -->
+          <a class="pill"
+             href="obs-conflict-log.html"
+             data-target="obs-conflict-log.html"
+             data-node="NODE-CL"
+             data-label="CONFLICT LOG"
+             data-access="BLACK">
+            <div class="pill-left">
+              <div class="pill-title">CONFLICT LOG</div>
+              <div class="pill-sub">Collisions · tension · dominance · consequences</div>
+            </div>
+            <div class="pill-right">
+              <span class="tier">BLACK</span>
+              <span class="go">&gt;</span>
+            </div>
+          </a>
 
-          <dl class="kv">
-            <dt>Registry Type</dt><dd>INCIDENT LOG</dd>
-            <dt>Subjects</dt><dd>FED / NEIL</dd>
-            <dt>Location Node</dt><dd>TRAINING SECTOR</dd>
-            <dt>Timestamp</dt><dd>23.04.2026 / 02:14</dd>
-            <dt>Access Tier</dt><dd>BLACK</dd>
-            <dt>Media Type</dt><dd>IMAGE</dd>
-          </dl>
+          <!-- 02 -->
+          <a class="pill"
+             href="obs-training-records.html"
+             data-target="obs-training-records.html"
+             data-node="NODE-TR"
+             data-label="TRAINING RECORDS"
+             data-access="AMBER">
+            <div class="pill-left">
+              <div class="pill-title">TRAINING RECORDS</div>
+              <div class="pill-sub">Drills · progress · tests</div>
+            </div>
+            <div class="pill-right">
+              <span class="tier">AMBER</span>
+              <span class="go">&gt;</span>
+            </div>
+          </a>
 
-          <div class="desc">Physical confrontation markers detected. Hierarchy assertion event logged.</div>
+          <!-- 03 -->
+          <a class="pill"
+             href="obs-group-formation.html"
+             data-target="obs-group-formation.html"
+             data-node="NODE-GF"
+             data-label="GROUP FORMATION"
+             data-access="BLACK">
+            <div class="pill-left">
+              <div class="pill-title">GROUP FORMATION</div>
+              <div class="pill-sub">Cohorts · links · hierarchy</div>
+            </div>
+            <div class="pill-right">
+              <span class="tier">BLACK</span>
+              <span class="go">&gt;</span>
+            </div>
+          </a>
 
-          <div class="flags" aria-label="Flags">
-            <span class="flag">Integrity: OK</span>
-            <span class="flag">Trace: Medium</span>
-            <span class="flag">Confidence: High</span>
-            <span class="flag">Cross-Links: Present</span>
-          </div>
-        </a>
+          <!-- 04 -->
+          <a class="pill"
+             href="obs-subject-performance.html"
+             data-target="obs-subject-performance.html"
+             data-node="NODE-SP"
+             data-label="SUBJECT PERFORMANCE"
+             data-access="BLACK">
+            <div class="pill-left">
+              <div class="pill-title">SUBJECT PERFORMANCE</div>
+              <div class="pill-sub">Readouts · capability level · no posed shots</div>
+            </div>
+            <div class="pill-right">
+              <span class="tier">BLACK</span>
+              <span class="go">&gt;</span>
+            </div>
+          </a>
 
-        <a class="record"
-           href="rec-tr-02-003.html"
-           data-target="rec-tr-02-003.html"
-           data-rec="REC-TR-02-003"
-           data-type="TRAINING LOG"
-           data-status="ACTIVE"
-           data-access="AMBER">
-          <div class="rec-head">
-            <div class="rec-id">REC-TR-02-003</div>
-            <div class="rec-status">ACTIVE</div>
-          </div>
+          <!-- 05 -->
+          <a class="pill"
+             href="obs-environment-capture.html"
+             data-target="obs-environment-capture.html"
+             data-node="NODE-EC"
+             data-label="ENVIRONMENT CAPTURE"
+             data-access="BLUE">
+            <div class="pill-left">
+              <div class="pill-title">ENVIRONMENT CAPTURE</div>
+              <div class="pill-sub">Locations · corridors · mess · perimeter · tents</div>
+            </div>
+            <div class="pill-right">
+              <span class="tier">BLUE</span>
+              <span class="go">&gt;</span>
+            </div>
+          </a>
 
-          <dl class="kv">
-            <dt>Registry Type</dt><dd>TRAINING LOG</dd>
-            <dt>Subjects</dt><dd>NEIL</dd>
-            <dt>Location Node</dt><dd>DRILL FIELD</dd>
-            <dt>Timestamp</dt><dd>AUTO-GENERATED</dd>
-            <dt>Access Tier</dt><dd>AMBER</dd>
-            <dt>Media Type</dt><dd>VIDEO</dd>
-          </dl>
-
-          <div class="desc">Routine output capture. Mechanical compliance confirmed under command supervision.</div>
-
-          <div class="flags">
-            <span class="flag">Integrity: OK</span>
-            <span class="flag">Trace: Low</span>
-            <span class="flag">Confidence: Medium</span>
-            <span class="flag">Cross-Links: None</span>
-          </div>
-        </a>
-
-        <a class="record"
-           href="rec-gd-01-007.html"
-           data-target="rec-gd-01-007.html"
-           data-rec="REC-GD-01-007"
-           data-type="GROUP FORMATION"
-           data-status="RESTRICTED"
-           data-access="BLACK">
-          <div class="rec-head">
-            <div class="rec-id">REC-GD-01-007</div>
-            <div class="rec-status">RESTRICTED</div>
-          </div>
-
-          <dl class="kv">
-            <dt>Registry Type</dt><dd>GROUP FORMATION</dd>
-            <dt>Subjects</dt><dd>FED / NEIL / [REDACTED]</dd>
-            <dt>Location Node</dt><dd>CAMP PERIMETER</dd>
-            <dt>Timestamp</dt><dd>REDACTED</dd>
-            <dt>Access Tier</dt><dd>BLACK</dd>
-            <dt>Media Type</dt><dd>IMAGE</dd>
-          </dl>
-
-          <div class="desc">Cohort alignment snapshot. Command layer presence increases local stability.</div>
-
-          <div class="flags">
-            <span class="flag">Integrity: OK</span>
-            <span class="flag">Trace: High</span>
-            <span class="flag">Confidence: High</span>
-            <span class="flag">Cross-Links: Present</span>
-          </div>
-        </a>
-
-        <a class="record"
-           href="rec-ob-00-019.html"
-           data-target="rec-ob-00-019.html"
-           data-rec="REC-OB-00-019"
-           data-type="OBSERVATION NOTE"
-           data-status="ARCHIVED"
-           data-access="BLUE">
-          <div class="rec-head">
-            <div class="rec-id">REC-OB-00-019</div>
-            <div class="rec-status">ARCHIVED</div>
-          </div>
-
-          <dl class="kv">
-            <dt>Registry Type</dt><dd>OBSERVATION NOTE</dd>
-            <dt>Subjects</dt><dd>VAL</dd>
-            <dt>Location Node</dt><dd>MESS CYCLE</dd>
-            <dt>Timestamp</dt><dd>AUTO-GENERATED</dd>
-            <dt>Access Tier</dt><dd>BLUE</dd>
-            <dt>Media Type</dt><dd>TEXT</dd>
-          </dl>
-
-          <div class="desc">Anxiety markers detected. Social compliance behavior logged. No strategic dependency recorded.</div>
-
-          <div class="flags">
-            <span class="flag">Integrity: OK</span>
-            <span class="flag">Trace: Low</span>
-            <span class="flag">Confidence: Medium</span>
-            <span class="flag">Cross-Links: None</span>
-          </div>
-        </a>
-
+          <!-- 06 -->
+          <a class="pill"
+             href="obs-system-extracts.html"
+             data-target="obs-system-extracts.html"
+             data-node="NODE-SE"
+             data-label="SYSTEM EXTRACTS"
+             data-access="BLUE">
+            <div class="pill-left">
+              <div class="pill-title">SYSTEM EXTRACTS</div>
+              <div class="pill-sub">Scans · cards · clips · audio fragments</div>
+            </div>
+            <div class="pill-right">
+              <span class="tier">BLUE</span>
+              <span class="go">&gt;</span>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -462,27 +443,26 @@
         clearHint();
 
         const steps = [
-          `QUERY: ${opts.rec}`,
-          `TYPE: ${opts.type}`,
-          `STATUS: ${opts.status}`,
+          `QUERY: ${opts.node}`,
+          `NODE: ${opts.label}`,
           `ACCESS: ${opts.access}`,
           "",
-          "INDEX: SEARCHING…",
+          "INDEX: ROUTING…",
           "TRACE: OPEN NODES…",
           "DECRYPT: STREAM…",
-          "OPEN RECORD…"
+          "OPEN NODE…"
         ];
 
         for(let i=0;i<steps.length;i++){
           writeLine(steps[i]);
-          await sleep(i < 4 ? 170 : 220);
+          await sleep(i < 3 ? 170 : 220);
         }
 
         await sleep(220);
         window.location.href = opts.target;
       }
 
-      document.querySelectorAll(".record").forEach(a => {
+      document.querySelectorAll(".pill").forEach(a => {
         a.setAttribute("role","button");
         a.setAttribute("tabindex","0");
 
@@ -491,9 +471,8 @@
           const target = a.dataset.target || a.getAttribute("href");
           lookupAndGo({
             target,
-            rec: a.dataset.rec || "REC-???",
-            type: a.dataset.type || "UNKNOWN",
-            status: a.dataset.status || "UNKNOWN",
+            node: a.dataset.node || "NODE-??",
+            label: a.dataset.label || "UNKNOWN",
             access: a.dataset.access || "UNKNOWN"
           });
         });
