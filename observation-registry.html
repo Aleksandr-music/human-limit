@@ -1,1 +1,513 @@
+<!-- observation-registry.html | Human Limit — Observation Registry (canonical template) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>OBSERVATION REGISTRY — Internal Registry</title>
 
+  <!-- HL clearance gate (adjust if needed) -->
+  <meta name="hl-requires" content="BLACK">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- HL Core (single include) -->
+  <script src="hl-core.js" defer></script>
+
+  <style>
+    :root{
+      --page-max: 1080px;
+      --pad: 20px;
+      --line: rgba(255,255,255,.14);
+      --muted: rgba(255,255,255,.68);
+      --faint: rgba(255,255,255,.48);
+      --hard: rgba(255,255,255,.92);
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:var(--hard);
+      background:#000;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      max-width:var(--page-max);
+      margin:0 auto;
+      padding:calc(var(--pad) + 18px) var(--pad) 64px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+    }
+
+    .crumbs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .crumbs a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .crumbs a:hover{ border-bottom-color:var(--muted); }
+
+    .badge{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--hard);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:10px;
+      white-space:nowrap;
+    }
+
+    .header{
+      margin:18px 0 16px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .h1{
+      margin:0;
+      font-size:20px;
+      line-height:1.25;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .tagline{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+      max-width:780px;
+    }
+
+    .meta{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      min-width: 280px;
+    }
+    .meta dl{
+      margin:0;
+      display:grid;
+      grid-template-columns: 160px 1fr;
+      gap:8px 12px;
+      font-size:12px;
+      line-height:1.35;
+    }
+    @media (max-width: 520px){
+      .meta{ width:100%; }
+      .meta dl{ grid-template-columns: 1fr; }
+    }
+    .meta dt{ color:var(--faint); }
+    .meta dd{ margin:0; color:var(--hard); }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:18px;
+      margin-top:18px;
+    }
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color:var(--hard);
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    /* RECORD LIST */
+    .record{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:14px;
+      margin-top:12px;
+      background: rgba(0,0,0,.20);
+      cursor:pointer;
+      user-select:none;
+    }
+    .record:hover{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(0,0,0,.28);
+    }
+    .record:active{ opacity:.78; }
+    .record:focus{
+      outline:none;
+      border-color: rgba(255,255,255,.28);
+      background: rgba(0,0,0,.32);
+    }
+
+    .rec-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding-bottom:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:10px;
+      text-transform:uppercase;
+      letter-spacing:.10em;
+      font-size:12px;
+    }
+    .rec-id{ color:var(--hard); opacity:.96; }
+    .rec-status{ color:var(--muted); }
+
+    .kv{
+      margin:0;
+      display:grid;
+      grid-template-columns: 180px 1fr;
+      gap:8px 12px;
+      font-size:12px;
+      line-height:1.45;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv dt{ color:var(--faint); }
+    .kv dd{ margin:0; color:var(--hard); }
+
+    .desc{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.55;
+    }
+
+    .flags{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 10px;
+      color:rgba(255,255,255,.62);
+      font-size:11px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .flag{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      padding:6px 8px;
+      background: rgba(0,0,0,.18);
+    }
+
+    /* terminal hint */
+    .hint{
+      margin-top:12px;
+      color:rgba(255,255,255,.56);
+      font-size:12px;
+      min-height:22px;
+      white-space:pre-line;
+      line-height:1.7;
+    }
+
+    /* lock UI during lookup */
+    .is-busy .record{
+      pointer-events:none;
+      opacity:0.70;
+    }
+
+    .footer{
+      margin-top:30px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      align-items:center;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.04em;
+    }
+    .footer a{
+      color:inherit;
+      text-decoration:none;
+      border-bottom:1px solid transparent;
+    }
+    .footer a:hover{ border-bottom-color:var(--muted); }
+  </style>
+</head>
+
+<body data-bg="subjects">
+  <div class="sys-node" aria-hidden="true">
+    <span class="dot"></span>
+    <span class="label">NODE: ACTIVE</span>
+  </div>
+
+  <main class="wrap">
+
+    <div class="topbar">
+      <div class="crumbs">
+        <a href="index.html">Gateway</a>
+        <span class="muted">/</span>
+        <a href="interface.html">System</a>
+        <span class="muted">/</span>
+        <span>Observation Registry</span>
+      </div>
+      <div class="badge">Internal Registry</div>
+    </div>
+
+    <header class="header" aria-label="Registry header">
+      <div>
+        <h1 class="h1">OBSERVATION REGISTRY</h1>
+        <p class="tagline">SYSTEM MONITORING INTERFACE · PASSIVE SURVEILLANCE LAYER · RECORDS ROUTE TO SEPARATE NODES</p>
+      </div>
+
+      <div class="meta" aria-label="Registry meta">
+        <dl>
+          <dt>Index Status</dt><dd>Partial</dd>
+          <dt>Registry Mode</dt><dd>Read-Only</dd>
+          <dt>Media Loading</dt><dd>Deferred</dd>
+          <dt>Clearance</dt><dd>Black</dd>
+        </dl>
+      </div>
+    </header>
+
+    <section class="section" aria-label="Observation records">
+      <h2>Registry Records</h2>
+
+      <div class="card" aria-label="Record list container">
+        <div class="hint" id="hint" aria-live="polite"></div>
+
+        <!-- RECORD UNIT (template) -->
+        <a class="record"
+           href="rec-ir-04-011.html"
+           data-target="rec-ir-04-011.html"
+           data-rec="REC-IR-04-011"
+           data-type="INCIDENT LOG"
+           data-status="ACTIVE"
+           data-access="BLACK">
+          <div class="rec-head">
+            <div class="rec-id">REC-IR-04-011</div>
+            <div class="rec-status">ACTIVE</div>
+          </div>
+
+          <dl class="kv">
+            <dt>Registry Type</dt><dd>INCIDENT LOG</dd>
+            <dt>Subjects</dt><dd>FED / NEIL</dd>
+            <dt>Location Node</dt><dd>TRAINING SECTOR</dd>
+            <dt>Timestamp</dt><dd>23.04.2026 / 02:14</dd>
+            <dt>Access Tier</dt><dd>BLACK</dd>
+            <dt>Media Type</dt><dd>IMAGE</dd>
+          </dl>
+
+          <div class="desc">Physical confrontation markers detected. Hierarchy assertion event logged.</div>
+
+          <div class="flags" aria-label="Flags">
+            <span class="flag">Integrity: OK</span>
+            <span class="flag">Trace: Medium</span>
+            <span class="flag">Confidence: High</span>
+            <span class="flag">Cross-Links: Present</span>
+          </div>
+        </a>
+
+        <a class="record"
+           href="rec-tr-02-003.html"
+           data-target="rec-tr-02-003.html"
+           data-rec="REC-TR-02-003"
+           data-type="TRAINING LOG"
+           data-status="ACTIVE"
+           data-access="AMBER">
+          <div class="rec-head">
+            <div class="rec-id">REC-TR-02-003</div>
+            <div class="rec-status">ACTIVE</div>
+          </div>
+
+          <dl class="kv">
+            <dt>Registry Type</dt><dd>TRAINING LOG</dd>
+            <dt>Subjects</dt><dd>NEIL</dd>
+            <dt>Location Node</dt><dd>DRILL FIELD</dd>
+            <dt>Timestamp</dt><dd>AUTO-GENERATED</dd>
+            <dt>Access Tier</dt><dd>AMBER</dd>
+            <dt>Media Type</dt><dd>VIDEO</dd>
+          </dl>
+
+          <div class="desc">Routine output capture. Mechanical compliance confirmed under command supervision.</div>
+
+          <div class="flags">
+            <span class="flag">Integrity: OK</span>
+            <span class="flag">Trace: Low</span>
+            <span class="flag">Confidence: Medium</span>
+            <span class="flag">Cross-Links: None</span>
+          </div>
+        </a>
+
+        <a class="record"
+           href="rec-gd-01-007.html"
+           data-target="rec-gd-01-007.html"
+           data-rec="REC-GD-01-007"
+           data-type="GROUP FORMATION"
+           data-status="RESTRICTED"
+           data-access="BLACK">
+          <div class="rec-head">
+            <div class="rec-id">REC-GD-01-007</div>
+            <div class="rec-status">RESTRICTED</div>
+          </div>
+
+          <dl class="kv">
+            <dt>Registry Type</dt><dd>GROUP FORMATION</dd>
+            <dt>Subjects</dt><dd>FED / NEIL / [REDACTED]</dd>
+            <dt>Location Node</dt><dd>CAMP PERIMETER</dd>
+            <dt>Timestamp</dt><dd>REDACTED</dd>
+            <dt>Access Tier</dt><dd>BLACK</dd>
+            <dt>Media Type</dt><dd>IMAGE</dd>
+          </dl>
+
+          <div class="desc">Cohort alignment snapshot. Command layer presence increases local stability.</div>
+
+          <div class="flags">
+            <span class="flag">Integrity: OK</span>
+            <span class="flag">Trace: High</span>
+            <span class="flag">Confidence: High</span>
+            <span class="flag">Cross-Links: Present</span>
+          </div>
+        </a>
+
+        <a class="record"
+           href="rec-ob-00-019.html"
+           data-target="rec-ob-00-019.html"
+           data-rec="REC-OB-00-019"
+           data-type="OBSERVATION NOTE"
+           data-status="ARCHIVED"
+           data-access="BLUE">
+          <div class="rec-head">
+            <div class="rec-id">REC-OB-00-019</div>
+            <div class="rec-status">ARCHIVED</div>
+          </div>
+
+          <dl class="kv">
+            <dt>Registry Type</dt><dd>OBSERVATION NOTE</dd>
+            <dt>Subjects</dt><dd>VAL</dd>
+            <dt>Location Node</dt><dd>MESS CYCLE</dd>
+            <dt>Timestamp</dt><dd>AUTO-GENERATED</dd>
+            <dt>Access Tier</dt><dd>BLUE</dd>
+            <dt>Media Type</dt><dd>TEXT</dd>
+          </dl>
+
+          <div class="desc">Anxiety markers detected. Social compliance behavior logged. No strategic dependency recorded.</div>
+
+          <div class="flags">
+            <span class="flag">Integrity: OK</span>
+            <span class="flag">Trace: Low</span>
+            <span class="flag">Confidence: Medium</span>
+            <span class="flag">Cross-Links: None</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>Record Timestamp: <span class="muted">AUTO-GENERATED</span></div>
+      <div>
+        <a href="interface.html">Return to System</a>
+        <span class="muted"> · </span>
+        <a href="subjects.html">Open Subjects</a>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    (function(){
+      const hint = document.getElementById("hint");
+      const body = document.body;
+
+      function setBusy(state){
+        body.classList.toggle("is-busy", !!state);
+      }
+      function clearHint(){ hint.textContent = ""; }
+      function writeLine(line){
+        hint.textContent += (line === "" ? "\n" : ("> " + line + "\n"));
+      }
+      function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+      async function lookupAndGo(opts){
+        setBusy(true);
+        clearHint();
+
+        const steps = [
+          `QUERY: ${opts.rec}`,
+          `TYPE: ${opts.type}`,
+          `STATUS: ${opts.status}`,
+          `ACCESS: ${opts.access}`,
+          "",
+          "INDEX: SEARCHING…",
+          "TRACE: OPEN NODES…",
+          "DECRYPT: STREAM…",
+          "OPEN RECORD…"
+        ];
+
+        for(let i=0;i<steps.length;i++){
+          writeLine(steps[i]);
+          await sleep(i < 4 ? 170 : 220);
+        }
+
+        await sleep(220);
+        window.location.href = opts.target;
+      }
+
+      document.querySelectorAll(".record").forEach(a => {
+        a.setAttribute("role","button");
+        a.setAttribute("tabindex","0");
+
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const target = a.dataset.target || a.getAttribute("href");
+          lookupAndGo({
+            target,
+            rec: a.dataset.rec || "REC-???",
+            type: a.dataset.type || "UNKNOWN",
+            status: a.dataset.status || "UNKNOWN",
+            access: a.dataset.access || "UNKNOWN"
+          });
+        });
+
+        a.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            a.click();
+          }
+        });
+      });
+
+      window.addEventListener("pageshow", () => setBusy(false));
+    })();
+  </script>
+</body>
+</html>
