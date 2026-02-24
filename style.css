@@ -360,3 +360,28 @@ body[data-bg] .bg-dim{
 .back:hover{
   color:rgba(255,255,255,.92);
 }
+/* MOBILE SCALE FIX (override anything from style.css / hl-core) */
+html, body{
+  width:100%;
+  max-width:100%;
+  zoom:1;
+}
+
+body{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+main, .wrap, .sys-node{
+  transform:none !important;
+}
+
+.wrap{
+  width:100% !important;
+  max-width:var(--page-max);
+}
+
+/* extra safety for very small screens */
+@media (max-width: 520px){
+  .wrap{ padding-left:16px; padding-right:16px; }
+}
