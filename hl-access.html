@@ -140,11 +140,45 @@
 
     .mono{ letter-spacing:.10em; text-transform:uppercase; }
 
+    /* BACK LINK — moved out of the panel (top-left) */
+    .back-link{
+      position:fixed;
+      top:18px;
+      left:18px;
+      z-index:30;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.36);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+      color:rgba(255,255,255,.78);
+      text-decoration:none;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-size:12px;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .back-link:hover{
+      border-color: rgba(255,255,255,.28);
+      color:rgba(255,255,255,.90);
+    }
+    .back-link .arrow{
+      font-size:14px;
+      line-height:1;
+      opacity:.9;
+    }
+
     @media (max-width:520px){
       .wrap{ padding:56px 16px; }
       .title{ font-size:20px; }
       .tag{ font-size:16px; }
       .btn{ min-width: 100%; }
+      .back-link{ top:14px; left:14px; padding:9px 10px; font-size:11px; }
     }
   </style>
 </head>
@@ -155,6 +189,12 @@
     <span class="label">NODE: ACTIVE</span>
   </div>
 
+  <!-- OUTSIDE THE PANEL: back navigation -->
+  <a class="back-link" href="index.html" aria-label="Return to Entry Node">
+    <span class="arrow">←</span>
+    <span>Return to Entry Node</span>
+  </a>
+
   <div class="bg" aria-hidden="true"></div>
   <div class="veil" aria-hidden="true"></div>
 
@@ -162,9 +202,6 @@
     <section class="panel">
       <h1 class="title">HUMAN LIMIT</h1>
       <p class="tag">The world is already decided.</p>
-
-      <a class="node" href="index.html">Return to Entry Node</a>
-      <div class="spacer-2"></div>
 
       <div class="cta">
         <a class="btn" href="access.html">Access System</a>
