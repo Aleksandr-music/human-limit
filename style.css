@@ -385,3 +385,36 @@ main, .wrap, .sys-node{
 @media (max-width: 520px){
   .wrap{ padding-left:16px; padding-right:16px; }
 }
+/* CRITICAL VIEWPORT WIDTH FIX */
+
+html, body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+.wrap{
+  width:100%;
+  max-width:100%;
+}
+
+.header,
+.topbar,
+.card,
+.pills,
+.pill{
+  max-width:100%;
+  min-width:0;
+}
+
+/* ключевая строка */
+.pill{
+  flex-wrap:nowrap;
+  width:100%;
+}
+
+/* предотвращает переполнение текстом */
+.pill-left,
+.pill-right{
+  min-width:0;
+}
