@@ -19,7 +19,7 @@
   --hl-bg-system:    url("/human-limit/images/png/hl-system-banner-01.png");
   --hl-bg-subjects:  url("/human-limit/images/png/hl-subjects-banner-01.png");
   --hl-bg-archive:   url("/human-limit/images/png/hl-archive-banner-01.png");
---hl-bg-hlaccess: url("/human-limit/images/png/hl-hlaccess-banner-01.png");
+  --hl-bg-hlaccess:  url("/human-limit/images/png/hl-hlaccess-banner-01.png");
 
   /* Global readability tuning (keep LOW; banners already dark) */
   --hl-dim: 0.06;        /* overall dark overlay */
@@ -248,7 +248,7 @@ body[data-bg="world"]::before     { background-image: var(--hl-bg-world); }
 body[data-bg="system"]::before    { background-image: var(--hl-bg-system); }
 body[data-bg="subjects"]::before  { background-image: var(--hl-bg-subjects); }
 body[data-bg="archive"]::before   { background-image: var(--hl-bg-archive); }
-body[data-bg="hlaccess"]::before { background-image: var(--hl-bg-hlaccess); }
+body[data-bg="hlaccess"]::before  { background-image: var(--hl-bg-hlaccess); }
 
 /* Prevent legacy fullscreen layers from hiding banners */
 body[data-bg] .bg,
@@ -279,6 +279,7 @@ body[data-bg] .bg-dim{
     line-height:24px;
   }
 }
+
 .hl-consent{
   position:fixed;
   inset:0;
@@ -344,6 +345,7 @@ body[data-bg] .bg-dim{
   color:rgba(255,255,255,.45);
   border-color:rgba(255,255,255,.10);
 }
+
 .back{
   display:inline-flex;
   align-items:center;
@@ -360,61 +362,13 @@ body[data-bg] .bg-dim{
 .back:hover{
   color:rgba(255,255,255,.92);
 }
-/* MOBILE SCALE FIX (override anything from style.css / hl-core) */
-html, body{
-  width:100%;
-  max-width:100%;
-  zoom:1;
-}
 
-body{
-  -webkit-text-size-adjust:100%;
-  text-size-adjust:100%;
-}
-
-main, .wrap, .sys-node{
-  transform:none !important;
-}
-
-.wrap{
-  width:100% !important;
-  max-width:var(--page-max);
-}
-
-/* extra safety for very small screens */
-@media (max-width: 520px){
-  .wrap{ padding-left:16px; padding-right:16px; }
-}
-/* CRITICAL VIEWPORT WIDTH FIX */
-
-html, body{
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden;
-}
-
-.wrap{
-  width:100%;
-  max-width:100%;
-}
-
-.header,
-.topbar,
-.card,
-.pills,
-.pill{
-  max-width:100%;
-  min-width:0;
-}
-
-/* ключевая строка */
-.pill{
-  flex-wrap:nowrap;
-  width:100%;
-}
-
-/* предотвращает переполнение текстом */
-.pill-left,
-.pill-right{
-  min-width:0;
+/* =========================================================
+   Observation Registry (mobile fit fix)
+   IMPORTANT: requires <body ... data-page="obs-registry">
+   ========================================================= */
+body[data-page="obs-registry"]{
+  padding:0;
+  line-height:normal;
+  overflow-x:clip;
 }
