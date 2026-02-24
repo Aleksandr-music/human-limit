@@ -26,7 +26,6 @@
       --hard: rgba(255,255,255,.92);
     }
 
-    /* FIX: prevent mobile zoom/boost + layout overflow */
     html{
       width:100%;
       -webkit-text-size-adjust:100%;
@@ -38,10 +37,16 @@
     body{
       margin:0;
       width:100%;
+      padding:0; /* CRITICAL: reset global body padding from style.css for this page */
       font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color:var(--hard);
       background:#000;
       overflow-x:hidden;
+    }
+
+    /* CRITICAL: force correct banner ONLY for this page */
+    body[data-page="obs-registry"]::before{
+      background-image: url("/human-limit/images/png/hl-observation-registry-banner-01.png") !important;
     }
 
     img,svg,video,canvas{ max-width:100%; height:auto; }
@@ -160,7 +165,6 @@
       padding:14px;
     }
 
-    /* terminal hint */
     .hint{
       margin-top:10px;
       color:rgba(255,255,255,.56);
@@ -170,15 +174,12 @@
       line-height:1.7;
     }
 
-    /* PILLS */
+    /* PILLS — FORCE SINGLE COLUMN (fix mobile cut + matches your requirement) */
     .pills{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap:12px;
       margin-top:12px;
-    }
-    @media (max-width: 720px){
-      .pills{ grid-template-columns: 1fr; }
     }
 
     .pill{
@@ -195,6 +196,7 @@
       cursor:pointer;
       user-select:none;
       max-width:100%;
+      min-width:0;
     }
     .pill:hover{
       border-color: rgba(255,255,255,.22);
@@ -239,6 +241,7 @@
       font-size:11px;
       letter-spacing:.08em;
       text-transform:uppercase;
+      white-space:nowrap;
     }
     .tier{
       border:1px solid rgba(255,255,255,.12);
@@ -253,7 +256,6 @@
       background: rgba(0,0,0,.18);
     }
 
-    /* lock UI during lookup */
     .is-busy .pill{
       pointer-events:none;
       opacity:0.70;
@@ -281,7 +283,7 @@
   </style>
 </head>
 
-<body data-bg="subjects" data-page="obs-registry"> 
+<body data-bg="subjects" data-page="obs-registry">
   <div class="sys-node" aria-hidden="true">
     <span class="dot"></span>
     <span class="label">NODE: ACTIVE</span>
