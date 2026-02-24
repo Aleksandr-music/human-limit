@@ -26,16 +26,28 @@
       --hard: rgba(255,255,255,.92);
     }
 
+    /* FIX: prevent mobile zoom/boost + layout overflow */
+    html{
+      width:100%;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+    }
+    *,*::before,*::after{ box-sizing:border-box; }
+
     html,body{height:100%}
     body{
       margin:0;
+      width:100%;
       font-family:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       color:var(--hard);
       background:#000;
       overflow-x:hidden;
     }
 
+    img,svg,video,canvas{ max-width:100%; height:auto; }
+
     .wrap{
+      width:100%;
       max-width:var(--page-max);
       margin:0 auto;
       padding:calc(var(--pad) + 18px) var(--pad) 64px;
@@ -111,6 +123,7 @@
       border-radius:14px;
       padding:12px 14px;
       min-width: 280px;
+      max-width:100%;
     }
     .meta dl{
       margin:0;
@@ -121,7 +134,8 @@
       line-height:1.35;
     }
     @media (max-width: 520px){
-      .meta{ width:100%; }
+      :root{ --pad: 16px; }
+      .meta{ width:100%; min-width:0; }
       .meta dl{ grid-template-columns: 1fr; }
     }
     .meta dt{ color:var(--faint); }
@@ -180,6 +194,7 @@
       background: rgba(0,0,0,.20);
       cursor:pointer;
       user-select:none;
+      max-width:100%;
     }
     .pill:hover{
       border-color: rgba(255,255,255,.22);
